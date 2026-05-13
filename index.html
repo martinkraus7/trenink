@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#0f172a">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trénink">
@@ -680,11 +683,13 @@ function saveLift(id) {
 // HRV
 // =============================================================================
 function saveHRV() {
-  const hrv = parseFloat($("in-hrv").value);
-  const rhr = parseFloat($("in-rhr").value);
+  const hrvRaw = parseFloat($("in-hrv").value);
+  const rhrRaw = parseFloat($("in-rhr").value);
   const sleep = parseFloat($("in-sleep").value);
   const rpe = parseInt($("in-rpe").value, 10);
-  if (!hrv || !rhr) return alert("Doplň aspoň HRV a RHR");
+  if (!hrvRaw || !rhrRaw) return alert("Doplň aspoň HRV a RHR");
+  const hrv = Math.round(hrvRaw * 10) / 10;
+  const rhr = Math.round(rhrRaw);
   const log = STORE.get("hrvLog", []);
   const i = log.findIndex(l => l.date === todayISO());
   const entry = { date: todayISO(), hrv, rhr, sleep: sleep || null, rpe: rpe || null };
