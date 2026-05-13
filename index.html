@@ -266,6 +266,9 @@
   </div>
 </nav>
 
+<!-- TOAST -->
+<div id="toast" class="hidden fixed top-24 left-1/2 z-50 -translate-x-1/2 bg-emerald-500 text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg text-sm"></div>
+
 <!-- EXERCISE MODAL -->
 <div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onclick="closeModal(event)">
   <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl border-t border-slate-700 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
@@ -875,9 +878,41 @@ function renderAll() {
   renderTodayWarnings();
 }
 
+function showToast(msg, ms = 2500) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.remove("hidden");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.add("hidden"), ms);
+}
+
+function handleURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  const hrv = params.get("hrv");
+  const rhr = params.get("rhr");
+  const sleep = params.get("sleep");
+  const rpe = params.get("rpe");
+  const save = params.get("save");
+  if (!hrv && !rhr && !sleep && !rpe) return;
+  switchView("tracker");
+  if (hrv) $("in-hrv").value = hrv;
+  if (rhr) $("in-rhr").value = rhr;
+  if (sleep) $("in-sleep").value = sleep;
+  if (rpe) $("in-rpe").value = rpe;
+  if (save === "1" && hrv && rhr) {
+    saveHRV();
+    showToast(`✓ Uloženo: HRV ${hrv} · RHR ${rhr}`);
+    history.replaceState({}, "", window.location.pathname);
+  } else {
+    setTimeout(() => $("hrvForm").scrollIntoView({behavior:"smooth", block:"start"}), 100);
+    showToast("Hodnoty vyplněny — zkontroluj a ulož");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   switchView("today");
   renderAll();
+  handleURLParams();
 });
 </script>
 
