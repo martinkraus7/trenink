@@ -372,34 +372,34 @@ const PLAN = {
       id: "T1", name: "Týden 1 — Build", start: "2026-05-18", end: "2026-05-24",
       days: [
         { date: "2026-05-18", type: "gym", workoutId: "gymA", title: "Gym A — Silová báze" },
-        { date: "2026-05-19", type: "run", title: "2 km WU + 10 × 400 m Z3 + 2 km CD", km: 8, detail: "Intervaly v 5km tempu, 200 m výklus mezi" },
+        { date: "2026-05-19", type: "run", title: "2 km WU + 10 × 400 m Z3 + 2 km CD", km: 8, detail: "Intervaly v 5km tempu ~4:30-5:00/km, 200 m výklus mezi (cca 1:30-2:00)" },
         { date: "2026-05-20", type: "run", title: "11 km LSD (Z1/Z2)", km: 11 },
         { date: "2026-05-21", type: "regen", title: "20-30 min aktivní regen (chůze/kolo)" },
         { date: "2026-05-22", type: "gym+box", workoutId: "gymB", title: "Gym B + Box" },
         { date: "2026-05-23", type: "run", title: "7-8 km lehký + 4 × 75 m strides", km: 8 },
-        { date: "2026-05-24", type: "run", title: "16 km dlouhý (posl. 3-5 km v HM tempu)", km: 16 }
+        { date: "2026-05-24", type: "run", title: "16 km dlouhý (posl. 3-5 km v HM tempu 5:40/km)", km: 16, detail: "Hlavní část Z1/Z2 dle pocitu/HR, finiš v race pace" }
       ]
     },
     {
       id: "T2", name: "Týden 2 — Build vrchol", start: "2026-05-25", end: "2026-05-31",
       days: [
         { date: "2026-05-25", type: "gym", workoutId: "gymA", title: "Gym A" },
-        { date: "2026-05-26", type: "run", title: "2 km WU + 6 × 1000 m Z3 + 2 km CD", km: 10, detail: "Intervaly v 5km tempu, 200 m výklus" },
+        { date: "2026-05-26", type: "run", title: "2 km WU + 6 × 1000 m Z3 + 2 km CD", km: 10, detail: "Intervaly v 5km tempu ~4:30-5:00/km, 200 m výklus mezi" },
         { date: "2026-05-27", type: "run", title: "12-13 km LSD", km: 13 },
         { date: "2026-05-28", type: "regen", title: "Aktivní regen" },
         { date: "2026-05-29", type: "gym+box", workoutId: "gymB", title: "Gym B + Box" },
         { date: "2026-05-30", type: "run", title: "7-8 km + strides", km: 8 },
-        { date: "2026-05-31", type: "run", title: "19 km dlouhý (posl. 3-5 km v HM tempu)", km: 19 }
+        { date: "2026-05-31", type: "run", title: "19 km dlouhý (posl. 3-5 km v HM tempu 5:40/km)", km: 19, detail: "Hlavní část Z1/Z2 dle pocitu/HR, finiš v race pace" }
       ]
     },
     {
       id: "T3", name: "Týden 3 — Taper start", start: "2026-06-01", end: "2026-06-07",
       days: [
         { date: "2026-06-01", type: "gym", workoutId: "gymA", modifier: "-1 série / cvik", title: "Gym A (taper)" },
-        { date: "2026-06-02", type: "run", title: "6 × 800 m Z3", km: 7 },
+        { date: "2026-06-02", type: "run", title: "6 × 800 m Z3 (~4:30-5:00/km)", km: 7, detail: "200 m výklus mezi intervaly" },
         { date: "2026-06-03", type: "run", title: "11 km Z1 (lehčí)", km: 11 },
         { date: "2026-06-04", type: "rest", title: "Volno" },
-        { date: "2026-06-05", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik", title: "Gym B (taper) + lehký shadow box + 20 min HM tempo" },
+        { date: "2026-06-05", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik", title: "Gym B (taper) + lehký shadow box + 20 min v HM tempu 5:40/km" },
         { date: "2026-06-06", type: "run", title: "7-8 km + strides", km: 8 },
         { date: "2026-06-07", type: "run", title: "12-13 km dlouhý (kratší!)", km: 13 }
       ]
@@ -408,7 +408,7 @@ const PLAN = {
       id: "T4", name: "Týden 4 — Race week", start: "2026-06-08", end: "2026-06-14",
       days: [
         { date: "2026-06-08", type: "rest", title: "Volno nebo 20 min chůze" },
-        { date: "2026-06-09", type: "run", title: "4 × 800 m v HM tempu", km: 5 },
+        { date: "2026-06-09", type: "run", title: "4 × 800 m v HM tempu 5:40/km", km: 5, detail: "200 m výklus mezi, svalová paměť na race pace" },
         { date: "2026-06-10", type: "run", title: "7-8 km Z1", km: 8 },
         { date: "2026-06-11", type: "rest", title: "Volno + START carb loading" },
         { date: "2026-06-12", type: "run", title: "20 min aktivace + 4 × 75 m strides", km: 3 },
