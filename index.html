@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trénink">
+  <title>Tréninkový plán</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+    body { padding-bottom: env(safe-area-inset-bottom); font-feature-settings: "ss01"; }
+    .tab-active { color: #38bdf8; }
+    .tab-active svg { color: #38bdf8; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary { list-style: none; cursor: pointer; }
+    details summary::after { content: '▾'; float: right; transition: transform .2s; color: #64748b; }
+    details[open] summary::after { transform: rotate(180deg); }
+    .video-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background: #000; }
+    .video-wrap iframe { position: absolute; top:0; left:0; width:100%; height:100%; border:0; }
+    .check { width: 24px; height: 24px; }
+    input[type=number], input[type=date] { font-size: 16px; }
+    .spark { stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+  <div class="px-4 pt-4 pb-3" style="padding-top: max(1rem, env(safe-area-inset-top))">
+    <div class="flex items-baseline justify-between">
+      <div>
+        <div class="text-[10px] uppercase tracking-widest text-slate-500" id="weekLabel">—</div>
+        <h1 class="text-lg font-semibold leading-tight" id="todayDate">—</h1>
+      </div>
+      <div class="text-right">
+        <div class="text-[10px] uppercase tracking-widest text-slate-500">do závodu</div>
+        <div class="text-2xl font-bold text-sky-400" id="countdown">—</div>
+      </div>
+    </div>
+    <div class="mt-3 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+      <div id="globalProgress" class="h-full bg-sky-500 transition-all" style="width:0%"></div>
+    </div>
+  </div>
+</header>
+
+<!-- VIEWS -->
+<main class="pb-24">
+
+  <!-- VIEW: TODAY -->
+  <section id="view-today" class="view px-4 pt-4 space-y-4">
+
+    <!-- Red flag banner (hidden by default) -->
+    <div id="redFlagBanner" class="hidden bg-amber-500/10 border border-amber-500/40 rounded-xl p-3 text-sm">
+      <div class="flex items-start gap-2">
+        <div class="text-amber-400 mt-0.5">⚠</div>
+        <div>
+          <div class="font-semibold text-amber-200">Recovery den doporučen</div>
+          <div class="text-slate-300 mt-1" id="redFlagDetail">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HRV quick entry (if not filled today) -->
+    <div id="hrvPrompt" class="hidden bg-sky-500/5 border border-sky-500/30 rounded-xl p-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-semibold">Ranní HRV / pulz</div>
+          <div class="text-xs text-slate-400">Zapiš z Health app (15 s)</div>
+        </div>
+        <button onclick="switchView('tracker'); setTimeout(()=>document.getElementById('hrvForm').scrollIntoView({behavior:'smooth'}),100)" class="text-sky-400 text-sm font-medium">Zapsat →</button>
+      </div>
+    </div>
+
+    <!-- TODAY CARD -->
+    <div id="todayCard" class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-xs uppercase tracking-wider text-slate-400">Dnes</div>
+        <div class="text-xs text-slate-500" id="todayDayOfWeek">—</div>
+      </div>
+      <div id="todayContent">—</div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refMtss').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+        <div class="text-sm font-semibold">MTSS prevence</div>
+        <div class="text-xs text-slate-400 mt-1">5-10 min denně</div>
+      </button>
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refSoreness').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+        <div class="text-sm font-semibold">Soreness rules</div>
+        <div class="text-xs text-slate-400 mt-1">Když něco bolí</div>
+      </button>
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refZones').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+        <div class="text-sm font-semibold">Tempo zóny</div>
+        <div class="text-xs text-slate-400 mt-1">Z1/Z2/Z3 + HM</div>
+      </button>
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refPrinciples').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+        <div class="text-sm font-semibold">Principy</div>
+        <div class="text-xs text-slate-400 mt-1">7 pravidel</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- VIEW: PLAN -->
+  <section id="view-plan" class="view px-4 pt-4 space-y-3 hidden">
+    <h2 class="text-xs uppercase tracking-widest text-slate-500">Týdny</h2>
+    <div id="weeksList" class="space-y-2"></div>
+
+    <h2 class="text-xs uppercase tracking-widest text-slate-500 pt-4">Tréninky</h2>
+    <details class="bg-slate-800 rounded-xl border border-slate-700 p-4" open>
+      <summary class="font-semibold">Gym A — Silová báze</summary>
+      <div id="gymA-content" class="mt-3 space-y-2"></div>
+    </details>
+    <details class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">Gym B + Box — Cluster výbušnost</summary>
+      <div id="gymB-content" class="mt-3 space-y-2"></div>
+    </details>
+    <details class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">MTSS prevence — denně</summary>
+      <div id="mtss-content" class="mt-3 space-y-2"></div>
+    </details>
+
+    <h2 class="text-xs uppercase tracking-widest text-slate-500 pt-4">Reference</h2>
+
+    <details id="refZones" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">Tempo zóny</summary>
+      <div class="mt-3 overflow-x-auto"><table class="w-full text-sm">
+        <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo</th><th class="text-left">RPE</th></tr></thead>
+        <tbody class="divide-y divide-slate-700">
+          <tr><td class="py-2 font-medium">Z1</td><td>60-70 %</td><td>6:30-7:00</td><td>2-3</td></tr>
+          <tr><td class="py-2 font-medium">Z2</td><td>70-80 %</td><td>6:00-6:30</td><td>4-5</td></tr>
+          <tr><td class="py-2 font-medium text-sky-400">Z3</td><td>85-95 %</td><td>4:30-5:00</td><td>7-8</td></tr>
+          <tr><td class="py-2 font-medium text-emerald-400">HM cíl</td><td>80-85 %</td><td>5:40</td><td>6-7</td></tr>
+        </tbody>
+      </table></div>
+      <div class="mt-3 text-xs text-slate-400">80/20: 80 % objemu v Z1/Z2, 20 % v Z3. Vyhnout se „murky middle".</div>
+    </details>
+
+    <details id="refMtss" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">MTSS prevence (povinné)</summary>
+      <div class="mt-3 text-sm text-slate-300">
+        5-10 min denně, hlavně před běhy. Bolavé holeně po prvním HM = poslední varování. Detail s videy je v sekci „MTSS prevence — denně" výše.
+      </div>
+    </details>
+
+    <details id="refSoreness" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">Soreness rules</summary>
+      <div class="mt-3 space-y-2 text-sm">
+        <div class="border-l-2 border-red-500 pl-3"><strong>Bolest ve warmup zhoršuje se</strong> → STOP, 2 dny volno, o úroveň níž</div>
+        <div class="border-l-2 border-amber-500 pl-3"><strong>Bolest mizí v warmup</strong> → pokračuj, stejná zátěž</div>
+        <div class="border-l-2 border-amber-500 pl-3"><strong>Bolest mizí, vrátí se v zátěži</strong> → 2 dny volno, snížit, zkontrolovat techniku</div>
+        <div class="border-l-2 border-emerald-500 pl-3"><strong>Normální DOMS</strong> → 1 lehčí trénink, +10 % max/týden</div>
+        <div class="border-l-2 border-red-600 pl-3"><strong>Ostrá bolest na tibii/kosti</strong> → STOP, lékař, stres fraktura</div>
+      </div>
+    </details>
+
+    <details id="refPrinciples" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">7 principů</summary>
+      <ol class="mt-3 space-y-2 text-sm list-decimal pl-5 text-slate-300">
+        <li>Síla VŽDY před vytrvalostí (stejný den)</li>
+        <li>80/20 polarizace běhu</li>
+        <li>Cluster sady pro explozivitu</li>
+        <li>Med ball max 3 kg (těžší = tlak, ne úder)</li>
+        <li>MTSS prevence povinná</li>
+        <li>Deficit AŽ po závodě</li>
+        <li>HRV / klidový pulz rozhodují o intenzitě dne</li>
+      </ol>
+    </details>
+  </section>
+
+  <!-- VIEW: TRACKER -->
+  <section id="view-tracker" class="view px-4 pt-4 space-y-4 hidden">
+
+    <!-- HRV -->
+    <div id="hrvForm" class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold">HRV / klidový pulz</h3>
+        <div class="text-xs text-slate-500">baseline: <span id="hrvBaseline">—</span></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <label>HRV (ms)
+          <input type="number" id="in-hrv" min="0" max="200" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        </label>
+        <label>RHR (bpm)
+          <input type="number" id="in-rhr" min="30" max="120" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        </label>
+        <label>Spánek (h)
+          <input type="number" id="in-sleep" min="0" max="14" step="0.5" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        </label>
+        <label>Pocit (1-5)
+          <input type="number" id="in-rpe" min="1" max="5" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        </label>
+      </div>
+      <button onclick="saveHRV()" class="mt-3 w-full bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-slate-900 font-semibold py-2.5 rounded-lg">Uložit dnešní</button>
+      <div class="mt-4">
+        <div class="text-xs text-slate-500 mb-1">HRV trend (14 dní)</div>
+        <svg id="hrvChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
+      </div>
+    </div>
+
+    <!-- Tělo -->
+    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold">Tělo (váha + pas)</h3>
+        <div class="text-xs text-slate-500" id="bodyReminder">—</div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <label>Váha (kg)
+          <input type="number" id="in-weight" min="40" max="200" step="0.1" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        </label>
+        <label>Pas (cm, v pupíku)
+          <input type="number" id="in-waist" min="50" max="150" step="0.5" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        </label>
+      </div>
+      <button onclick="saveBody()" class="mt-3 w-full bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-slate-900 font-semibold py-2.5 rounded-lg">Uložit dnešní</button>
+      <div class="mt-4 grid grid-cols-2 gap-3">
+        <div>
+          <div class="text-xs text-slate-500 mb-1">Váha (kg)</div>
+          <svg id="weightChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
+        </div>
+        <div>
+          <div class="text-xs text-slate-500 mb-1">Pas (cm)</div>
+          <svg id="waistChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gym log -->
+    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+      <h3 class="font-semibold mb-3">Záznam vah (hlavní cviky)</h3>
+      <div id="gymLogList" class="space-y-3 text-sm"></div>
+    </div>
+
+    <!-- Export/reset -->
+    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+      <h3 class="font-semibold mb-3">Data</h3>
+      <div class="flex gap-2">
+        <button onclick="exportData()" class="flex-1 bg-slate-700 hover:bg-slate-600 rounded-lg py-2 text-sm">Export JSON</button>
+        <button onclick="importData()" class="flex-1 bg-slate-700 hover:bg-slate-600 rounded-lg py-2 text-sm">Import JSON</button>
+      </div>
+      <button onclick="resetWeek()" class="mt-2 w-full bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg py-2 text-sm">Smazat checkboxy tohoto týdne</button>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 z-30" style="padding-bottom: env(safe-area-inset-bottom)">
+  <div class="grid grid-cols-3 max-w-screen-sm mx-auto">
+    <button data-view="today" onclick="switchView('today')" class="navbtn flex flex-col items-center py-3 text-xs">
+      <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Dnes
+    </button>
+    <button data-view="plan" onclick="switchView('plan')" class="navbtn flex flex-col items-center py-3 text-xs">
+      <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Plán
+    </button>
+    <button data-view="tracker" onclick="switchView('tracker')" class="navbtn flex flex-col items-center py-3 text-xs">
+      <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M7 14l4-4 4 4 6-6"/></svg>
+      Tracker
+    </button>
+  </div>
+</nav>
+
+<!-- EXERCISE MODAL -->
+<div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onclick="closeModal(event)">
+  <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl border-t border-slate-700 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="sticky top-0 bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-800 flex items-start justify-between">
+      <div>
+        <h3 id="modalTitle" class="text-lg font-semibold">—</h3>
+        <div id="modalSets" class="text-sm text-sky-400 mt-0.5">—</div>
+      </div>
+      <button onclick="closeModal()" class="text-slate-400 text-2xl leading-none px-2">×</button>
+    </div>
+    <div class="p-5 space-y-4">
+      <div id="modalVideo" class="video-wrap"></div>
+      <a id="modalVideoLink" href="#" target="_blank" rel="noopener" class="hidden text-sm text-sky-400 underline">Otevřít v YouTube ↗</a>
+      <div>
+        <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Klíčové cues</div>
+        <ul id="modalCues" class="space-y-1.5 text-sm"></ul>
+      </div>
+      <div id="modalNote" class="text-sm text-amber-300 hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================================================
+// EXERCISE DATA (videos found by research agent)
+// =============================================================================
+const EXERCISES = {
+  backSquat: { name: "Dřep s činkou (vzadu)", videoUrl: "https://www.youtube.com/watch?v=7v_V6xiA_AA", cues: ["Hrudník nahoru, břicho zpevněné", "Kolena ven, ve směru špiček", "Sed do paty, hloubka pod paralelu"] },
+  landmineRotation: { name: "Landmine rotace", videoUrl: "https://www.youtube.com/watch?v=2YIkhfRc060", cues: ["Rotace vychází z boků, ne z paží", "Zadní pata se otáčí jako při úderu", "Jádro pevné, páteř neutrální"] },
+  weightedPullUp: { name: "Shyby se zátěží", videoUrl: "https://www.youtube.com/watch?v=oPigwqlUng0", cues: ["Plný visený start, ramena dolů a zpět", "Lokty táhni dolů k bokům, hrudník k tyči", "Kontrolovaná excentrická fáze"] },
+  benchPress: { name: "Bench press", videoUrl: "https://www.youtube.com/watch?v=vcBig73ojpE", cues: ["Lopatky stažené dolů a k sobě", "Tyč na spodní část hrudníku, lokty cca 45°", "Nohy pevně v zemi, lehký oblouk v zádech"] },
+  seatedCalfRaise: { name: "Calf raise v sedě (soleus)", videoUrl: "https://www.youtube.com/watch?v=CmAEHLla14I", cues: ["Koleno v 90°, izoluje soleus", "Plný rozsah - hluboký strečink dole", "Pomalý pohyb, 1-2s pauza nahoře"] },
+  standingCalfRaise: { name: "Calf raise ve stoje (gastroc)", videoUrl: "https://www.youtube.com/watch?v=YMmgqO8Jo-k", cues: ["Kolena propnutá - cílí gastrocnemius", "Plné natažení nahoře, hluboký drop dole", "Bez hupkání, kontrolované tempo"] },
+  jumpSquat: { name: "Jump squat (30-45% 1RM)", videoUrl: "https://www.youtube.com/watch?v=hO4lUEXfriY", cues: ["Maximální výbušnost vzhůru, triple extension", "Měkké přistání, kolena ven", "Nízká zátěž, fokus na rychlost, ne objem"] },
+  singleLegRDL: { name: "Single-leg RDL", videoUrl: "https://www.youtube.com/watch?v=Zfr6wizR8rs", cues: ["Hip hinge - boky vzad, ne dřep", "Záda rovná, lopatky stažené", "Stojná noha mírně pokrčená, bok zarovnaný"] },
+  medBallPunchThrow: { name: "Medicine ball punch throw", videoUrl: "https://www.youtube.com/watch?v=A7I5XHkPlqE", cues: ["Síla z paty, přes boky do rukou", "Zadní pata se točí, jako při direktu", "Maximální záměr a rychlost vyhození"], note: "Med ball max 3 kg! Těžší = tlak místo úderu." },
+  pallofPress: { name: "Pallof press", videoUrl: "https://www.youtube.com/watch?v=xeFp4MXad98", cues: ["Odolávej rotaci - tělo zůstává čelně", "Vytlač rukojeť přímo před hrudník", "Zpevněné břicho, hýždě sevřené"] },
+  abWheelRollout: { name: "Ab-wheel rollout", videoUrl: "https://www.youtube.com/watch?v=j6lR4u193gE", cues: ["Posterior pelvic tilt - bedra v neutrálu", "Roluj jen tak daleko, kolik udržíš pevné jádro", "Žádný průhyb v bedrech, kontrolovaný návrat"] },
+  eccentricCalfRaise: { name: "Eccentric calf raise ze schodu", videoUrl: "https://www.youtube.com/watch?v=Shb5bmT-ysc", cues: ["Nahoru oběma, dolů jen postiženou nohou", "Pomalý spuštění minimálně 3 sekundy", "Pata pod úroveň schodu - plný strečink"] },
+  toeYoga: { name: "Toe yoga", videoUrl: "https://www.youtube.com/watch?v=Vyof9r7DNok", cues: ["Palec dolů, ostatní prsty nahoru", "Pak naopak - palec nahoru, ostatní dolů", "Pomalu, vědomě izoluj prsty"] },
+  towelCurls: { name: "Towel curls", videoUrl: "https://www.youtube.com/watch?v=dVDMUuWtX00", cues: ["Pata zůstává na zemi", "Prsty postupně shrnují ručník k sobě", "Pro progresi přidej závaží na konec ručníku"] },
+  clamshell: { name: "Clamshell s gumou", videoUrl: "https://www.youtube.com/watch?v=sRyuvkgepbA", cues: ["Pánev neutrální, neotáčet záda dozadu", "Otvírej koleno proti gumě, paty u sebe", "Cítit gluteus medius, ne TFL"] },
+  monsterWalk: { name: "Monster walks s gumou", videoUrl: "https://www.youtube.com/watch?v=snbNxUIUQPc", cues: ["Lehký polosed, kolena nad špičky", "Široké kroky, tah do gumy po celou dobu", "Trup vzpřímený, kolena netahej dovnitř"] }
+};
+
+// =============================================================================
+// WORKOUTS
+// =============================================================================
+const WORKOUTS = {
+  gymA: {
+    title: "Gym A — Silová báze",
+    meta: "~55 min · pauzy 2-3 min · RPE 8-9",
+    exercises: [
+      { id: "backSquat", sets: "3 × 4-6" },
+      { id: "landmineRotation", sets: "3 × 6 / strana" },
+      { id: "weightedPullUp", sets: "3 × 6-8" },
+      { id: "benchPress", sets: "3 × 6-8" },
+      { id: "seatedCalfRaise", sets: "3 × 12-15" },
+      { id: "standingCalfRaise", sets: "3 × 12-15" }
+    ]
+  },
+  gymB: {
+    title: "Gym B + Box — Cluster výbušnost",
+    meta: "~50 min gym + 45 min box · cluster sady · pátek",
+    exercises: [
+      { id: "jumpSquat", sets: "3 × cluster (2+2+2, 15-20s pauza)" },
+      { id: "singleLegRDL", sets: "3 × 8 / noha" },
+      { id: "medBallPunchThrow", sets: "3 × 5 / strana" },
+      { id: "pallofPress", sets: "3 × 8 / strana" },
+      { id: "abWheelRollout", sets: "3 × 6-8" }
+    ]
+  },
+  mtss: {
+    title: "MTSS prevence — denně",
+    meta: "5-10 min denně, hlavně před běhy. Non-negotiable.",
+    exercises: [
+      { id: "eccentricCalfRaise", sets: "3 × 10 (3s eccentric)" },
+      { id: "toeYoga", sets: "1-2 min" },
+      { id: "towelCurls", sets: "30 op." },
+      { id: "clamshell", sets: "2 × 15 / strana" },
+      { id: "monsterWalk", sets: "2 × 10 m" }
+    ]
+  }
+};
+
+// =============================================================================
+// WEEKLY PLAN
+// =============================================================================
+const PLAN = {
+  raceDate: "2026-06-14",
+  weeks: [
+    {
+      id: "T0", name: "Týden 0 — Náběh", start: "2026-05-12", end: "2026-05-17",
+      days: [
+        { date: "2026-05-12", type: "rest", title: "Rest + start HRV baseline + MTSS" },
+        { date: "2026-05-13", type: "run", title: "4-5 km Z1 test (pocit, žádné tempo)", km: 4.5 },
+        { date: "2026-05-14", type: "rest", title: "Rest nebo 20 min chůze" },
+        { date: "2026-05-15", type: "gym+box", workoutId: "gymA", modifier: "-1 série / cvik", title: "Gym A (lehčí) + Box (jen technika)" },
+        { date: "2026-05-16", type: "rest", title: "Rest + MTSS cviky" },
+        { date: "2026-05-17", type: "run", title: "6-8 km Z1 easy (test nohou)", km: 7 }
+      ]
+    },
+    {
+      id: "T1", name: "Týden 1 — Build", start: "2026-05-18", end: "2026-05-24",
+      days: [
+        { date: "2026-05-18", type: "gym", workoutId: "gymA", title: "Gym A — Silová báze" },
+        { date: "2026-05-19", type: "run", title: "2 km WU + 10 × 400 m Z3 + 2 km CD", km: 8, detail: "Intervaly v 5km tempu, 200 m výklus mezi" },
+        { date: "2026-05-20", type: "run", title: "11 km LSD (Z1/Z2)", km: 11 },
+        { date: "2026-05-21", type: "regen", title: "20-30 min aktivní regen (chůze/kolo)" },
+        { date: "2026-05-22", type: "gym+box", workoutId: "gymB", title: "Gym B + Box" },
+        { date: "2026-05-23", type: "run", title: "7-8 km lehký + 4 × 75 m strides", km: 8 },
+        { date: "2026-05-24", type: "run", title: "16 km dlouhý (posl. 3-5 km v HM tempu)", km: 16 }
+      ]
+    },
+    {
+      id: "T2", name: "Týden 2 — Build vrchol", start: "2026-05-25", end: "2026-05-31",
+      days: [
+        { date: "2026-05-25", type: "gym", workoutId: "gymA", title: "Gym A" },
+        { date: "2026-05-26", type: "run", title: "2 km WU + 6 × 1000 m Z3 + 2 km CD", km: 10, detail: "Intervaly v 5km tempu, 200 m výklus" },
+        { date: "2026-05-27", type: "run", title: "12-13 km LSD", km: 13 },
+        { date: "2026-05-28", type: "regen", title: "Aktivní regen" },
+        { date: "2026-05-29", type: "gym+box", workoutId: "gymB", title: "Gym B + Box" },
+        { date: "2026-05-30", type: "run", title: "7-8 km + strides", km: 8 },
+        { date: "2026-05-31", type: "run", title: "19 km dlouhý (posl. 3-5 km v HM tempu)", km: 19 }
+      ]
+    },
+    {
+      id: "T3", name: "Týden 3 — Taper start", start: "2026-06-01", end: "2026-06-07",
+      days: [
+        { date: "2026-06-01", type: "gym", workoutId: "gymA", modifier: "-1 série / cvik", title: "Gym A (taper)" },
+        { date: "2026-06-02", type: "run", title: "6 × 800 m Z3", km: 7 },
+        { date: "2026-06-03", type: "run", title: "11 km Z1 (lehčí)", km: 11 },
+        { date: "2026-06-04", type: "rest", title: "Volno" },
+        { date: "2026-06-05", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik", title: "Gym B (taper) + lehký shadow box + 20 min HM tempo" },
+        { date: "2026-06-06", type: "run", title: "7-8 km + strides", km: 8 },
+        { date: "2026-06-07", type: "run", title: "12-13 km dlouhý (kratší!)", km: 13 }
+      ]
+    },
+    {
+      id: "T4", name: "Týden 4 — Race week", start: "2026-06-08", end: "2026-06-14",
+      days: [
+        { date: "2026-06-08", type: "rest", title: "Volno nebo 20 min chůze" },
+        { date: "2026-06-09", type: "run", title: "4 × 800 m v HM tempu", km: 5 },
+        { date: "2026-06-10", type: "run", title: "7-8 km Z1", km: 8 },
+        { date: "2026-06-11", type: "rest", title: "Volno + START carb loading" },
+        { date: "2026-06-12", type: "run", title: "20 min aktivace + 4 × 75 m strides", km: 3 },
+        { date: "2026-06-13", type: "run", title: "3-4 km shakeout + final carbs + hydratace", km: 3 },
+        { date: "2026-06-14", type: "race", title: "ZÁVOD — půlmaraton 21,1 km", km: 21 }
+      ]
+    }
+  ]
+};
+
+const MAIN_LIFTS = ["backSquat", "benchPress", "singleLegRDL", "weightedPullUp"];
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+const $ = (id) => document.getElementById(id);
+const todayISO = () => new Date().toISOString().slice(0, 10);
+const DAY_NAMES = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
+const DAY_SHORT = ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"];
+const MONTHS = ["ledna","února","března","dubna","května","června","července","srpna","září","října","listopadu","prosince"];
+
+function fmtDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return `${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+function fmtDateShort(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return `${d.getDate()}.${d.getMonth()+1}.`;
+}
+function diffDays(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
+function getCurrentWeek() {
+  const t = todayISO();
+  for (const w of PLAN.weeks) if (t >= w.start && t <= w.end) return w;
+  if (t < PLAN.weeks[0].start) return null;
+  return PLAN.weeks[PLAN.weeks.length - 1];
+}
+function getTodaysDay() {
+  const t = todayISO();
+  for (const w of PLAN.weeks) for (const d of w.days) if (d.date === t) return { day: d, week: w };
+  return null;
+}
+
+// =============================================================================
+// STORAGE
+// =============================================================================
+const STORE = {
+  get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
+  set(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+};
+
+// =============================================================================
+// MODAL
+// =============================================================================
+function openExercise(id) {
+  const ex = EXERCISES[id];
+  if (!ex) return;
+  $("modalTitle").textContent = ex.name;
+  const allWorkouts = [WORKOUTS.gymA, WORKOUTS.gymB, WORKOUTS.mtss];
+  let sets = "";
+  for (const w of allWorkouts) {
+    const found = w.exercises.find(e => e.id === id);
+    if (found) { sets = found.sets; break; }
+  }
+  $("modalSets").textContent = sets;
+  const m = ex.videoUrl.match(/[?&]v=([^&]+)/);
+  if (m) {
+    $("modalVideo").innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+    $("modalVideoLink").href = ex.videoUrl;
+    $("modalVideoLink").classList.remove("hidden");
+  } else {
+    $("modalVideo").innerHTML = `<div class="flex items-center justify-center h-full text-slate-500">Video není k dispozici</div>`;
+    $("modalVideoLink").classList.add("hidden");
+  }
+  $("modalCues").innerHTML = ex.cues.map(c => `<li class="flex gap-2"><span class="text-sky-400 shrink-0">›</span><span>${c}</span></li>`).join("");
+  if (ex.note) { $("modalNote").textContent = "⚠ " + ex.note; $("modalNote").classList.remove("hidden"); }
+  else $("modalNote").classList.add("hidden");
+  $("modal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+function closeModal(e) {
+  if (e && e.target.id !== "modal") return;
+  $("modal").classList.add("hidden");
+  $("modalVideo").innerHTML = "";
+  document.body.style.overflow = "";
+}
+
+// =============================================================================
+// CHECKBOXES
+// =============================================================================
+function checkKey(date, slug) { return `${date}__${slug}`; }
+function isChecked(date, slug) {
+  const all = STORE.get("checkboxes", {});
+  return !!all[checkKey(date, slug)];
+}
+function toggleCheck(date, slug, el) {
+  const all = STORE.get("checkboxes", {});
+  const k = checkKey(date, slug);
+  if (all[k]) delete all[k]; else all[k] = true;
+  STORE.set("checkboxes", all);
+  if (el) el.checked = !!all[k];
+  renderProgress();
+}
+
+// =============================================================================
+// VIEW SWITCHING
+// =============================================================================
+function switchView(name) {
+  document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
+  $("view-" + name).classList.remove("hidden");
+  document.querySelectorAll(".navbtn").forEach(b => b.classList.toggle("tab-active", b.dataset.view === name));
+  window.scrollTo(0, 0);
+}
+
+// =============================================================================
+// RENDER: TODAY
+// =============================================================================
+function renderHeader() {
+  const t = todayISO();
+  const d = new Date(t + "T00:00:00");
+  $("todayDate").textContent = fmtDate(t);
+  $("todayDayOfWeek").textContent = DAY_NAMES[d.getDay()];
+  const days = diffDays(t, PLAN.raceDate);
+  $("countdown").innerHTML = days >= 0 ? `${days}<span class="text-sm text-slate-500"> dní</span>` : `${-days} po závodě`;
+  const w = getCurrentWeek();
+  $("weekLabel").textContent = w ? w.name : "Mimo plán";
+  // Global progress: how many days from plan start to race
+  const total = diffDays(PLAN.weeks[0].start, PLAN.raceDate);
+  const done = Math.max(0, Math.min(total, diffDays(PLAN.weeks[0].start, t)));
+  $("globalProgress").style.width = `${(done / total * 100).toFixed(1)}%`;
+}
+
+function renderToday() {
+  const today = getTodaysDay();
+  if (!today) {
+    $("todayContent").innerHTML = `<div class="text-slate-400">Dnes není v plánu — relax nebo volný trénink.</div>`;
+    return;
+  }
+  const d = today.day;
+  const typeIcon = { rest: "🛌", run: "🏃", gym: "🏋", "gym+box": "🥊", regen: "🧘", race: "🏁" }[d.type] || "•";
+  let body = `<div class="flex items-start gap-3">
+    <div class="text-3xl">${typeIcon}</div>
+    <div class="flex-1">
+      <div class="text-base font-semibold leading-snug">${d.title}</div>
+      ${d.detail ? `<div class="text-sm text-slate-400 mt-1">${d.detail}</div>` : ""}
+      ${d.km ? `<div class="text-xs text-slate-500 mt-1">~${d.km} km</div>` : ""}
+      ${d.modifier ? `<div class="text-xs text-amber-400 mt-1">Modifikátor: ${d.modifier}</div>` : ""}
+    </div>
+  </div>`;
+  if (d.workoutId) {
+    const w = WORKOUTS[d.workoutId];
+    body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
+      <div class="text-xs uppercase tracking-wider text-slate-400">${w.title}</div>
+      <div class="text-xs text-slate-500">${w.meta}</div>
+      ${w.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
+    </div>`;
+  } else if (d.type === "run" || d.type === "race") {
+    body += `<div class="mt-4 pt-4 border-t border-slate-700">
+      <label class="flex items-center gap-3">
+        <input type="checkbox" class="check accent-sky-500" ${isChecked(d.date, "run") ? "checked" : ""} onchange="toggleCheck('${d.date}','run')">
+        <span class="text-sm">Hotovo</span>
+      </label>
+    </div>`;
+  }
+  $("todayContent").innerHTML = body;
+}
+
+function exerciseRow(date, e, context) {
+  const ex = EXERCISES[e.id];
+  return `<div class="flex items-center gap-3 py-1.5">
+    <input type="checkbox" class="check accent-sky-500 shrink-0" ${isChecked(date, e.id) ? "checked" : ""} onchange="toggleCheck('${date}','${e.id}', this)">
+    <button onclick="openExercise('${e.id}')" class="flex-1 text-left">
+      <div class="text-sm font-medium">${ex.name}</div>
+      <div class="text-xs text-slate-400">${e.sets}</div>
+    </button>
+  </div>`;
+}
+
+// =============================================================================
+// RENDER: PLAN VIEW
+// =============================================================================
+function renderPlan() {
+  // Weeks
+  const t = todayISO();
+  $("weeksList").innerHTML = PLAN.weeks.map(w => {
+    const isCurrent = t >= w.start && t <= w.end;
+    return `<details class="bg-slate-800 rounded-xl border ${isCurrent ? "border-sky-500/60" : "border-slate-700"} p-4" ${isCurrent ? "open" : ""}>
+      <summary class="font-semibold">
+        <span class="${isCurrent ? "text-sky-400" : ""}">${w.name}</span>
+        <span class="text-xs text-slate-500 ml-2">${fmtDateShort(w.start)} – ${fmtDateShort(w.end)}</span>
+      </summary>
+      <div class="mt-3 space-y-2">
+        ${w.days.map(d => weekDayRow(d)).join("")}
+      </div>
+    </details>`;
+  }).join("");
+
+  // Workouts
+  $("gymA-content").innerHTML = renderWorkoutBlock("gymA");
+  $("gymB-content").innerHTML = renderWorkoutBlock("gymB");
+  $("mtss-content").innerHTML = renderWorkoutBlock("mtss");
+}
+
+function weekDayRow(d) {
+  const date = new Date(d.date + "T00:00:00");
+  const dow = DAY_SHORT[date.getDay()];
+  const isToday = d.date === todayISO();
+  const slug = d.workoutId || (d.type === "run" || d.type === "race" ? "run" : "day");
+  const checked = isChecked(d.date, slug);
+  return `<div class="flex items-start gap-3 ${isToday ? "bg-sky-500/5 -mx-1 px-1 rounded" : ""}">
+    <div class="text-xs text-slate-500 w-12 pt-1">${dow} ${date.getDate()}.${date.getMonth()+1}.</div>
+    <div class="flex-1 text-sm">
+      <div class="${isToday ? "text-sky-300 font-medium" : ""}">${d.title}</div>
+      ${d.km ? `<div class="text-xs text-slate-500">~${d.km} km</div>` : ""}
+    </div>
+  </div>`;
+}
+
+function renderWorkoutBlock(id) {
+  const w = WORKOUTS[id];
+  const today = todayISO();
+  return `<div class="text-xs text-slate-400 mb-2">${w.meta}</div>
+    ${w.exercises.map(e => exerciseRow(today, e, "plan")).join("")}`;
+}
+
+// =============================================================================
+// RENDER: GYM LOG
+// =============================================================================
+function renderGymLog() {
+  const log = STORE.get("gymLog", []);
+  $("gymLogList").innerHTML = MAIN_LIFTS.map(id => {
+    const ex = EXERCISES[id];
+    const history = log.filter(l => l.exercise === id).sort((a,b) => b.date.localeCompare(a.date));
+    const last = history[0];
+    const first = history[history.length - 1];
+    const delta = last && first && last.weight !== first.weight ? (last.weight - first.weight).toFixed(1) : null;
+    return `<div class="border border-slate-700 rounded-lg p-3">
+      <div class="flex items-center justify-between mb-2">
+        <div class="font-medium text-sm">${ex.name}</div>
+        ${delta !== null ? `<div class="text-xs ${parseFloat(delta) >= 0 ? "text-emerald-400" : "text-amber-400"}">${delta > 0 ? "+" : ""}${delta} kg</div>` : ""}
+      </div>
+      <div class="flex gap-2 items-center text-xs">
+        <input type="number" id="log-${id}-w" placeholder="kg" class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-sm">
+        <span class="text-slate-500">×</span>
+        <input type="number" id="log-${id}-r" placeholder="op." class="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-sm">
+        <button onclick="saveLift('${id}')" class="ml-auto bg-sky-500 text-slate-900 font-medium px-3 py-1.5 rounded text-xs">Uložit</button>
+      </div>
+      ${last ? `<div class="text-xs text-slate-500 mt-2">Poslední: ${last.weight} kg × ${last.reps} op. (${fmtDateShort(last.date)})</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function saveLift(id) {
+  const w = parseFloat($(`log-${id}-w`).value);
+  const r = parseInt($(`log-${id}-r`).value, 10);
+  if (!w || !r) return alert("Doplň váhu a opakování");
+  const log = STORE.get("gymLog", []);
+  log.push({ date: todayISO(), exercise: id, weight: w, reps: r });
+  STORE.set("gymLog", log);
+  $(`log-${id}-w`).value = "";
+  $(`log-${id}-r`).value = "";
+  renderGymLog();
+}
+
+// =============================================================================
+// HRV
+// =============================================================================
+function saveHRV() {
+  const hrv = parseFloat($("in-hrv").value);
+  const rhr = parseFloat($("in-rhr").value);
+  const sleep = parseFloat($("in-sleep").value);
+  const rpe = parseInt($("in-rpe").value, 10);
+  if (!hrv || !rhr) return alert("Doplň aspoň HRV a RHR");
+  const log = STORE.get("hrvLog", []);
+  const i = log.findIndex(l => l.date === todayISO());
+  const entry = { date: todayISO(), hrv, rhr, sleep: sleep || null, rpe: rpe || null };
+  if (i >= 0) log[i] = entry; else log.push(entry);
+  STORE.set("hrvLog", log);
+  ["in-hrv","in-rhr","in-sleep","in-rpe"].forEach(id => $(id).value = "");
+  renderHRV();
+  renderTodayWarnings();
+}
+
+function getHRVBaseline() {
+  const log = STORE.get("hrvLog", []);
+  // Use earliest 7 entries (or all if < 7)
+  if (log.length === 0) return null;
+  const sorted = [...log].sort((a,b) => a.date.localeCompare(b.date));
+  const window = sorted.slice(0, Math.min(7, sorted.length));
+  if (window.length < 3) return null;
+  return {
+    hrv: window.reduce((s,e) => s + e.hrv, 0) / window.length,
+    rhr: window.reduce((s,e) => s + e.rhr, 0) / window.length,
+    count: window.length
+  };
+}
+
+function renderHRV() {
+  const log = STORE.get("hrvLog", []).sort((a,b) => a.date.localeCompare(b.date));
+  const baseline = getHRVBaseline();
+  $("hrvBaseline").textContent = baseline ? `HRV ${baseline.hrv.toFixed(0)} / RHR ${baseline.rhr.toFixed(0)} (${baseline.count}d)` : "—";
+  drawSpark("hrvChart", log.slice(-14).map(e => e.hrv), "#38bdf8");
+}
+
+function checkRedFlags() {
+  const log = STORE.get("hrvLog", []);
+  const today = log.find(l => l.date === todayISO());
+  const baseline = getHRVBaseline();
+  if (!today || !baseline) return { count: 0, reasons: [] };
+  const reasons = [];
+  if (today.hrv < baseline.hrv * 0.8) reasons.push(`HRV pokles na ${today.hrv} (baseline ${baseline.hrv.toFixed(0)})`);
+  if (today.rhr > baseline.rhr + 5) reasons.push(`RHR vyšší o ${(today.rhr - baseline.rhr).toFixed(0)} bpm`);
+  if (today.sleep && today.sleep < 7) reasons.push(`Spánek pod 7 h`);
+  if (today.rpe && today.rpe >= 4) reasons.push(`Subjektivně těžké ráno (RPE ${today.rpe})`);
+  return { count: reasons.length, reasons };
+}
+
+// =============================================================================
+// BODY
+// =============================================================================
+function saveBody() {
+  const weight = parseFloat($("in-weight").value);
+  const waist = parseFloat($("in-waist").value);
+  if (!weight || !waist) return alert("Doplň oba údaje");
+  const log = STORE.get("bodyLog", []);
+  const i = log.findIndex(l => l.date === todayISO());
+  const entry = { date: todayISO(), weight, waist };
+  if (i >= 0) log[i] = entry; else log.push(entry);
+  STORE.set("bodyLog", log);
+  $("in-weight").value = "";
+  $("in-waist").value = "";
+  renderBody();
+}
+
+function renderBody() {
+  const log = STORE.get("bodyLog", []).sort((a,b) => a.date.localeCompare(b.date));
+  const last = log[log.length - 1];
+  if (last) {
+    const days = diffDays(last.date, todayISO());
+    $("bodyReminder").innerHTML = days >= 14
+      ? `<span class="text-amber-400">před ${days} dny — čas měřit</span>`
+      : `naposled před ${days} ${days === 1 ? "dnem" : "dny"}`;
+  } else {
+    $("bodyReminder").textContent = "ještě nic neuloženo";
+  }
+  drawSpark("weightChart", log.slice(-12).map(e => e.weight), "#38bdf8");
+  drawSpark("waistChart", log.slice(-12).map(e => e.waist), "#a78bfa");
+}
+
+// =============================================================================
+// SPARKLINE
+// =============================================================================
+function drawSpark(id, values, color) {
+  const svg = $(id);
+  if (!svg) return;
+  if (values.length < 2) {
+    svg.innerHTML = `<text x="150" y="45" text-anchor="middle" fill="#64748b" font-size="11">${values.length === 0 ? "Žádná data" : "Potřeba alespoň 2 záznamy"}</text>`;
+    return;
+  }
+  const W = 300, H = 80, P = 6;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const step = (W - P*2) / (values.length - 1);
+  const pts = values.map((v, i) => {
+    const x = P + i * step;
+    const y = H - P - ((v - min) / range) * (H - P*2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  svg.innerHTML = `
+    <polyline points="${pts.join(" ")}" fill="none" stroke="${color}" stroke-width="2" class="spark"/>
+    ${pts.map(p => { const [x,y] = p.split(","); return `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`; }).join("")}
+    <text x="6" y="14" fill="#64748b" font-size="10">${max.toFixed(1)}</text>
+    <text x="6" y="${H-4}" fill="#64748b" font-size="10">${min.toFixed(1)}</text>`;
+}
+
+// =============================================================================
+// PROGRESS BAR + RED FLAG BANNER
+// =============================================================================
+function renderProgress() {
+  // recalc global progress (already done in renderHeader but day-relative)
+  renderHeader();
+}
+
+function renderTodayWarnings() {
+  const flags = checkRedFlags();
+  if (flags.count >= 2) {
+    $("redFlagBanner").classList.remove("hidden");
+    $("redFlagDetail").innerHTML = flags.reasons.join("<br>") + "<br><span class='text-slate-400'>Doporučení: přesuň tvrdý trénink, místo něj Recovery Workout (20-40 min HR ~100, RPE <6).</span>";
+  } else {
+    $("redFlagBanner").classList.add("hidden");
+  }
+  // HRV prompt if not filled today
+  const hrvLog = STORE.get("hrvLog", []);
+  const filled = hrvLog.some(l => l.date === todayISO());
+  $("hrvPrompt").classList.toggle("hidden", filled);
+}
+
+// =============================================================================
+// EXPORT / IMPORT / RESET
+// =============================================================================
+function exportData() {
+  const data = {
+    checkboxes: STORE.get("checkboxes", {}),
+    hrvLog: STORE.get("hrvLog", []),
+    bodyLog: STORE.get("bodyLog", []),
+    gymLog: STORE.get("gymLog", [])
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `trenink-data-${todayISO()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const d = JSON.parse(r.result);
+        if (d.checkboxes) STORE.set("checkboxes", d.checkboxes);
+        if (d.hrvLog) STORE.set("hrvLog", d.hrvLog);
+        if (d.bodyLog) STORE.set("bodyLog", d.bodyLog);
+        if (d.gymLog) STORE.set("gymLog", d.gymLog);
+        alert("Importováno.");
+        renderAll();
+      } catch (e) { alert("Neplatný JSON: " + e.message); }
+    };
+    r.readAsText(file);
+  };
+  input.click();
+}
+
+function resetWeek() {
+  const w = getCurrentWeek();
+  if (!w) return;
+  if (!confirm(`Smazat checkboxy pro ${w.name}?`)) return;
+  const all = STORE.get("checkboxes", {});
+  for (const k of Object.keys(all)) {
+    const d = k.split("__")[0];
+    if (d >= w.start && d <= w.end) delete all[k];
+  }
+  STORE.set("checkboxes", all);
+  renderAll();
+}
+
+// =============================================================================
+// BOOT
+// =============================================================================
+function renderAll() {
+  renderHeader();
+  renderToday();
+  renderPlan();
+  renderGymLog();
+  renderHRV();
+  renderBody();
+  renderTodayWarnings();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  switchView("today");
+  renderAll();
+});
+</script>
+
+</body>
+</html>
