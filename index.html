@@ -180,6 +180,7 @@
         <h3 class="font-semibold">HRV / klidový pulz</h3>
         <div class="text-xs text-slate-500">baseline: <span id="hrvBaseline">—</span></div>
       </div>
+      <div id="hrvTodayBadge" class="hidden mb-3 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-sm"></div>
       <div class="grid grid-cols-2 gap-3 text-sm">
         <label>HRV (ms)
           <input type="number" id="in-hrv" min="0" max="200" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
@@ -712,6 +713,14 @@ function renderHRV() {
   const log = STORE.get("hrvLog", []).sort((a,b) => a.date.localeCompare(b.date));
   const baseline = getHRVBaseline();
   $("hrvBaseline").textContent = baseline ? `HRV ${baseline.hrv.toFixed(0)} / RHR ${baseline.rhr.toFixed(0)} (${baseline.count}d)` : "—";
+  const today = log.find(l => l.date === todayISO());
+  const badge = $("hrvTodayBadge");
+  if (today) {
+    badge.classList.remove("hidden");
+    badge.innerHTML = `✓ Dnes uloženo: <strong>HRV ${today.hrv}</strong> · <strong>RHR ${today.rhr}</strong>${today.sleep ? ` · spánek ${today.sleep} h` : ""}${today.rpe ? ` · pocit ${today.rpe}/5` : ""}`;
+  } else {
+    badge.classList.add("hidden");
+  }
   drawSpark("hrvChart", log.slice(-14).map(e => e.hrv), "#38bdf8");
 }
 
