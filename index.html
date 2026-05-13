@@ -687,12 +687,19 @@ function saveHRV() {
   const rhrRaw = parseFloat($("in-rhr").value);
   const sleep = parseFloat($("in-sleep").value);
   const rpe = parseInt($("in-rpe").value, 10);
-  if (!hrvRaw || !rhrRaw) { alert("Doplň aspoň HRV a RHR"); return false; }
-  const hrv = Math.round(hrvRaw * 10) / 10;
-  const rhr = Math.round(rhrRaw);
+  if (!hrvRaw && !rhrRaw) { alert("Doplň aspoň jednu hodnotu (HRV nebo RHR)"); return false; }
+  const hrv = hrvRaw ? Math.round(hrvRaw * 10) / 10 : null;
+  const rhr = rhrRaw ? Math.round(rhrRaw) : null;
   const log = STORE.get("hrvLog", []);
   const i = log.findIndex(l => l.date === todayISO());
-  const entry = { date: todayISO(), hrv, rhr, sleep: sleep || null, rpe: rpe || null };
+  const existing = i >= 0 ? log[i] : {};
+  const entry = {
+    date: todayISO(),
+    hrv: hrv ?? existing.hrv ?? null,
+    rhr: rhr ?? existing.rhr ?? null,
+    sleep: sleep || existing.sleep || null,
+    rpe: rpe || existing.rpe || null
+  };
   if (i >= 0) log[i] = entry; else log.push(entry);
   try {
     STORE.set("hrvLog", log);
@@ -703,7 +710,7 @@ function saveHRV() {
   ["in-hrv","in-rhr","in-sleep","in-rpe"].forEach(id => $(id).value = "");
   renderHRV();
   renderTodayWarnings();
-  return { hrv, rhr };
+  return { hrv: entry.hrv, rhr: entry.rhr };
 }
 
 function getHRVBaseline() {
@@ -919,10 +926,13 @@ function handleURLParams() {
   if (rhr) $("in-rhr").value = rhr;
   if (sleep) $("in-sleep").value = sleep;
   if (rpe) $("in-rpe").value = rpe;
-  if (save === "1" && hrv && rhr) {
+  if (save === "1" && (hrv || rhr)) {
     const saved = saveHRV();
     if (saved) {
-      showToast(`✓ Uloženo: HRV ${saved.hrv} · RHR ${saved.rhr}`);
+      const parts = [];
+      if (saved.hrv) parts.push(`HRV ${saved.hrv}`);
+      if (saved.rhr) parts.push(`RHR ${saved.rhr}`);
+      showToast(`✓ Uloženo: ${parts.join(" · ")}`);
       history.replaceState({}, "", window.location.pathname);
     }
   } else {
