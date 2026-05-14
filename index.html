@@ -209,27 +209,16 @@
     <!-- Tělo -->
     <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="font-semibold">Tělo (váha + pas)</h3>
+        <h3 class="font-semibold">Tělo (váha)</h3>
         <div class="text-xs text-slate-500" id="bodyReminder">—</div>
       </div>
-      <div class="grid grid-cols-2 gap-3 text-sm">
-        <label>Váha (kg)
-          <input type="number" id="in-weight" min="40" max="200" step="0.1" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
-        </label>
-        <label>Pas (cm, v pupíku)
-          <input type="number" id="in-waist" min="50" max="150" step="0.5" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
-        </label>
-      </div>
+      <label class="text-sm block">Váha (kg)
+        <input type="number" id="in-weight" min="40" max="200" step="0.1" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+      </label>
       <button onclick="saveBody()" class="mt-3 w-full bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-slate-900 font-semibold py-2.5 rounded-lg">Uložit dnešní</button>
-      <div class="mt-4 grid grid-cols-2 gap-3">
-        <div>
-          <div class="text-xs text-slate-500 mb-1">Váha (kg)</div>
-          <svg id="weightChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
-        </div>
-        <div>
-          <div class="text-xs text-slate-500 mb-1">Pas (cm)</div>
-          <svg id="waistChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
-        </div>
+      <div class="mt-4">
+        <div class="text-xs text-slate-500 mb-1">Váha (kg)</div>
+        <svg id="weightChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
       </div>
     </div>
 
@@ -769,15 +758,13 @@ function checkRedFlags() {
 // =============================================================================
 function saveBody() {
   const weight = parseFloat($("in-weight").value);
-  const waist = parseFloat($("in-waist").value);
-  if (!weight || !waist) return alert("Doplň oba údaje");
+  if (!weight) return alert("Doplň váhu");
   const log = STORE.get("bodyLog", []);
   const i = log.findIndex(l => l.date === todayISO());
-  const entry = { date: todayISO(), weight, waist };
+  const entry = { date: todayISO(), weight };
   if (i >= 0) log[i] = entry; else log.push(entry);
   STORE.set("bodyLog", log);
   $("in-weight").value = "";
-  $("in-waist").value = "";
   renderBody();
 }
 
@@ -793,7 +780,6 @@ function renderBody() {
     $("bodyReminder").textContent = "ještě nic neuloženo";
   }
   drawSpark("weightChart", log.slice(-12).map(e => e.weight), "#38bdf8");
-  drawSpark("waistChart", log.slice(-12).map(e => e.waist), "#a78bfa");
 }
 
 // =============================================================================
