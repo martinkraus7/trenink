@@ -46,6 +46,7 @@
     <div class="mt-3 h-1.5 bg-slate-800 rounded-full overflow-hidden">
       <div id="globalProgress" class="h-full bg-sky-500 transition-all" style="width:0%"></div>
     </div>
+    <div id="storageBadge" class="mt-2 text-[10px] text-slate-500 font-mono">—</div>
   </div>
 </header>
 
@@ -715,31 +716,39 @@ function saveHRV() {
 
 function getHRVBaseline() {
   const log = STORE.get("hrvLog", []);
-  // Use earliest 7 entries (or all if < 7)
   if (log.length === 0) return null;
   const sorted = [...log].sort((a,b) => a.date.localeCompare(b.date));
   const window = sorted.slice(0, Math.min(7, sorted.length));
-  if (window.length < 3) return null;
+  const hrvVals = window.map(e => e.hrv).filter(v => v != null);
+  const rhrVals = window.map(e => e.rhr).filter(v => v != null);
+  if (hrvVals.length < 3 && rhrVals.length < 3) return null;
   return {
-    hrv: window.reduce((s,e) => s + e.hrv, 0) / window.length,
-    rhr: window.reduce((s,e) => s + e.rhr, 0) / window.length,
-    count: window.length
+    hrv: hrvVals.length ? hrvVals.reduce((s,v) => s+v, 0) / hrvVals.length : null,
+    rhr: rhrVals.length ? rhrVals.reduce((s,v) => s+v, 0) / rhrVals.length : null,
+    count: Math.max(hrvVals.length, rhrVals.length)
   };
 }
 
 function renderHRV() {
   const log = STORE.get("hrvLog", []).sort((a,b) => a.date.localeCompare(b.date));
   const baseline = getHRVBaseline();
-  $("hrvBaseline").textContent = baseline ? `HRV ${baseline.hrv.toFixed(0)} / RHR ${baseline.rhr.toFixed(0)} (${baseline.count}d)` : "—";
+  $("hrvBaseline").textContent = baseline
+    ? `HRV ${baseline.hrv != null ? baseline.hrv.toFixed(0) : "—"} / RHR ${baseline.rhr != null ? baseline.rhr.toFixed(0) : "—"} (${baseline.count}d)`
+    : "—";
   const today = log.find(l => l.date === todayISO());
   const badge = $("hrvTodayBadge");
   if (today) {
     badge.classList.remove("hidden");
-    badge.innerHTML = `✓ Dnes uloženo: <strong>HRV ${today.hrv}</strong> · <strong>RHR ${today.rhr}</strong>${today.sleep ? ` · spánek ${today.sleep} h` : ""}${today.rpe ? ` · pocit ${today.rpe}/5` : ""}`;
+    const parts = [];
+    if (today.hrv != null) parts.push(`HRV <strong>${today.hrv}</strong>`);
+    if (today.rhr != null) parts.push(`RHR <strong>${today.rhr}</strong>`);
+    if (today.sleep) parts.push(`spánek ${today.sleep} h`);
+    if (today.rpe) parts.push(`pocit ${today.rpe}/5`);
+    badge.innerHTML = `✓ Dnes uloženo: ${parts.join(" · ")}`;
   } else {
     badge.classList.add("hidden");
   }
-  drawSpark("hrvChart", log.slice(-14).map(e => e.hrv), "#38bdf8");
+  drawSpark("hrvChart", log.slice(-14).map(e => e.hrv).filter(v => v != null), "#38bdf8");
 }
 
 function checkRedFlags() {
@@ -748,8 +757,8 @@ function checkRedFlags() {
   const baseline = getHRVBaseline();
   if (!today || !baseline) return { count: 0, reasons: [] };
   const reasons = [];
-  if (today.hrv < baseline.hrv * 0.8) reasons.push(`HRV pokles na ${today.hrv} (baseline ${baseline.hrv.toFixed(0)})`);
-  if (today.rhr > baseline.rhr + 5) reasons.push(`RHR vyšší o ${(today.rhr - baseline.rhr).toFixed(0)} bpm`);
+  if (today.hrv != null && baseline.hrv != null && today.hrv < baseline.hrv * 0.8) reasons.push(`HRV pokles na ${today.hrv} (baseline ${baseline.hrv.toFixed(0)})`);
+  if (today.rhr != null && baseline.rhr != null && today.rhr > baseline.rhr + 5) reasons.push(`RHR vyšší o ${(today.rhr - baseline.rhr).toFixed(0)} bpm`);
   if (today.sleep && today.sleep < 7) reasons.push(`Spánek pod 7 h`);
   if (today.rpe && today.rpe >= 4) reasons.push(`Subjektivně těžké ráno (RPE ${today.rpe})`);
   return { count: reasons.length, reasons };
@@ -897,12 +906,28 @@ function resetWeek() {
 // =============================================================================
 function renderAll() {
   renderHeader();
+  renderStorageBadge();
   renderToday();
   renderPlan();
   renderGymLog();
   renderHRV();
   renderBody();
   renderTodayWarnings();
+}
+
+function getStorageMode() {
+  const standalone = window.matchMedia('(display-mode: standalone)').matches
+                  || window.navigator.standalone === true;
+  return standalone ? "PWA" : "Safari";
+}
+
+function renderStorageBadge() {
+  const el = $("storageBadge");
+  if (!el) return;
+  const mode = getStorageMode();
+  const hrvCount = STORE.get("hrvLog", []).length;
+  const bodyCount = STORE.get("bodyLog", []).length;
+  el.textContent = `${mode} storage · ${hrvCount} HRV / ${bodyCount} body`;
 }
 
 function showToast(msg, ms = 2500) {
@@ -930,9 +955,9 @@ function handleURLParams() {
     const saved = saveHRV();
     if (saved) {
       const parts = [];
-      if (saved.hrv) parts.push(`HRV ${saved.hrv}`);
-      if (saved.rhr) parts.push(`RHR ${saved.rhr}`);
-      showToast(`✓ Uloženo: ${parts.join(" · ")}`);
+      if (saved.hrv) parts.push(`HRV ${saved.hrv}`); else parts.push(`HRV chybí`);
+      if (saved.rhr) parts.push(`RHR ${saved.rhr}`); else parts.push(`RHR chybí`);
+      showToast(`✓ Uloženo: ${parts.join(" · ")}`, 4000);
       history.replaceState({}, "", window.location.pathname);
     }
   } else {
