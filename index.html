@@ -940,10 +940,14 @@ function showToast(msg, ms = 2500) {
 
 function handleURLParams() {
   const params = new URLSearchParams(window.location.search);
-  const hrv = params.get("hrv");
-  const rhr = params.get("rhr");
-  const sleep = params.get("sleep");
-  const rpe = params.get("rpe");
+  const cleanParam = (k) => {
+    const v = (params.get(k) || "").trim();
+    return v === "" ? null : v;
+  };
+  const hrv = cleanParam("hrv");
+  const rhr = cleanParam("rhr");
+  const sleep = cleanParam("sleep");
+  const rpe = cleanParam("rpe");
   const save = params.get("save");
   if (!hrv && !rhr && !sleep && !rpe) return;
   switchView("tracker");
