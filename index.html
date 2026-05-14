@@ -915,9 +915,14 @@ function renderAll() {
 }
 
 function getStorageMode() {
-  const standalone = window.matchMedia('(display-mode: standalone)').matches
-                  || window.navigator.standalone === true;
-  return standalone ? "PWA" : "Safari";
+  if (window.matchMedia('(display-mode: standalone)').matches
+   || window.navigator.standalone === true) return "PWA";
+  const ua = navigator.userAgent;
+  if (/CriOS/.test(ua)) return "Chrome";
+  if (/FxiOS/.test(ua)) return "Firefox";
+  if (/EdgiOS/.test(ua)) return "Edge";
+  if (/Chrome/.test(ua) && !/Safari/.test(ua)) return "Chrome";
+  return "Safari";
 }
 
 function renderStorageBadge() {
