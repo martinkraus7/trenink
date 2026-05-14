@@ -212,6 +212,7 @@
         <h3 class="font-semibold">Tělo (váha)</h3>
         <div class="text-xs text-slate-500" id="bodyReminder">—</div>
       </div>
+      <div id="bodyTodayBadge" class="hidden mb-3 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-sm"></div>
       <label class="text-sm block">Váha (kg)
         <input type="number" id="in-weight" min="40" max="200" step="0.1" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
       </label>
@@ -700,6 +701,7 @@ function saveHRV() {
   ["in-hrv","in-rhr","in-sleep","in-rpe"].forEach(id => $(id).value = "");
   renderHRV();
   renderTodayWarnings();
+  renderStorageBadge();
   return { hrv: entry.hrv, rhr: entry.rhr };
 }
 
@@ -766,14 +768,25 @@ function saveBody() {
   STORE.set("bodyLog", log);
   $("in-weight").value = "";
   renderBody();
+  renderStorageBadge();
 }
 
 function renderBody() {
   const log = STORE.get("bodyLog", []).sort((a,b) => a.date.localeCompare(b.date));
   const last = log[log.length - 1];
+  const todayEntry = log.find(l => l.date === todayISO());
+  const badge = $("bodyTodayBadge");
+  if (todayEntry) {
+    badge.classList.remove("hidden");
+    badge.innerHTML = `✓ Dnes uloženo: <strong>${todayEntry.weight} kg</strong>`;
+  } else {
+    badge.classList.add("hidden");
+  }
   if (last) {
     const days = diffDays(last.date, todayISO());
-    $("bodyReminder").innerHTML = days >= 14
+    $("bodyReminder").innerHTML = days === 0
+      ? `dnes`
+      : days >= 14
       ? `<span class="text-amber-400">před ${days} dny — čas měřit</span>`
       : `naposled před ${days} ${days === 1 ? "dnem" : "dny"}`;
   } else {
