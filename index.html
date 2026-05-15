@@ -1406,18 +1406,20 @@ function showToast(msg, ms = 2500) {
 }
 
 // =============================================================================
-// PAUSE TIMER
+// PAUSE TIMER (persisted in localStorage to survive page reload)
 // =============================================================================
 let _pauseInterval = null;
 let _pauseEnd = 0;
 function startPause(seconds) {
   if (_pauseInterval) clearInterval(_pauseInterval);
   _pauseEnd = Date.now() + seconds * 1000;
+  localStorage.setItem("pauseEnd", String(_pauseEnd));
   updatePauseBanner();
   _pauseInterval = setInterval(updatePauseBanner, 250);
 }
 function cancelPause() {
   if (_pauseInterval) { clearInterval(_pauseInterval); _pauseInterval = null; }
+  localStorage.removeItem("pauseEnd");
   $("pauseBanner").classList.add("hidden");
 }
 function updatePauseBanner() {
@@ -1426,6 +1428,7 @@ function updatePauseBanner() {
   const text = $("pauseTimerText");
   if (remaining <= 0) {
     clearInterval(_pauseInterval); _pauseInterval = null;
+    localStorage.removeItem("pauseEnd");
     text.textContent = "✓";
     banner.classList.remove("hidden");
     pauseBeep();
@@ -1437,6 +1440,18 @@ function updatePauseBanner() {
   const s = totalSec % 60;
   text.textContent = `${m}:${s.toString().padStart(2, "0")}`;
   banner.classList.remove("hidden");
+}
+function restorePauseTimer() {
+  const saved = parseInt(localStorage.getItem("pauseEnd") || "0", 10);
+  if (!saved) return;
+  if (saved > Date.now()) {
+    _pauseEnd = saved;
+    updatePauseBanner();
+    _pauseInterval = setInterval(updatePauseBanner, 250);
+  } else {
+    // Timer expired while app was closed — clean up silently
+    localStorage.removeItem("pauseEnd");
+  }
 }
 function pauseBeep() {
   try {
@@ -1498,6 +1513,7 @@ function handleURLParams() {
 document.addEventListener("DOMContentLoaded", () => {
   switchView("today");
   renderAll();
+  restorePauseTimer();
   handleURLParams();
 });
 </script>
