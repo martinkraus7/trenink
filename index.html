@@ -175,7 +175,7 @@
     <details id="refPrinciples" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
       <summary class="font-semibold">7 principů</summary>
       <ol class="mt-3 space-y-2 text-sm list-decimal pl-5 text-slate-300">
-        <li>Síla VŽDY před vytrvalostí (stejný den)</li>
+        <li><strong>Pořadí v tréninku</strong>: skill → power → strength → endurance. <span class="text-slate-400">Box napřed gym (combat sport = skill/CNS). Síla napřed běh. Výjimka: hard sparring s kontaktem = jak závod, NE těžkou silovku potom.</span></li>
         <li>80/20 polarizace běhu</li>
         <li>Cluster sady pro explozivitu</li>
         <li>Med ball max 3 kg (těžší = tlak, ne úder)</li>
@@ -183,6 +183,42 @@
         <li>Deficit AŽ po závodě</li>
         <li>HRV / klidový pulz rozhodují o intenzitě dne</li>
       </ol>
+    </details>
+
+    <details id="refStrides" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">Strides — jak na ně</summary>
+      <div class="mt-3 space-y-2 text-sm text-slate-300">
+        <p><strong>Co to je:</strong> krátké zrychlení (60-100 m, ~15-20 s) na 85-95 % max — kontrolovaně, NE all-out sprint.</p>
+        <p><strong>Účel:</strong> neuromuskulární aktivace, recruit fast-twitch fibers, lepší běžecká ekonomie. NE intervalový trénink.</p>
+        <p><strong>Provedení:</strong></p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Zrychlí postupně do 85-95 % na první 30 m</li>
+          <li>Drž max 4-5 sekund</li>
+          <li>Postupně zpomal posledních 20 m</li>
+          <li>Forma uvolněná — ramena dole, ruce neresignovaně</li>
+        </ul>
+        <p><strong>Pauza:</strong> chůze zpět nebo 60-90 s plně regenerativní jogging.</p>
+        <p><strong>Dávka:</strong> 4-8 opakování · 2-3× týdně na lehčích dnech nebo den před hard workoutem.</p>
+        <p class="text-xs text-amber-300">⚠️ Není to sprint na maximum — riziko hamstring strain. „Fast but smooth."</p>
+      </div>
+    </details>
+
+    <details id="refCarbLoad" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">Carb loading (T-2 dny)</summary>
+      <div class="mt-3 space-y-2 text-sm text-slate-300">
+        <p><strong>Protokol pro HM (Burke/Sherman moderní):</strong> 36-48 h, ne 3+ dny. HM &lt;90 min nepotřebuje plné maraton-style loading. Plný 3denní load = +1.5-2 kg vody = pomalejší per km + GI distress.</p>
+        <p><strong>Pá 12.6. — So 13.6. (oba dny):</strong></p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>Sacharidy 8-10 g/kg/den</strong> = pro 68 kg <strong>550-680 g/den</strong> (rýže, těstoviny, brambory, chleba, ovoce, ovesné vločky)</li>
+          <li><strong>Protein</strong> udržuj normální (1.6-2 g/kg)</li>
+          <li><strong>Tuk REDUKUJ</strong> — uvolní místo pro sacharidy + lepší GI komfort</li>
+          <li><strong>Vláknina sniž</strong> (méně syrové zeleniny, fazolí, ovoce se slupkou) = méně GI rizika v den závodu</li>
+        </ul>
+        <p><strong>Sodík:</strong> ~3-5 g <strong>total/den</strong> (ne navíc nad normu). Sůl k jídlu, slané tyčinky, pol. bujón.</p>
+        <p><strong>So 13.6. večeře:</strong> středně velká porce sacharidů + nízký tuk/vláknina (např. rýže + kuře grilované + lehká omáčka). NE giant pasta plate.</p>
+        <p><strong>Ne 14.6. ráno (1-4 h před startem):</strong> 1-4 g/kg sacharidů = 70-280 g (banán + ovesná kaše + med + lehký toast). Známé jídlo, nic nového.</p>
+        <p><strong>Hydratace:</strong> piň k žízni + barva moči (světle žlutá). Příliš pít = hyponatrémie risk.</p>
+      </div>
     </details>
   </section>
 
@@ -426,9 +462,9 @@ const PLAN = {
         { date: "2026-06-08", type: "rest", title: "Volno nebo 20 min chůze" },
         { date: "2026-06-09", type: "run", title: "4 × 800 m v HM tempu 5:40/km", km: 5, detail: "200 m výklus mezi, svalová paměť na race pace" },
         { date: "2026-06-10", type: "run", title: "7-8 km Z1", km: 8 },
-        { date: "2026-06-11", type: "rest", title: "Volno + START carb loading" },
-        { date: "2026-06-12", type: "run", title: "20 min aktivace + 4 × 75 m strides", km: 3 },
-        { date: "2026-06-13", type: "run", title: "3-4 km shakeout + final carbs + hydratace", km: 3 },
+        { date: "2026-06-11", type: "rest", title: "Volno (normální strava, ne carb load ještě)" },
+        { date: "2026-06-12", type: "run", title: "20 min aktivace + 4 × 75 m strides · START carb load 8-10 g/kg", km: 3 },
+        { date: "2026-06-13", type: "run", title: "3-4 km shakeout · pokračuje carb load + sodík + hydratace", km: 3 },
         { date: "2026-06-14", type: "race", title: "ZÁVOD — půlmaraton 21,1 km", km: 21 }
       ]
     }
