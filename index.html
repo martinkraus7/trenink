@@ -333,36 +333,36 @@ const EXERCISES = {
 const WORKOUTS = {
   gymA: {
     title: "Gym A — Silová báze",
-    meta: "~55 min · pauzy 2-3 min · RPE 8-9",
+    meta: "~55 min · RPE 8-9",
     exercises: [
-      { id: "backSquat", sets: "3 × 4-6" },
-      { id: "landmineRotation", sets: "3 × 6 / strana" },
-      { id: "weightedPullUp", sets: "3 × 6-8" },
-      { id: "benchPress", sets: "3 × 6-8" },
-      { id: "seatedCalfRaise", sets: "3 × 12-15" },
-      { id: "standingCalfRaise", sets: "3 × 12-15" }
+      { id: "backSquat", sets: "3 × 4-6", pause: 180 },
+      { id: "landmineRotation", sets: "3 × 6 / strana", pause: 90 },
+      { id: "weightedPullUp", sets: "3 × 6-8", pause: 180 },
+      { id: "benchPress", sets: "3 × 6-8", pause: 180 },
+      { id: "seatedCalfRaise", sets: "3 × 12-15", pause: 60 },
+      { id: "standingCalfRaise", sets: "3 × 12-15", pause: 60 }
     ]
   },
   gymB: {
     title: "Box + Gym B — Cluster výbušnost",
-    meta: "45 min box napřed (fresh CNS) → 50 min gym · cluster sady · pátek",
+    meta: "45 min box napřed (fresh CNS) → 50 min gym · pátek",
     exercises: [
-      { id: "jumpSquat", sets: "3 × cluster (2+2+2, 15-20s pauza)" },
-      { id: "singleLegRDL", sets: "3 × 8 / noha" },
-      { id: "medBallPunchThrow", sets: "3 × 5 / strana" },
-      { id: "pallofPress", sets: "3 × 8 / strana" },
-      { id: "abWheelRollout", sets: "3 × 6-8" }
+      { id: "jumpSquat", sets: "3 × cluster (2+2+2)", pause: 20 },
+      { id: "singleLegRDL", sets: "3 × 8 / noha", pause: 90 },
+      { id: "medBallPunchThrow", sets: "3 × 5 / strana", pause: 90 },
+      { id: "pallofPress", sets: "3 × 8 / strana", pause: 60 },
+      { id: "abWheelRollout", sets: "3 × 6-8", pause: 60 }
     ]
   },
   mtss: {
     title: "MTSS prevence — denně",
     meta: "5-10 min denně, hlavně před běhy. Non-negotiable.",
     exercises: [
-      { id: "eccentricCalfRaise", sets: "3 × 10 (3s eccentric)" },
+      { id: "eccentricCalfRaise", sets: "3 × 10 (3s eccentric)", pause: 30 },
       { id: "toeYoga", sets: "1-2 min" },
-      { id: "towelCurls", sets: "30 op." },
-      { id: "clamshell", sets: "2 × 15 / strana" },
-      { id: "monsterWalk", sets: "2 × 10 m" }
+      { id: "towelCurls", sets: "30 op.", pause: 30 },
+      { id: "clamshell", sets: "2 × 15 / strana", pause: 30 },
+      { id: "monsterWalk", sets: "2 × 10 m", pause: 30 }
     ]
   }
 };
@@ -578,7 +578,6 @@ function renderToday() {
     body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
       <div class="text-xs uppercase tracking-wider text-slate-400">${w.title}</div>
       <div class="text-xs text-slate-500">${w.meta}</div>
-      ${pauseButtonRow(d.workoutId)}
       ${w.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
     </div>`;
   } else if (d.type === "run" || d.type === "race") {
@@ -595,7 +594,6 @@ function renderToday() {
     body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
       <div class="text-xs uppercase tracking-wider text-slate-400">${m.title}</div>
       <div class="text-xs text-slate-500">${m.meta}</div>
-      ${pauseButtonRow("mtss")}
       ${m.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
     </div>`;
   }
@@ -604,12 +602,16 @@ function renderToday() {
 
 function exerciseRow(date, e, context) {
   const ex = EXERCISES[e.id];
+  const pauseBtn = e.pause
+    ? `<button onclick="startPause(${e.pause})" class="shrink-0 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${e.pause < 60 ? e.pause + "s" : Math.floor(e.pause/60) + (e.pause % 60 ? ":" + (e.pause % 60).toString().padStart(2,"0") : "m")}</button>`
+    : "";
   return `<div class="flex items-center gap-3 py-1.5">
     <input type="checkbox" class="check accent-sky-500 shrink-0" ${isChecked(date, e.id) ? "checked" : ""} onchange="toggleCheck('${date}','${e.id}', this)">
     <button onclick="openExercise('${e.id}')" class="flex-1 text-left">
       <div class="text-sm font-medium">${ex.name}</div>
       <div class="text-xs text-slate-400">${e.sets}</div>
     </button>
+    ${pauseBtn}
   </div>`;
 }
 
@@ -657,7 +659,6 @@ function renderWorkoutBlock(id) {
   const w = WORKOUTS[id];
   const today = todayISO();
   return `<div class="text-xs text-slate-400 mb-2">${w.meta}</div>
-    ${pauseButtonRow(id)}
     ${w.exercises.map(e => exerciseRow(today, e, "plan")).join("")}`;
 }
 
