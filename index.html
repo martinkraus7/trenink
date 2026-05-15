@@ -589,6 +589,16 @@ function renderToday() {
       </label>
     </div>`;
   }
+  // MTSS — denně, vždy zobrazit
+  if (d.workoutId !== "mtss") {
+    const m = WORKOUTS.mtss;
+    body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
+      <div class="text-xs uppercase tracking-wider text-slate-400">${m.title}</div>
+      <div class="text-xs text-slate-500">${m.meta}</div>
+      ${pauseButtonRow("mtss")}
+      ${m.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
+    </div>`;
+  }
   $("todayContent").innerHTML = body;
 }
 
