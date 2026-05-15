@@ -197,6 +197,29 @@
       </ol>
     </details>
 
+    <details id="refIosTimer" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+      <summary class="font-semibold">📱 iOS Timer setup (one-time)</summary>
+      <div class="mt-3 space-y-2 text-sm text-slate-300">
+        <p>U každého cviku máš 2 timer tlačítka:</p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>⏱ XXs</strong> — in-app countdown (funguje jen když je appka otevřená)</li>
+          <li><strong>📱</strong> — iOS native Timer (pípne i v jiné appce / na lock screenu)</li>
+        </ul>
+        <p class="mt-3"><strong>Pro iOS Timer musíš jednorázově vytvořit Shortcut "Quick Timer":</strong></p>
+        <ol class="list-decimal pl-5 space-y-1">
+          <li>Otevři <strong>Shortcuts</strong> app na iPhonu</li>
+          <li>Klepni "+" → nový shortcut</li>
+          <li>Search → <strong>"Start Timer"</strong> → přidej akci</li>
+          <li>V akci "Start Timer" klikni na "Duration" → "Select Variable" → "Shortcut Input"</li>
+          <li>Nahoře klepni na "Untitled Shortcut" → přejmenuj na přesně <strong>"Quick Timer"</strong></li>
+          <li>Klepni nastavení (ikonka i) nebo "..." → "Receive" → zaškrtni <strong>"Receive Numbers from Share Sheet"</strong></li>
+          <li>Done</li>
+        </ol>
+        <p class="mt-3">Teď když v appce klepneš na <strong>📱</strong>, iOS otevře Shortcuts, spustí "Quick Timer" s tvojí dobou, a nativní iOS Timer začne odpočítávat. Beep + notifikace přijde i když Gym appku zavřeš nebo zamkneš telefon.</p>
+        <p class="text-xs text-amber-300">⚠️ Trade-off: každý tap na 📱 přepne tě krátce do Shortcuts app (~1s). Pro in-app countdown použij ⏱.</p>
+      </div>
+    </details>
+
     <details id="refSetStructure" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
       <summary class="font-semibold">🏋 Set structure (váhy, série, warmup)</summary>
       <div class="mt-3 space-y-3 text-sm text-slate-300">
@@ -1006,8 +1029,12 @@ function renderToday() {
 
 function exerciseRow(date, e, context) {
   const ex = EXERCISES[e.id];
-  const pauseBtn = e.pause
-    ? `<button onclick="startPause(${e.pause})" class="shrink-0 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${e.pause < 60 ? e.pause + "s" : Math.floor(e.pause/60) + (e.pause % 60 ? ":" + (e.pause % 60).toString().padStart(2,"0") : "m")}</button>`
+  const label = e.pause < 60 ? e.pause + "s" : Math.floor(e.pause/60) + (e.pause % 60 ? ":" + (e.pause % 60).toString().padStart(2,"0") : "m");
+  const pauseBtns = e.pause
+    ? `<div class="flex gap-1 shrink-0">
+        <button onclick="startPause(${e.pause})" title="In-app timer" class="px-2 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${label}</button>
+        <button onclick="startIosTimer(${e.pause})" title="iOS native timer (pípne i v jiné appce)" class="px-2 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium">📱</button>
+      </div>`
     : "";
   return `<div class="flex items-center gap-3 py-1.5">
     <input type="checkbox" class="check accent-sky-500 shrink-0" ${isChecked(date, e.id) ? "checked" : ""} onchange="toggleCheck('${date}','${e.id}', this)">
@@ -1015,7 +1042,7 @@ function exerciseRow(date, e, context) {
       <div class="text-sm font-medium">${ex.name}</div>
       <div class="text-xs text-slate-400">${e.sets}</div>
     </button>
-    ${pauseBtn}
+    ${pauseBtns}
   </div>`;
 }
 
@@ -1453,6 +1480,13 @@ function restorePauseTimer() {
     localStorage.removeItem("pauseEnd");
   }
 }
+function startIosTimer(seconds) {
+  // Deep-link to iOS Shortcut "Quick Timer" which uses native "Start Timer" action.
+  // Setup required jednorázově — viz refIosTimer reference card.
+  const url = `shortcuts://run-shortcut?name=Quick%20Timer&input=${seconds}`;
+  window.location.href = url;
+}
+
 function pauseBeep() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
