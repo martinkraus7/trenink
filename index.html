@@ -636,6 +636,7 @@
         <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Klíčové cues</div>
         <ul id="modalCues" class="space-y-1.5 text-sm"></ul>
       </div>
+      <div id="modalProtocol" class="hidden"></div>
       <div id="modalNote" class="text-sm text-amber-300 hidden"></div>
     </div>
   </div>
@@ -672,34 +673,34 @@ const WORKOUTS = {
     title: "Gym A — Silová báze",
     meta: "~55 min · RPE 8-9",
     exercises: [
-      { id: "backSquat", sets: "3 × 4-6", pause: 180 },
-      { id: "landmineRotation", sets: "3 × 6 / strana", pause: 90 },
-      { id: "weightedPullUp", sets: "3 × 6-8", pause: 180 },
-      { id: "benchPress", sets: "3 × 6-8", pause: 180 },
-      { id: "seatedCalfRaise", sets: "3 × 12-15", pause: 60 },
-      { id: "standingCalfRaise", sets: "3 × 12-15", pause: 60 }
+      { id: "backSquat", sets: "3 × 4-6", pause: 180, protocol: "compound" },
+      { id: "landmineRotation", sets: "3 × 6 / strana", pause: 90, protocol: "accessory" },
+      { id: "weightedPullUp", sets: "3 × 6-8", pause: 180, protocol: "compound" },
+      { id: "benchPress", sets: "3 × 6-8", pause: 180, protocol: "compound" },
+      { id: "seatedCalfRaise", sets: "3 × 12-15", pause: 60, protocol: "isolation" },
+      { id: "standingCalfRaise", sets: "3 × 12-15", pause: 60, protocol: "isolation" }
     ]
   },
   gymB: {
     title: "Box + Gym B — Cluster výbušnost",
     meta: "45 min box napřed (fresh CNS) → 50 min gym · pátek",
     exercises: [
-      { id: "jumpSquat", sets: "3 × cluster (2+2+2)", pause: 20 },
-      { id: "singleLegRDL", sets: "3 × 8 / noha", pause: 90 },
-      { id: "medBallPunchThrow", sets: "3 × 5 / strana", pause: 90 },
-      { id: "pallofPress", sets: "3 × 8 / strana", pause: 60 },
-      { id: "abWheelRollout", sets: "3 × 6-8", pause: 60 }
+      { id: "jumpSquat", sets: "3 × cluster (2+2+2)", pause: 20, protocol: "cluster" },
+      { id: "singleLegRDL", sets: "3 × 8 / noha", pause: 90, protocol: "accessory" },
+      { id: "medBallPunchThrow", sets: "3 × 5 / strana", pause: 90, protocol: "accessory" },
+      { id: "pallofPress", sets: "3 × 8 / strana", pause: 60, protocol: "isolation" },
+      { id: "abWheelRollout", sets: "3 × 6-8", pause: 60, protocol: "isolation" }
     ]
   },
   mtss: {
     title: "MTSS prevence — denně",
     meta: "5-10 min denně, hlavně před běhy. Non-negotiable.",
     exercises: [
-      { id: "eccentricCalfRaise", sets: "3 × 10 (3s eccentric)", pause: 30 },
-      { id: "toeYoga", sets: "1:30 / noha", pause: 90 },
-      { id: "towelCurls", sets: "15 k sobě + 15 od sebe", pause: 30 },
-      { id: "clamshell", sets: "2 × 15 / strana", pause: 30 },
-      { id: "monsterWalk", sets: "2 × 20 kroků", pause: 30 }
+      { id: "eccentricCalfRaise", sets: "3 × 10 (3s eccentric)", pause: 30, protocol: "prehab" },
+      { id: "toeYoga", sets: "1:30 / noha", pause: 90, protocol: "timed" },
+      { id: "towelCurls", sets: "15 k sobě + 15 od sebe", pause: 30, protocol: "prehab" },
+      { id: "clamshell", sets: "2 × 15 / strana", pause: 30, protocol: "prehab" },
+      { id: "monsterWalk", sets: "2 × 20 kroků", pause: 30, protocol: "prehab" }
     ]
   }
 };
@@ -815,17 +816,83 @@ const STORE = {
 // =============================================================================
 // MODAL
 // =============================================================================
+function renderProtocol(type) {
+  if (!type) return "";
+  const protos = {
+    compound: {
+      title: "Protokol — Compound (těžký složený cvik)",
+      blocks: [
+        { label: "Warmup (pyramidální)", items: ["Prázdná osa × 8-10", "50 % pracovní × 5", "70 % pracovní × 3", "85 % pracovní × 1"] },
+        { label: "Working — straight sets (stejná váha!)", items: ["Set 1: pracovní váha, horní rep range, RPE 7-8", "Set 2-3: stejná váha, reps mohou klesnout o 1-2", "Pauza 3 min mezi sériemi"] },
+        { label: "Progression (per session)", items: ["Pokud poslední rep poslední série RPE ≤7 → +2.5 kg příště", "Pokud RPE 9-10 → drž nebo -2.5 kg", "Nikdy ne pyramida až k 1RM — zbytečný CNS náklad"] }
+      ]
+    },
+    accessory: {
+      title: "Protokol — Accessory (asistenční cvik)",
+      blocks: [
+        { label: "Warmup", items: ["1 lehčí sada se 60-70 % pracovní váhy × 5"] },
+        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 (2-3 reps in reserve)", "Pauza 1:30 mezi sériemi"] },
+        { label: "Progression", items: ["Zvyš váhu jakmile doděláš horní rep range bez problému", "Drobné inkrementy 1-2.5 kg"] }
+      ]
+    },
+    isolation: {
+      title: "Protokol — Izolace",
+      blocks: [
+        { label: "Warmup", items: ["1 lehčí sada s nižší vahou × 8-10"] },
+        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 (poslední rep blíž 8 OK)", "Pauza 1 min mezi sériemi"] },
+        { label: "Progression", items: ["Zvyš váhu jakmile zvládneš horní rep range čistou formou", "Forma > váha (zvlášť calf raise = plný stretch dole)"] }
+      ]
+    },
+    cluster: {
+      title: "Protokol — Cluster (výbušnost)",
+      blocks: [
+        { label: "Warmup", items: ["Dynamická mobilita + 2-3 lehké jump squats bez váhy"] },
+        { label: "Cluster struktura", items: ["Váha 30-45 % 1RM (lehká, max rychlost)", "1 cluster = 2 reps → 15-20s mini-pauza → 2 reps → 15-20s → 2 reps", "3 cluster série celkem", "Pauza mezi cluster sériemi 2-3 min"] },
+        { label: "Klíčový princip", items: ["Cíl = MAX RYCHLOST každý rep, ne max síla", "Nikdy ne k selhání — jakmile rychlost klesne, stop", "Trénuje fast-twitch power, ne hypertrofii"] }
+      ]
+    },
+    prehab: {
+      title: "Protokol — Prehab",
+      blocks: [
+        { label: "Provedení", items: ["Žádný warmup nutný (cvik sám je warmup)", "Kontrolovaná forma > zátěž", "Stejná intenzita napříč sériemi", "Pauza 30s mezi"] },
+        { label: "Princip", items: ["Nikdy ne k selhání — prehab efekt, ne fatigue", "Pokud cítíš ostrou bolest, stop", "Daily = lepší než občas-tvrdě"] }
+      ]
+    },
+    timed: {
+      title: "Protokol — Časovaný cvik",
+      blocks: [
+        { label: "Provedení", items: ["Není to silová série, je to časovaná držba/aktivace", "Spustit ⏱ timer u cviku", "Soustředit se na izolaci pohybu, ne počet"] }
+      ]
+    }
+  };
+  const p = protos[type];
+  if (!p) return "";
+  return `<div>
+    <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">${p.title}</div>
+    ${p.blocks.map(b => `
+      <div class="mb-3">
+        <div class="text-xs font-semibold text-sky-300 mb-1">${b.label}</div>
+        <ul class="space-y-1 text-sm text-slate-300">
+          ${b.items.map(i => `<li class="flex gap-2"><span class="text-sky-400 shrink-0">›</span><span>${i}</span></li>`).join("")}
+        </ul>
+      </div>
+    `).join("")}
+  </div>`;
+}
+
 function openExercise(id) {
   const ex = EXERCISES[id];
   if (!ex) return;
   $("modalTitle").textContent = ex.name;
   const allWorkouts = [WORKOUTS.gymA, WORKOUTS.gymB, WORKOUTS.mtss];
-  let sets = "";
+  let sets = "", protocol = "";
   for (const w of allWorkouts) {
     const found = w.exercises.find(e => e.id === id);
-    if (found) { sets = found.sets; break; }
+    if (found) { sets = found.sets; protocol = found.protocol; break; }
   }
   $("modalSets").textContent = sets;
+  $("modalProtocol").innerHTML = renderProtocol(protocol);
+  $("modalProtocol").classList.toggle("hidden", !protocol);
   const m = ex.videoUrl.match(/[?&]v=([^&]+)/);
   if (m) {
     $("modalVideo").innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
