@@ -275,6 +275,13 @@
 <!-- TOAST -->
 <div id="toast" class="hidden fixed top-24 left-1/2 z-50 -translate-x-1/2 bg-emerald-500 text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg text-sm"></div>
 
+<!-- Pause timer banner -->
+<div id="pauseBanner" class="hidden fixed left-1/2 -translate-x-1/2 bg-sky-500 text-slate-900 font-bold px-5 py-3 rounded-full shadow-xl flex items-center gap-3 z-40" style="bottom: calc(env(safe-area-inset-bottom) + 5rem)">
+  <span class="text-xl">⏱</span>
+  <span id="pauseTimerText" class="text-2xl font-mono tabular-nums">0:00</span>
+  <button onclick="cancelPause()" class="text-sm font-medium opacity-70 px-2">✕</button>
+</div>
+
 <!-- EXERCISE MODAL -->
 <div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onclick="closeModal(event)">
   <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl border-t border-slate-700 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
@@ -571,6 +578,7 @@ function renderToday() {
     body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
       <div class="text-xs uppercase tracking-wider text-slate-400">${w.title}</div>
       <div class="text-xs text-slate-500">${w.meta}</div>
+      ${pauseButtonRow(d.workoutId)}
       ${w.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
     </div>`;
   } else if (d.type === "run" || d.type === "race") {
@@ -639,6 +647,7 @@ function renderWorkoutBlock(id) {
   const w = WORKOUTS[id];
   const today = todayISO();
   return `<div class="text-xs text-slate-400 mb-2">${w.meta}</div>
+    ${pauseButtonRow(id)}
     ${w.exercises.map(e => exerciseRow(today, e, "plan")).join("")}`;
 }
 
@@ -956,6 +965,64 @@ function showToast(msg, ms = 2500) {
   t.classList.remove("hidden");
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.add("hidden"), ms);
+}
+
+// =============================================================================
+// PAUSE TIMER
+// =============================================================================
+let _pauseInterval = null;
+let _pauseEnd = 0;
+function startPause(seconds) {
+  if (_pauseInterval) clearInterval(_pauseInterval);
+  _pauseEnd = Date.now() + seconds * 1000;
+  updatePauseBanner();
+  _pauseInterval = setInterval(updatePauseBanner, 250);
+}
+function cancelPause() {
+  if (_pauseInterval) { clearInterval(_pauseInterval); _pauseInterval = null; }
+  $("pauseBanner").classList.add("hidden");
+}
+function updatePauseBanner() {
+  const remaining = _pauseEnd - Date.now();
+  const banner = $("pauseBanner");
+  const text = $("pauseTimerText");
+  if (remaining <= 0) {
+    clearInterval(_pauseInterval); _pauseInterval = null;
+    text.textContent = "✓";
+    banner.classList.remove("hidden");
+    pauseBeep();
+    setTimeout(() => banner.classList.add("hidden"), 2000);
+    return;
+  }
+  const totalSec = Math.ceil(remaining / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  text.textContent = `${m}:${s.toString().padStart(2, "0")}`;
+  banner.classList.remove("hidden");
+}
+function pauseBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 880;
+    gain.gain.value = 0.25;
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start();
+    setTimeout(() => { osc.frequency.value = 660; }, 150);
+    setTimeout(() => { osc.stop(); ctx.close(); }, 400);
+  } catch(e) {}
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+}
+function pauseButtonRow(id) {
+  const presets = id === "mtss"
+    ? [["30s", 30], ["45s", 45], ["1m", 60]]
+    : id === "gymB"
+    ? [["15s", 15], ["1m", 60], ["2m", 120], ["3m", 180]]
+    : [["1m", 60], ["2m", 120], ["3m", 180]];
+  return `<div class="flex gap-2 mb-3 flex-wrap">${presets.map(([label, sec]) =>
+    `<button onclick="startPause(${sec})" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium">⏱ ${label}</button>`
+  ).join("")}</div>`;
 }
 
 function handleURLParams() {
