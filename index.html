@@ -1068,9 +1068,9 @@ function showToast(msg, ms = 2500) {
 // PAUSE TIMER (iOS native via Shortcut deep-link)
 // =============================================================================
 function startIosTimer(seconds) {
-  // Deep-link to iOS Shortcut "Quick Timer" which uses native "Start Timer" action.
-  // Setup required jednorázově — viz refIosTimer reference card.
-  const url = `shortcuts://run-shortcut?name=Quick%20Timer&input=${seconds}`;
+  // x-callback-url with x-success returns user back to the app after shortcut runs.
+  const back = encodeURIComponent(window.location.origin + window.location.pathname);
+  const url = `shortcuts://x-callback-url/run-shortcut?name=Quick%20Timer&input=${seconds}&x-success=${back}&x-cancel=${back}`;
   window.location.href = url;
 }
 
