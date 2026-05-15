@@ -78,6 +78,17 @@
       </div>
     </div>
 
+    <!-- Body weigh-in prompt (Sunday) -->
+    <div id="bodyPrompt" class="hidden bg-purple-500/5 border border-purple-500/30 rounded-xl p-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-semibold">Vážení den 🪧</div>
+          <div class="text-xs text-slate-400">Neděle — zapiš váhu po probuzení</div>
+        </div>
+        <button onclick="switchView('tracker'); setTimeout(()=>document.getElementById('in-weight').scrollIntoView({behavior:'smooth', block:'center'}),100)" class="text-purple-400 text-sm font-medium">Zapsat →</button>
+      </div>
+    </div>
+
     <!-- TODAY CARD -->
     <div id="todayCard" class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
       <div class="flex items-center justify-between mb-2">
@@ -842,6 +853,11 @@ function renderTodayWarnings() {
   const hrvLog = STORE.get("hrvLog", []);
   const filled = hrvLog.some(l => l.date === todayISO());
   $("hrvPrompt").classList.toggle("hidden", filled);
+  // Body weigh-in prompt on Sunday if not filled today
+  const isSunday = new Date().getDay() === 0;
+  const bodyLog = STORE.get("bodyLog", []);
+  const bodyFilled = bodyLog.some(l => l.date === todayISO());
+  $("bodyPrompt").classList.toggle("hidden", !isSunday || bodyFilled);
 }
 
 // =============================================================================
