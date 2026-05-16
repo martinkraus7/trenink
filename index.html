@@ -795,7 +795,7 @@ function saveHRV() {
   const rhrRaw = parseFloat($("in-rhr").value);
   const sleep = parseFloat($("in-sleep").value);
   const rpe = parseInt($("in-rpe").value, 10);
-  if (!hrvRaw && !rhrRaw) { alert("Doplň aspoň jednu hodnotu (HRV nebo RHR)"); return false; }
+  if (!hrvRaw && !rhrRaw && !sleep && !rpe) { alert("Doplň aspoň jednu hodnotu"); return false; }
   const hrv = hrvRaw ? Math.round(hrvRaw * 10) / 10 : null;
   const rhr = rhrRaw ? Math.round(rhrRaw) : null;
   const log = STORE.get("hrvLog", []);
