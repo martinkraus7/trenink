@@ -299,6 +299,13 @@
 <!-- TOAST -->
 <div id="toast" class="hidden fixed top-24 left-1/2 z-50 -translate-x-1/2 bg-emerald-500 text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg text-sm"></div>
 
+<!-- Pause timer banner -->
+<div id="pauseBanner" class="hidden fixed left-1/2 -translate-x-1/2 bg-sky-500 text-slate-900 font-bold px-5 py-3 rounded-full shadow-xl flex items-center gap-3 z-40" style="bottom: calc(env(safe-area-inset-bottom) + 5rem)">
+  <span class="text-xl">⏱</span>
+  <span id="pauseTimerText" class="text-2xl font-mono tabular-nums">0:00</span>
+  <button onclick="cancelPause()" class="text-sm font-medium opacity-70 px-2">✕</button>
+</div>
+
 
 <!-- EXERCISE MODAL -->
 <div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onclick="closeModal(event)">
@@ -613,7 +620,7 @@ function renderProtocol(type) {
             if (typeof i === "string") {
               return `<li class="flex gap-2"><span class="text-sky-400 shrink-0">›</span><span>${i}</span></li>`;
             }
-            const btn = i.pause ? `<button onclick="startIosTimer(${i.pause})" class="shrink-0 ml-2 px-2 py-0.5 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${fmtTime(i.pause)}</button>` : "";
+            const btn = i.pause ? `<button onclick="startPause(${i.pause})" class="shrink-0 ml-2 px-2 py-0.5 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${fmtTime(i.pause)}</button>` : "";
             return `<li class="flex gap-2 items-center"><span class="text-sky-400 shrink-0">›</span><span class="flex-1">${i.text}</span>${btn}</li>`;
           }).join("")}
         </ul>
@@ -750,7 +757,7 @@ function exerciseRow(date, e, context) {
   const ex = EXERCISES[e.id];
   const label = e.pause < 60 ? e.pause + "s" : Math.floor(e.pause/60) + (e.pause % 60 ? ":" + (e.pause % 60).toString().padStart(2,"0") : "m");
   const pauseBtns = e.pause
-    ? `<button onclick="startIosTimer(${e.pause})" title="iOS native Timer (pípne i v jiné appce)" class="shrink-0 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${label}</button>`
+    ? `<button onclick="startPause(${e.pause})" title="In-app countdown timer" class="shrink-0 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${label}</button>`
     : "";
   return `<div class="flex items-center gap-3 py-1.5">
     <input type="checkbox" class="check accent-sky-500 shrink-0" ${isChecked(date, e.id) ? "checked" : ""} onchange="toggleCheck('${date}','${e.id}', this)">
@@ -1126,13 +1133,65 @@ function showToast(msg, ms = 2500) {
 }
 
 // =============================================================================
-// PAUSE TIMER (iOS native via Shortcut deep-link)
+// PAUSE TIMER (in-app, persisted in localStorage to survive page reload)
 // =============================================================================
-function startIosTimer(seconds) {
-  // x-callback-url with x-success returns user back to the app after shortcut runs.
-  const back = encodeURIComponent(window.location.origin + window.location.pathname);
-  const url = `shortcuts://x-callback-url/run-shortcut?name=Quick%20Timer&input=${seconds}&x-success=${back}&x-cancel=${back}`;
-  window.location.href = url;
+let _pauseInterval = null;
+let _pauseEnd = 0;
+function startPause(seconds) {
+  if (_pauseInterval) clearInterval(_pauseInterval);
+  _pauseEnd = Date.now() + seconds * 1000;
+  localStorage.setItem("pauseEnd", String(_pauseEnd));
+  updatePauseBanner();
+  _pauseInterval = setInterval(updatePauseBanner, 250);
+}
+function cancelPause() {
+  if (_pauseInterval) { clearInterval(_pauseInterval); _pauseInterval = null; }
+  localStorage.removeItem("pauseEnd");
+  $("pauseBanner").classList.add("hidden");
+}
+function updatePauseBanner() {
+  const remaining = _pauseEnd - Date.now();
+  const banner = $("pauseBanner");
+  const text = $("pauseTimerText");
+  if (remaining <= 0) {
+    clearInterval(_pauseInterval); _pauseInterval = null;
+    localStorage.removeItem("pauseEnd");
+    text.textContent = "✓";
+    banner.classList.remove("hidden");
+    pauseBeep();
+    setTimeout(() => banner.classList.add("hidden"), 2000);
+    return;
+  }
+  const totalSec = Math.ceil(remaining / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  text.textContent = `${m}:${s.toString().padStart(2, "0")}`;
+  banner.classList.remove("hidden");
+}
+function restorePauseTimer() {
+  const saved = parseInt(localStorage.getItem("pauseEnd") || "0", 10);
+  if (!saved) return;
+  if (saved > Date.now()) {
+    _pauseEnd = saved;
+    updatePauseBanner();
+    _pauseInterval = setInterval(updatePauseBanner, 250);
+  } else {
+    localStorage.removeItem("pauseEnd");
+  }
+}
+function pauseBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 880;
+    gain.gain.value = 0.25;
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start();
+    setTimeout(() => { osc.frequency.value = 660; }, 150);
+    setTimeout(() => { osc.stop(); ctx.close(); }, 400);
+  } catch(e) {}
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
 }
 
 function handleURLParams() {
@@ -1170,6 +1229,7 @@ function handleURLParams() {
 document.addEventListener("DOMContentLoaded", () => {
   switchView("today");
   renderAll();
+  restorePauseTimer();
   handleURLParams();
 });
 
