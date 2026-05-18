@@ -503,49 +503,104 @@ function renderProtocol(type) {
     compound: {
       title: "Protokol — Compound (těžký složený cvik)",
       blocks: [
-        { label: "Warmup (pyramidální, krátké pauzy)", items: ["Prázdná osa × 8-10 → ⏱ 30s", "50 % pracovní × 5 → ⏱ 45-60s", "70 % pracovní × 3 → ⏱ 60-90s", "85 % pracovní × 1 → ⏱ 90s - 2 min"] },
-        { label: "Working — straight sets (stejná váha!)", items: ["Set 1: pracovní váha, horní rep range, RPE 7-8 (mohl bys 2-3 reps navíc)", "Set 2-3: stejná váha, reps mohou klesnout o 1-2, poslední rep RPE 8 strop", "⏱ Pauza 3 min mezi pracovními sériemi"] },
-        { label: "Progression (per session)", items: ["Pokud poslední rep poslední série RPE ≤7 (mohl bys 3+) → +2.5 kg příště", "Pokud RPE 9-10 (poslední rep skoro k selhání) → drž nebo -2.5 kg", "Nikdy ne pyramida až k 1RM — zbytečný CNS náklad"] }
+        { label: "Warmup (pyramidální, krátké pauzy)", items: [
+          { text: "Prázdná osa × 8-10", pause: 30 },
+          { text: "50 % pracovní × 5", pause: 60 },
+          { text: "70 % pracovní × 3", pause: 90 },
+          { text: "85 % pracovní × 1", pause: 120 }
+        ]},
+        { label: "Working — straight sets (stejná váha!)", items: [
+          "Set 1: pracovní váha, horní rep range, RPE 7-8 (mohl bys 2-3 reps navíc)",
+          "Set 2-3: stejná váha, reps mohou klesnout o 1-2, poslední rep RPE 8 strop",
+          { text: "Pauza mezi pracovními sériemi", pause: 180 }
+        ]},
+        { label: "Progression (per session)", items: [
+          "Pokud poslední rep poslední série RPE ≤7 (mohl bys 3+) → +2.5 kg příště",
+          "Pokud RPE 9-10 (poslední rep skoro k selhání) → drž nebo -2.5 kg",
+          "Nikdy ne pyramida až k 1RM — zbytečný CNS náklad"
+        ]}
       ]
     },
     accessory: {
       title: "Protokol — Accessory (asistenční cvik)",
       blocks: [
-        { label: "Warmup (krátká pauza)", items: ["1 lehčí sada se 60-70 % pracovní váhy × 5 → ⏱ 45-60s"] },
-        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 = ještě 2-3 reps v rezervě, ne k selhání", "⏱ Pauza 1:30 mezi pracovními sériemi"] },
-        { label: "Progression", items: ["Zvyš váhu jakmile doděláš horní rep range bez problému", "Drobné inkrementy 1-2.5 kg"] }
+        { label: "Warmup (krátká pauza)", items: [
+          { text: "1 lehčí sada se 60-70 % pracovní váhy × 5", pause: 60 }
+        ]},
+        { label: "Working — straight sets", items: [
+          "Stejná váha napříč 3 sériemi",
+          "RPE 7-8 = ještě 2-3 reps v rezervě, ne k selhání",
+          { text: "Pauza mezi pracovními sériemi", pause: 90 }
+        ]},
+        { label: "Progression", items: [
+          "Zvyš váhu jakmile doděláš horní rep range bez problému",
+          "Drobné inkrementy 1-2.5 kg"
+        ]}
       ]
     },
     isolation: {
       title: "Protokol — Izolace",
       blocks: [
-        { label: "Warmup (krátká pauza)", items: ["1 lehčí sada s nižší vahou × 8-10 → ⏱ 30-45s"] },
-        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 = ještě 2-3 reps v rezervě (u izolací poslední rep blíž RPE 8 = 2 reps reserve OK)", "⏱ Pauza 1 min mezi pracovními sériemi"] },
-        { label: "Progression", items: ["Zvyš váhu jakmile zvládneš horní rep range čistou formou", "Forma > váha (zvlášť calf raise = plný stretch dole)"] }
+        { label: "Warmup (krátká pauza)", items: [
+          { text: "1 lehčí sada s nižší vahou × 8-10", pause: 45 }
+        ]},
+        { label: "Working — straight sets", items: [
+          "Stejná váha napříč 3 sériemi",
+          "RPE 7-8 = ještě 2-3 reps v rezervě (u izolací poslední rep blíž RPE 8 = 2 reps reserve OK)",
+          { text: "Pauza mezi pracovními sériemi", pause: 60 }
+        ]},
+        { label: "Progression", items: [
+          "Zvyš váhu jakmile zvládneš horní rep range čistou formou",
+          "Forma > váha (zvlášť calf raise = plný stretch dole)"
+        ]}
       ]
     },
     cluster: {
       title: "Protokol — Cluster (výbušnost)",
       blocks: [
         { label: "Warmup", items: ["Dynamická mobilita + 2-3 lehké jump squats bez váhy"] },
-        { label: "Cluster struktura", items: ["Váha 30-45 % 1RM (lehká, max rychlost)", "1 cluster = 2 reps → 15-20s mini-pauza → 2 reps → 15-20s → 2 reps", "3 cluster série celkem", "Pauza mezi cluster sériemi 2-3 min"] },
-        { label: "Klíčový princip", items: ["Cíl = MAX RYCHLOST každý rep, ne max síla", "Nikdy ne k selhání — jakmile rychlost klesne, stop", "Trénuje fast-twitch power, ne hypertrofii"] }
+        { label: "Cluster struktura", items: [
+          "Váha 30-45 % 1RM (lehká, max rychlost)",
+          "1 cluster = 2 reps → mini-pauza → 2 reps → mini-pauza → 2 reps",
+          { text: "Mini-pauza uvnitř clusteru", pause: 20 },
+          "3 cluster série celkem",
+          { text: "Pauza mezi cluster sériemi", pause: 150 }
+        ]},
+        { label: "Klíčový princip", items: [
+          "Cíl = MAX RYCHLOST každý rep, ne max síla",
+          "Nikdy ne k selhání — jakmile rychlost klesne, stop",
+          "Trénuje fast-twitch power, ne hypertrofii"
+        ]}
       ]
     },
     prehab: {
       title: "Protokol — Prehab",
       blocks: [
-        { label: "Provedení", items: ["Žádný warmup nutný (cvik sám je warmup)", "Kontrolovaná forma > zátěž", "Stejná intenzita napříč sériemi", "Pauza 30s mezi"] },
-        { label: "Princip", items: ["Nikdy ne k selhání — prehab efekt, ne fatigue", "Pokud cítíš ostrou bolest, stop", "Daily = lepší než občas-tvrdě"] }
+        { label: "Provedení", items: [
+          "Žádný warmup nutný (cvik sám je warmup)",
+          "Kontrolovaná forma > zátěž",
+          "Stejná intenzita napříč sériemi",
+          { text: "Pauza mezi sériemi", pause: 30 }
+        ]},
+        { label: "Princip", items: [
+          "Nikdy ne k selhání — prehab efekt, ne fatigue",
+          "Pokud cítíš ostrou bolest, stop",
+          "Daily = lepší než občas-tvrdě"
+        ]}
       ]
     },
     timed: {
       title: "Protokol — Časovaný cvik",
       blocks: [
-        { label: "Provedení", items: ["Není to silová série, je to časovaná držba/aktivace", "Spustit ⏱ timer u cviku", "Soustředit se na izolaci pohybu, ne počet"] }
+        { label: "Provedení", items: [
+          "Není to silová série, je to časovaná držba/aktivace",
+          "Spustit ⏱ timer u cviku",
+          "Soustředit se na izolaci pohybu, ne počet"
+        ]}
       ]
     }
   };
+  const fmtTime = (s) => s < 60 ? s + "s" : Math.floor(s/60) + (s % 60 ? ":" + (s % 60).toString().padStart(2,"0") : "m");
   const p = protos[type];
   if (!p) return "";
   return `<div>
@@ -554,7 +609,13 @@ function renderProtocol(type) {
       <div class="mb-3">
         <div class="text-xs font-semibold text-sky-300 mb-1">${b.label}</div>
         <ul class="space-y-1 text-sm text-slate-300">
-          ${b.items.map(i => `<li class="flex gap-2"><span class="text-sky-400 shrink-0">›</span><span>${i}</span></li>`).join("")}
+          ${b.items.map(i => {
+            if (typeof i === "string") {
+              return `<li class="flex gap-2"><span class="text-sky-400 shrink-0">›</span><span>${i}</span></li>`;
+            }
+            const btn = i.pause ? `<button onclick="startIosTimer(${i.pause})" class="shrink-0 ml-2 px-2 py-0.5 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${fmtTime(i.pause)}</button>` : "";
+            return `<li class="flex gap-2 items-center"><span class="text-sky-400 shrink-0">›</span><span class="flex-1">${i.text}</span>${btn}</li>`;
+          }).join("")}
         </ul>
       </div>
     `).join("")}
