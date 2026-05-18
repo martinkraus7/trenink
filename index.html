@@ -352,7 +352,7 @@ const EXERCISES = {
 const WORKOUTS = {
   gymA: {
     title: "Gym A — Silová báze",
-    meta: "~55 min · RPE 8-9",
+    meta: "~55 min · RPE 7-8 (2-3 reps v rezervě, ne k selhání)",
     exercises: [
       { id: "backSquat", sets: "3 × 4-6", pause: 180, protocol: "compound" },
       { id: "landmineRotation", sets: "3 × 6 / strana", pause: 90, protocol: "accessory" },
@@ -504,15 +504,15 @@ function renderProtocol(type) {
       title: "Protokol — Compound (těžký složený cvik)",
       blocks: [
         { label: "Warmup (pyramidální, krátké pauzy)", items: ["Prázdná osa × 8-10 → ⏱ 30s", "50 % pracovní × 5 → ⏱ 45-60s", "70 % pracovní × 3 → ⏱ 60-90s", "85 % pracovní × 1 → ⏱ 90s - 2 min"] },
-        { label: "Working — straight sets (stejná váha!)", items: ["Set 1: pracovní váha, horní rep range, RPE 7-8", "Set 2-3: stejná váha, reps mohou klesnout o 1-2", "⏱ Pauza 3 min mezi pracovními sériemi"] },
-        { label: "Progression (per session)", items: ["Pokud poslední rep poslední série RPE ≤7 → +2.5 kg příště", "Pokud RPE 9-10 → drž nebo -2.5 kg", "Nikdy ne pyramida až k 1RM — zbytečný CNS náklad"] }
+        { label: "Working — straight sets (stejná váha!)", items: ["Set 1: pracovní váha, horní rep range, RPE 7-8 (mohl bys 2-3 reps navíc)", "Set 2-3: stejná váha, reps mohou klesnout o 1-2, poslední rep RPE 8 strop", "⏱ Pauza 3 min mezi pracovními sériemi"] },
+        { label: "Progression (per session)", items: ["Pokud poslední rep poslední série RPE ≤7 (mohl bys 3+) → +2.5 kg příště", "Pokud RPE 9-10 (poslední rep skoro k selhání) → drž nebo -2.5 kg", "Nikdy ne pyramida až k 1RM — zbytečný CNS náklad"] }
       ]
     },
     accessory: {
       title: "Protokol — Accessory (asistenční cvik)",
       blocks: [
         { label: "Warmup (krátká pauza)", items: ["1 lehčí sada se 60-70 % pracovní váhy × 5 → ⏱ 45-60s"] },
-        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 (2-3 reps in reserve)", "⏱ Pauza 1:30 mezi pracovními sériemi"] },
+        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 = ještě 2-3 reps v rezervě, ne k selhání", "⏱ Pauza 1:30 mezi pracovními sériemi"] },
         { label: "Progression", items: ["Zvyš váhu jakmile doděláš horní rep range bez problému", "Drobné inkrementy 1-2.5 kg"] }
       ]
     },
@@ -520,7 +520,7 @@ function renderProtocol(type) {
       title: "Protokol — Izolace",
       blocks: [
         { label: "Warmup (krátká pauza)", items: ["1 lehčí sada s nižší vahou × 8-10 → ⏱ 30-45s"] },
-        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 (poslední rep blíž 8 OK)", "⏱ Pauza 1 min mezi pracovními sériemi"] },
+        { label: "Working — straight sets", items: ["Stejná váha napříč 3 sériemi", "RPE 7-8 = ještě 2-3 reps v rezervě (u izolací poslední rep blíž RPE 8 = 2 reps reserve OK)", "⏱ Pauza 1 min mezi pracovními sériemi"] },
         { label: "Progression", items: ["Zvyš váhu jakmile zvládneš horní rep range čistou formou", "Forma > váha (zvlášť calf raise = plný stretch dole)"] }
       ]
     },
