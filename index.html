@@ -39,7 +39,7 @@
         <h1 class="text-lg font-semibold leading-tight" id="todayDate">—</h1>
       </div>
       <div class="text-right">
-        <div class="text-[10px] uppercase tracking-widest text-slate-500">do závodu</div>
+        <div class="text-[10px] uppercase tracking-widest text-slate-500">do 5K testu</div>
         <div class="text-2xl font-bold text-sky-400" id="countdown">—</div>
       </div>
     </div>
@@ -112,9 +112,9 @@
         <div class="text-sm font-semibold">Tempo zóny</div>
         <div class="text-xs text-slate-400 mt-1">Z1/Z2/Z3 + HM</div>
       </button>
-      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refPrinciples').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
-        <div class="text-sm font-semibold">Principy</div>
-        <div class="text-xs text-slate-400 mt-1">7 pravidel</div>
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refRoadmap').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+        <div class="text-sm font-semibold">Roadmap HM 2027</div>
+        <div class="text-xs text-slate-400 mt-1">12-měsíční plán</div>
       </button>
     </div>
   </section>
@@ -126,11 +126,11 @@
 
     <h2 class="text-xs uppercase tracking-widest text-slate-500 pt-4">Tréninky</h2>
     <details class="bg-slate-800 rounded-xl border border-slate-700 p-4" open>
-      <summary class="font-semibold">Gym A — Silová báze</summary>
+      <summary class="font-semibold">Gym A — Power lower</summary>
       <div id="gymA-content" class="mt-3 space-y-2"></div>
     </details>
     <details class="bg-slate-800 rounded-xl border border-slate-700 p-4">
-      <summary class="font-semibold">Box (lapy) + Gym B — Cluster výbušnost</summary>
+      <summary class="font-semibold">Box + Gym B — Upper power & rotation</summary>
       <div id="gymB-content" class="mt-3 space-y-2"></div>
     </details>
     <details class="bg-slate-800 rounded-xl border border-slate-700 p-4">
@@ -141,17 +141,18 @@
     <h2 class="text-xs uppercase tracking-widest text-slate-500 pt-4">Reference</h2>
 
     <details id="refZones" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
-      <summary class="font-semibold">Tempo zóny</summary>
+      <summary class="font-semibold">Tempo zóny (10K block)</summary>
       <div class="mt-3 overflow-x-auto"><table class="w-full text-sm">
-        <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo</th><th class="text-left">RPE</th></tr></thead>
+        <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo min/km</th><th class="text-left">RPE</th></tr></thead>
         <tbody class="divide-y divide-slate-700">
-          <tr><td class="py-2 font-medium">Z1</td><td>60-70 %</td><td>6:30-7:00</td><td>2-3</td></tr>
-          <tr><td class="py-2 font-medium">Z2</td><td>70-80 %</td><td>6:00-6:30</td><td>4-5</td></tr>
-          <tr><td class="py-2 font-medium text-sky-400">Z3</td><td>85-95 %</td><td>4:30-5:00</td><td>7-8</td></tr>
-          <tr><td class="py-2 font-medium text-emerald-400">HM cíl</td><td>80-85 %</td><td>5:40</td><td>6-7</td></tr>
+          <tr><td class="py-2 font-medium">Z1 easy</td><td>60-70 %</td><td>6:30-7:00</td><td>2-3</td></tr>
+          <tr><td class="py-2 font-medium">Z2 steady</td><td>70-80 %</td><td>6:00-6:30</td><td>4-5</td></tr>
+          <tr><td class="py-2 font-medium text-amber-300">Tempo (LT)</td><td>80-87 %</td><td>5:20-5:30</td><td>6-7</td></tr>
+          <tr><td class="py-2 font-medium text-sky-400">10K pace</td><td>87-92 %</td><td>5:15-5:25</td><td>7-8</td></tr>
+          <tr><td class="py-2 font-medium text-pink-400">5K pace / VO2max</td><td>90-95 %</td><td>5:00-5:10</td><td>8-9</td></tr>
         </tbody>
       </table></div>
-      <div class="mt-3 text-xs text-slate-400">80/20: 80 % objemu v Z1/Z2, 20 % v Z3. Vyhnout se „murky middle".</div>
+      <div class="mt-3 text-xs text-slate-400">Tempa odhadnutá z HM ~5:40/km (sub-2:00). Po 5K TT 15.7. zaktualizovat. <strong>80/20:</strong> 80 % objemu easy (Z1/Z2), 20 % quality (tempo + intervaly). Strides = 60-100 m @ 85-95 % max, neuromuskulární — NE all-out sprint.</div>
     </details>
 
     <details id="refMtss" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
@@ -175,23 +176,24 @@
     <details id="refFootAssessment" class="bg-slate-800 rounded-xl border border-slate-700 p-4 border-l-4 border-l-amber-500">
       <summary class="font-semibold">⚠️ Ranní foot assessment (před každým během)</summary>
       <div class="mt-3 space-y-2 text-sm text-slate-300">
-        <p><strong>Před každým během dokud nárt necítíš 0/10.</strong> Ráno hned po probuzení, před warmupem.</p>
+        <p><strong>Před každým během dokud nárt necítíš 0/10.</strong> Ráno hned po probuzení, před warmupem. Extensor tendinopatie reaguje pozitivně na warmup — pokud bolest mizí během rozběhu, je to dobré znamení.</p>
         <p><strong>4 testy:</strong></p>
         <ol class="list-decimal pl-5 space-y-1">
           <li><strong>První kroky z postele</strong> — mild stiffness která za pár minut zmizí = OK. Sharp pain s limpem = FAIL.</li>
-          <li><strong>Palpation</strong> — firm tlak na bolavé místo. Pain >2/10 = FAIL.</li>
+          <li><strong>Palpation</strong> — firm tlak na bolavé místo. Pain &gt;2/10 = FAIL.</li>
           <li><strong>Resisted toe extension</strong> — sed, palec proti vlastní ruce. Sharp localized pain = FAIL.</li>
           <li><strong>Single-leg hop</strong> — 10-15× na bolavé noze, midfoot landing. Sharp/bone-deep pain = FAIL.</li>
         </ol>
         <div class="border-l-2 border-emerald-500 pl-3 mt-3">
-          <strong>🟢 GREEN:</strong> Běž podle plánu (walk-run S1/S2/S3 nebo continuous Z1).
+          <strong>🟢 GREEN:</strong> Běž podle plánu (intervaly / tempo / long dle dne).
         </div>
         <div class="border-l-2 border-amber-500 pl-3 mt-2">
-          <strong>🟡 YELLOW:</strong> Sub: cyklo (tuhá podrážka, NE toe-clips pulling), pool running, plavání.
+          <strong>🟡 YELLOW:</strong> Swap za easy Z1 continuous, NE intervals/tempo. Nebo sub: cyklo (tuhá podrážka, NE toe-clips pulling), pool running, plavání.
         </div>
         <div class="border-l-2 border-red-600 pl-3 mt-2">
-          <strong>🔴 RED:</strong> Plný rest. Hard bone tenderness / night pain / walking pain >4/10 → doktor 24-48 h.
+          <strong>🔴 RED:</strong> Plný rest. Hard bone tenderness / night pain / walking pain &gt;4/10 → doktor 24-48 h.
         </div>
+        <p class="text-xs text-slate-400 pt-2">User volba (2026-05-25): „Jdu naplno, nárt řeším za pochodu." Plán je quality-from-start. Foot signál = autoritativní — pokud při intervalu bolest, zbytek běhu Z1 only.</p>
       </div>
     </details>
 
@@ -199,13 +201,25 @@
       <summary class="font-semibold">7 principů</summary>
       <ol class="mt-3 space-y-2 text-sm list-decimal pl-5 text-slate-300">
         <li><strong>Pořadí v tréninku</strong>: skill → power → strength → endurance. <span class="text-slate-400">Box napřed gym (combat sport = skill/CNS). Síla napřed běh. Výjimka: hard sparring s kontaktem = jak závod, NE těžkou silovku potom.</span></li>
-        <li>80/20 polarizace běhu</li>
-        <li>Cluster sady pro explozivitu</li>
+        <li>80/20 polarizace běhu (80 % easy, 20 % quality)</li>
+        <li>Cluster sady pro explozivitu (jump squat, med ball)</li>
         <li>Med ball max 3 kg (těžší = tlak, ne úder)</li>
         <li>MTSS prevence povinná</li>
-        <li>Deficit AŽ po závodě</li>
+        <li><strong>Power & rychlost &gt; objem ve fitku.</strong> Max 3 working sets, RPE 7-8, ne k selhání. Cílem není svalová hmota.</li>
         <li>HRV / klidový pulz rozhodují o intenzitě dne</li>
       </ol>
+    </details>
+
+    <details id="refRoadmap" class="bg-slate-800 rounded-xl border border-slate-700 p-4 border-l-4 border-l-sky-500">
+      <summary class="font-semibold">12-měsíční roadmap (cíl HM 2027)</summary>
+      <div class="mt-3 space-y-2 text-sm text-slate-300">
+        <div class="border-l-2 border-sky-500 pl-3"><strong>Phase 1 (květen–červenec 2026) ← JSI TADY</strong><br><span class="text-slate-400">10K base + box power. 8-week mesocycle, končí 5K TT (15. 7.).</span></div>
+        <div class="border-l-2 border-slate-600 pl-3"><strong>Phase 2 (srpen–říjen 2026)</strong><br><span class="text-slate-400">5K/10K speed peak. VO2max blok, kratší rychlé intervaly. 10K závod jako test.</span></div>
+        <div class="border-l-2 border-slate-600 pl-3"><strong>Phase 3 (listopad 2026–leden 2027)</strong><br><span class="text-slate-400">HM base build. Postupně extend long runs, threshold focus.</span></div>
+        <div class="border-l-2 border-slate-600 pl-3"><strong>Phase 4 (únor–květen 2027)</strong><br><span class="text-slate-400">HM specific. Marathon pace work, long progressions. Gym přesun na power maintenance.</span></div>
+        <div class="border-l-2 border-emerald-500 pl-3"><strong>Phase 5 (květen/červen 2027)</strong><br><span class="text-slate-400">Taper + HM závod.</span></div>
+        <div class="text-xs text-slate-400 pt-2 border-t border-slate-700">Box běží paralelně celý rok. Pátek lapy/sparring = fixní bod. Gym A/B se postupně přesouvá z power-build do power-maintain v Phase 3+.</div>
+      </div>
     </details>
 
   </section>
@@ -358,25 +372,24 @@ const EXERCISES = {
 // =============================================================================
 const WORKOUTS = {
   gymA: {
-    title: "Gym A — Silová báze",
-    meta: "~55 min · RPE 7-8 (2-3 reps v rezervě, ne k selhání)",
+    title: "Gym A — Power lower",
+    meta: "~45 min · Po · Power & strength, ne hypertrofie · RPE 7-8, ne k selhání",
     exercises: [
       { id: "backSquat", sets: "3 × 4-6", pause: 180, protocol: "compound" },
-      { id: "landmineRotation", sets: "3 × 6 / strana", pause: 90, protocol: "accessory" },
-      { id: "weightedPullUp", sets: "3 × 6-8", pause: 180, protocol: "compound" },
-      { id: "benchPress", sets: "3 × 6-8", pause: 180, protocol: "compound" },
-      { id: "seatedCalfRaise", sets: "3 × 12-15", pause: 60, protocol: "isolation" },
-      { id: "standingCalfRaise", sets: "3 × 12-15", pause: 60, protocol: "isolation" }
+      { id: "jumpSquat", sets: "3 × cluster (2+2+2)", pause: 20, protocol: "cluster" },
+      { id: "singleLegRDL", sets: "3 × 8 / noha", pause: 90, protocol: "accessory" },
+      { id: "standingCalfRaise", sets: "3 × 12-15", pause: 60, protocol: "isolation" },
+      { id: "pallofPress", sets: "3 × 8 / strana", pause: 60, protocol: "isolation" }
     ]
   },
   gymB: {
-    title: "Box (lapy) + Gym B — Cluster výbušnost",
-    meta: "45 min box (lapy s trenérem) napřed (fresh CNS) → 50 min gym · pátek",
+    title: "Box + Gym B — Upper power & rotation",
+    meta: "45 min box (lapy/sparring) napřed (fresh CNS) → 30 min gym · pátek",
     exercises: [
-      { id: "jumpSquat", sets: "3 × cluster (2+2+2)", pause: 20, protocol: "cluster" },
-      { id: "singleLegRDL", sets: "3 × 8 / noha", pause: 90, protocol: "accessory" },
+      { id: "weightedPullUp", sets: "3 × 4-6", pause: 180, protocol: "compound" },
+      { id: "benchPress", sets: "3 × 6-8", pause: 180, protocol: "compound" },
+      { id: "landmineRotation", sets: "3 × 6 / strana", pause: 90, protocol: "accessory" },
       { id: "medBallPunchThrow", sets: "3 × 5 / strana", pause: 90, protocol: "accessory" },
-      { id: "pallofPress", sets: "3 × 8 / strana", pause: 60, protocol: "isolation" },
       { id: "abWheelRollout", sets: "3 × 6-8", pause: 60, protocol: "isolation" }
     ]
   },
@@ -397,65 +410,104 @@ const WORKOUTS = {
 // WEEKLY PLAN
 // =============================================================================
 const PLAN = {
-  raceDate: "2026-06-14",
+  testDate: "2026-07-15",   // 5K time trial = countdown target
+  endDate: "2026-07-19",    // konec bloku = progress bar denominator
+  goal: "10K base + box power (Phase 1/5 — cíl HM 2027)",
   weeks: [
     {
-      id: "T0", name: "Týden 0 — Náběh", start: "2026-05-12", end: "2026-05-17",
+      id: "T1", name: "T1 — Reintegrace", start: "2026-05-25", end: "2026-05-31",
       days: [
-        { date: "2026-05-12", type: "rest", title: "Rest + start HRV baseline + MTSS" },
-        { date: "2026-05-13", type: "run", title: "4-5 km Z1 test (pocit, žádné tempo)", km: 4.5 },
-        { date: "2026-05-14", type: "rest", title: "Rest nebo 20 min chůze" },
-        { date: "2026-05-15", type: "gym+box", workoutId: "gymA", modifier: "-1 série / cvik", title: "Box (jen technika) + Gym A (lehčí)" },
-        { date: "2026-05-16", type: "rest", title: "Rest + MTSS cviky" },
-        { date: "2026-05-17", type: "run", title: "Ranní assessment → Walk-run S1 (4m walk / 1m run × 5 = 25 min Z1)", km: 3, detail: "RÁNO: 4 testy v sekci 'Ranní foot assessment'. GREEN = walk-run S1. YELLOW = cyklo/swim sub. RED = rest + doktor." }
+        { date: "2026-05-25", type: "gym", workoutId: "gymA", modifier: "BEZ jump squat (foot reintegration)", title: "Gym A — Power lower (bez plyometrie)", detail: "Start nového bloku. Jump squat zatím vynechat — landing impact na nárt. Ostatní cviky normálně. Pokud dnes už nestihneš, swap za Út." },
+        { date: "2026-05-26", type: "run", title: "Easy 25 min Z1", km: 4, detail: "Pouze continuous Z1, tempo 6:30-7:00/km venku nebo 8.5-9.0 km/h na pásu. Žádné intervaly v reintegračním týdnu. Po běhu MTSS." },
+        { date: "2026-05-27", type: "rest", title: "Rest + MTSS" },
+        { date: "2026-05-28", type: "run", title: "Easy 30 min Z1 + 4×20s strides na konci", km: 5, detail: "Strides = 60-100 m zrychlení na ~85 % max, 60-90 s chůze recovery. Test reakce extensor šlachy na rychlejší mechaniku. Pokud při stride sharp pain → stop, zbytek Z1." },
+        { date: "2026-05-29", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B — Upper power", detail: "Box jako vždy — fokus na čistotu, ne na max intenzitu (první týden plánu). Gym B post-box, ~30 min." },
+        { date: "2026-05-30", type: "run", title: "Long easy 45 min Z1", km: 7, detail: "Continuous Z1, conversational pace. Žádné push, foot je hlavní limit." },
+        { date: "2026-05-31", type: "rest", title: "Rest" }
       ]
     },
     {
-      id: "T1", name: "Týden 1 — Build", start: "2026-05-18", end: "2026-05-24",
+      id: "T2", name: "T2 — Base build (první tempo)", start: "2026-06-01", end: "2026-06-07",
       days: [
-        { date: "2026-05-18", type: "gym", workoutId: "gymA", title: "Gym A — Silová báze" },
-        { date: "2026-05-19", type: "run", title: "Walk-run S2 (3m walk / 2m run × 5 = 25 min Z1)", km: 3, detail: "Z1 tempo: 6:30-7:00 min/km venku, 8.5-9.0 km/h na pásu (walk 6.0-6.5 km/h). ZRUŠENO: 10×400m Z3." },
-        { date: "2026-05-20", type: "gym+box", workoutId: "gymB", title: "Box (lapy s trenérem) + Gym B", detail: "Box ve středu vyjímečně tento týden (přesunut z pátku — trenér jen ve středu). ⚠ Mezi Walk-run S2 (út) a S3 (čt) — pokud nárt reaguje, sniž box na jen techniku a gym B -1 série/cvik." },
-        { date: "2026-05-21", type: "run", title: "Walk-run S3 (2m walk / 3m run × 5 = 25 min Z1)", km: 4, detail: "Z1 tempo: 6:30-7:00 min/km venku, 8.5-9.0 km/h na pásu (walk 6.0-6.5 km/h). Předpoklad: 0 stiffness ráno po S2." },
-        { date: "2026-05-22", type: "rest", title: "Rest + MTSS + isometric Big Toe Press" },
-        { date: "2026-05-23", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-05-24", type: "run", title: "Continuous test: 10 min Z1 + 5 min walk + 10 min Z1", km: 4, detail: "Týden 2 Session 1 (Gemini protokol). Pokud zvládneš pain-free a žádná ranní stiffness 25.5., progress." }
-      ]
-    },
-    {
-      id: "T2", name: "Týden 2 — Continuous load (return-to-run)", start: "2026-05-25", end: "2026-05-31",
-      days: [
-        { date: "2026-05-25", type: "gym", workoutId: "gymA", title: "Gym A" },
-        { date: "2026-05-26", type: "run", title: "20 min continuous Z1", km: 3, detail: "ZRUŠENO: 6×1000m Z3 — žádné intervaly. Pure continuous endurance, šlacha si zvyká na viskoelastickou zátěž." },
-        { date: "2026-05-27", type: "rest", title: "Rest + MTSS + isometrics" },
-        { date: "2026-05-28", type: "run", title: "30 min continuous Z1", km: 4, detail: "Vrchol týdne 2 (Gemini cap). Žádné Z2/Z3." },
-        { date: "2026-05-29", type: "gym+box", workoutId: "gymB", title: "Box (lapy s trenérem) + Gym B" },
-        { date: "2026-05-30", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-05-31", type: "run", title: "30 min Z1/Z2 (max!)", km: 4.5, detail: "ZRUŠENO: 19 km dlouhý — Gemini stop. Týden 2 cap = 30 min kontinuálně. Žádné HM pace finish." }
-      ]
-    },
-    {
-      id: "T3", name: "Týden 3 — Volume + strides (return-to-run)", start: "2026-06-01", end: "2026-06-07",
-      days: [
-        { date: "2026-06-01", type: "gym", workoutId: "gymA", modifier: "-1 série / cvik", title: "Gym A (taper)" },
-        { date: "2026-06-02", type: "run", title: "40 min continuous Z1", km: 6, detail: "Postupně extending. Žádné intervaly stále." },
+        { date: "2026-06-01", type: "gym", workoutId: "gymA", title: "Gym A — Power lower (full)", detail: "Návrat jump squatu — pokud foot GREEN, jeď full verzi. Cluster 2+2+2, max rychlost, lehká zátěž (30-45 % 1RM)." },
+        { date: "2026-06-02", type: "run", title: "Easy 30 min Z1", km: 5, detail: "Conversational Z1. Pohodlné dýchání, mohl bys mluvit celou větu." },
         { date: "2026-06-03", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-06-04", type: "run", title: "30 min Z1 + 4-6 × 20s strides uprostřed", km: 4.5, detail: "STRIDES = 60-100 m (15-20s) zrychlení na 85-95% max — kontrolovaně, NE all-out sprint. Plná pauza mezi (60-90s chůze). Aktivuje fast-twitch fibers, žádný aerobní stres. Hlavní cíl dneška: test reakce extensor šlachy na rychlejší mechaniku. Pokud při stride sharp bolest v nártu → stop a zbytek běhu jen Z1 continuous." },
-        { date: "2026-06-05", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik", title: "Box (lehčí lapy, menší intenzita) + Gym B (taper)", detail: "Race week se blíží — řekni trenérovi že chceš lehčí session, ne všechno na max. Footwork OK, žádná těžká kombinace pádů na CNS." },
-        { date: "2026-06-06", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-06-07", type: "run", title: "60 min Z1 (long run cap)", km: 9, detail: "Maximum pre-race long run. Pokud zvládneš pain-free + 0 stiffness ráno 8.6. → GREEN pro start HM. Jinak modified pace strategy." }
+        { date: "2026-06-04", type: "run", title: "Tempo lite: 10 min wu + 2×1 km @ tempo + 10 min cd", km: 6, detail: "Tempo pace ~5:20-5:30/km (LT, RPE 6-7, comfortable hard, můžeš mluvit jen krátké fráze). 2 min walk recovery mezi km. POKUD foot reaguje → swap za 35 min easy Z1." },
+        { date: "2026-06-05", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
+        { date: "2026-06-06", type: "run", title: "Long easy 50 min Z1", km: 8, detail: "Pomalé tempo, ne push. Conversational." },
+        { date: "2026-06-07", type: "rest", title: "Rest" }
       ]
     },
     {
-      id: "T4", name: "Týden 4 — Race week", start: "2026-06-08", end: "2026-06-14",
+      id: "T3", name: "T3 — První intervaly", start: "2026-06-08", end: "2026-06-14",
       days: [
-        { date: "2026-06-08", type: "rest", title: "Volno nebo 20 min chůze" },
-        { date: "2026-06-09", type: "run", title: "30 min Z1 + 4-6 × 20s strides", km: 4.5, detail: "ZRUŠENO: 4×800m HM tempu — žádné Z3 intervaly před závodem (extensor recovery). Strides = neuromuskulární aktivace bez aerobního stresu. Pokud při stride pain → stop a zbytek Z1 only." },
-        { date: "2026-06-10", type: "run", title: "4-5 km Z1 lehký", km: 5, detail: "Race week taper — kratší než T3 mid-week (~40 min). Jen udržení rytmu, žádné push." },
-        { date: "2026-06-11", type: "rest", title: "Volno (normální strava, ne carb load ještě)" },
-        { date: "2026-06-12", type: "run", title: "20 min aktivace + 4 × 75 m strides · START carb load 8-10 g/kg", km: 3 },
-        { date: "2026-06-13", type: "run", title: "3-4 km shakeout · pokračuje carb load + sodík + hydratace", km: 3 },
-        { date: "2026-06-14", type: "race", title: "ZÁVOD — půlmaraton 21,1 km", km: 21 }
+        { date: "2026-06-08", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
+        { date: "2026-06-09", type: "run", title: "Intervaly: 10 min wu + 6×400 m @ 5K pace + 2 min walk + 10 min cd", km: 7, detail: "5K pace ~5:00-5:10/km, 400 m ≈ 2:00-2:05. PLNÝ walk recovery — fokus na rychlost, ne aerobní zhroucení. Foot signál: pokud při 3. opakování bolest, stop a zbytek Z1." },
+        { date: "2026-06-10", type: "rest", title: "Rest + MTSS" },
+        { date: "2026-06-11", type: "run", title: "Tempo: 10 min wu + 3 km @ tempo + 10 min cd", km: 7, detail: "Tempo pace ~5:20-5:30/km, RPE 6-7. Bez breaks — kontinuálně 3 km. „Comfortable hard" — mohl bys mluvit krátké fráze." },
+        { date: "2026-06-12", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
+        { date: "2026-06-13", type: "run", title: "Long easy 55 min Z1", km: 9 },
+        { date: "2026-06-14", type: "rest", title: "Rest" }
+      ]
+    },
+    {
+      id: "T4", name: "T4 — Deload", start: "2026-06-15", end: "2026-06-21",
+      days: [
+        { date: "2026-06-15", type: "gym", workoutId: "gymA", modifier: "-1 série / cvik (deload)", title: "Gym A (deload)", detail: "Redukce volume ~30 %. Stejná intenzita, méně sérií. Tělo si fixuje gainy." },
+        { date: "2026-06-16", type: "run", title: "Easy 25 min Z1", km: 4 },
+        { date: "2026-06-17", type: "rest", title: "Rest + MTSS" },
+        { date: "2026-06-18", type: "run", title: "Easy 30 min Z1 + 4×20s strides", km: 5, detail: "Strides drží neuromuskulární tonus i v deload týdnu. Žádný aerobní stres." },
+        { date: "2026-06-19", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik (deload)", title: "Box (lehčí lapy) + Gym B (deload)", detail: "Řekni trenérovi že chceš lehčí session — kvalita pohybu, ne max intenzita." },
+        { date: "2026-06-20", type: "run", title: "Long easy 40 min Z1", km: 6 },
+        { date: "2026-06-21", type: "rest", title: "Rest" }
+      ]
+    },
+    {
+      id: "T5", name: "T5 — 10K block start", start: "2026-06-22", end: "2026-06-28",
+      days: [
+        { date: "2026-06-22", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
+        { date: "2026-06-23", type: "run", title: "Intervaly: 10 min wu + 5×600 m @ 10K pace + 2 min jog + 10 min cd", km: 8, detail: "10K pace ~5:15-5:25/km, 600 m ≈ 3:10-3:15. JOG recovery (ne walk) — buduje schopnost běhat při fatigue, lepší pro 10K threshold development." },
+        { date: "2026-06-24", type: "rest", title: "Rest + MTSS" },
+        { date: "2026-06-25", type: "run", title: "Tempo: 10 min wu + 3 km @ tempo + 10 min cd", km: 7 },
+        { date: "2026-06-26", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
+        { date: "2026-06-27", type: "run", title: "Long easy 60 min Z1", km: 10 },
+        { date: "2026-06-28", type: "rest", title: "Rest" }
+      ]
+    },
+    {
+      id: "T6", name: "T6 — Build", start: "2026-06-29", end: "2026-07-05",
+      days: [
+        { date: "2026-06-29", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
+        { date: "2026-06-30", type: "run", title: "Intervaly: 10 min wu + 5×800 m @ 10K pace + 2 min jog + 10 min cd", km: 9, detail: "800 m ≈ 4:15-4:20. Klíčový threshold workout — nejlepší ROI session pro budoucí HM. Pokud poslední opakování významně pomalejší → zkrátit příště na 4×800 m." },
+        { date: "2026-07-01", type: "rest", title: "Rest + MTSS" },
+        { date: "2026-07-02", type: "run", title: "Tempo: 10 min wu + 4 km @ tempo + 10 min cd", km: 8 },
+        { date: "2026-07-03", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
+        { date: "2026-07-04", type: "run", title: "Long easy 65 min Z1", km: 11 },
+        { date: "2026-07-05", type: "rest", title: "Rest" }
+      ]
+    },
+    {
+      id: "T7", name: "T7 — Peak quality", start: "2026-07-06", end: "2026-07-12",
+      days: [
+        { date: "2026-07-06", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
+        { date: "2026-07-07", type: "run", title: "VO2max: 10 min wu + 6×600 m @ 5K pace + 2 min jog + 10 min cd", km: 8, detail: "5K pace ~5:00-5:10/km. Krátké rychlé — buduje VO2max strop. Pokud pace klesá &gt;5 s na opakování, snižuj kvalitou — lepší 4 dobrá než 6 propadlých." },
+        { date: "2026-07-08", type: "rest", title: "Rest + MTSS" },
+        { date: "2026-07-09", type: "run", title: "Tempo: 10 min wu + 4 km @ tempo + 10 min cd", km: 8 },
+        { date: "2026-07-10", type: "gym+box", workoutId: "gymB", title: "Box (lapy/sparring) + Gym B", detail: "Pokud sparring s kontaktem = jako závod. Gym B redukuj o 1 sérii každého cviku." },
+        { date: "2026-07-11", type: "run", title: "Long easy 70 min Z1", km: 12 },
+        { date: "2026-07-12", type: "rest", title: "Rest" }
+      ]
+    },
+    {
+      id: "T8", name: "T8 — Test + review", start: "2026-07-13", end: "2026-07-19",
+      days: [
+        { date: "2026-07-13", type: "gym", workoutId: "gymA", modifier: "-1 série / cvik (taper na TT)", title: "Gym A (taper)", detail: "Lehčí session — TT je za 2 dny. Zachovej kvalitu pohybu, ne max zátěž." },
+        { date: "2026-07-14", type: "run", title: "Easy 25 min Z1 + 4×20s strides", km: 4, detail: "Aktivace před TT, žádný stress. Strides drží neuromuskulární spojení." },
+        { date: "2026-07-15", type: "race", title: "🏁 5K TIME TRIAL", km: 5, detail: "MĚŘENÝ BENCHMARK. 1.5 km warmup (postupně rychleji posledních 200 m) + 5 km all-out + 1 km cooldown. GPS + pulsmetr. Cíl indikativně: sub-25:00 (~4:55/km). Tento čas = baseline pro Phase 2 (srpen-říjen). Best terén: rovná trať, větru-mírné ráno. Caffeine 200 mg 45-60 min před." },
+        { date: "2026-07-16", type: "rest", title: "Rest + MTSS" },
+        { date: "2026-07-17", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik (post-TT)", title: "Box (lehčí) + Gym B (post-TT)", detail: "Tělo regeneruje po TT, neházet další stress." },
+        { date: "2026-07-18", type: "run", title: "Long easy 50 min Z1", km: 8, detail: "Pohodový long, ne tempo. Aerobní udržení." },
+        { date: "2026-07-19", type: "rest", title: "🏁 KONEC BLOKU — review plánu", detail: "Phase 1 hotová. Zhodnotit: 5K TT čas (vs cíl), foot status, gym progresses, box pocit. Na základě výsledků naplánovat Phase 2 (srpen-říjen, 5K/10K speed peak)." }
       ]
     }
   ]
@@ -699,12 +751,12 @@ function renderHeader() {
   const d = new Date(t + "T00:00:00");
   $("todayDate").textContent = fmtDate(t);
   $("todayDayOfWeek").textContent = DAY_NAMES[d.getDay()];
-  const days = diffDays(t, PLAN.raceDate);
-  $("countdown").innerHTML = days >= 0 ? `${days}<span class="text-sm text-slate-500"> dní</span>` : `${-days} po závodě`;
+  const days = diffDays(t, PLAN.testDate);
+  $("countdown").innerHTML = days >= 0 ? `${days}<span class="text-sm text-slate-500"> dní</span>` : `${-days} po testu`;
   const w = getCurrentWeek();
   $("weekLabel").textContent = w ? w.name : "Mimo plán";
-  // Global progress: how many days from plan start to race
-  const total = diffDays(PLAN.weeks[0].start, PLAN.raceDate);
+  // Global progress: how many days from plan start to end of block
+  const total = diffDays(PLAN.weeks[0].start, PLAN.endDate);
   const done = Math.max(0, Math.min(total, diffDays(PLAN.weeks[0].start, t)));
   $("globalProgress").style.width = `${(done / total * 100).toFixed(1)}%`;
 }
