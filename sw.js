@@ -1,7 +1,7 @@
 // Service Worker for offline support
 // Strategy: network-first for HTML (always try latest), cache-first for assets
 
-const CACHE = "trenink-v1";
+const CACHE = "trenink-v2";
 const SHELL = ["./", "./index.html"];
 
 self.addEventListener("install", (e) => {
@@ -42,17 +42,18 @@ self.addEventListener("fetch", (e) => {
       }).catch(() => caches.match(req).then((c) => c || caches.match("./index.html")))
     );
   } else {
-    // Cache-first for everything else (CSS, JS, fonts, etc.)
+    // Stale-while-revalidate: vrať cache hned, na pozadí stáhni čerstvou verzi do cache
+    // (jinak by cache-first zamrzlo Tailwind CDN napořád)
     e.respondWith(
       caches.match(req).then((cached) => {
-        if (cached) return cached;
-        return fetch(req).then((r) => {
+        const network = fetch(req).then((r) => {
           if (r.ok) {
             const clone = r.clone();
             caches.open(CACHE).then((c) => c.put(req, clone));
           }
           return r;
-        });
+        }).catch(() => cached);
+        return cached || network;
       })
     );
   }
