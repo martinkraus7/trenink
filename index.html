@@ -145,16 +145,16 @@
     <details id="refZones" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
       <summary class="font-semibold">Tempo zóny (5K block)</summary>
       <div class="mt-3 overflow-x-auto"><table class="w-full text-sm">
-        <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo min/km</th><th class="text-left">Použití</th></tr></thead>
+        <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo min/km</th><th class="text-left">Pás km/h</th><th class="text-left">Použití</th></tr></thead>
         <tbody class="divide-y divide-slate-700">
-          <tr><td class="py-2 font-medium">Z1 easy</td><td>60-70 %</td><td>6:30-7:00</td><td>recovery, long</td></tr>
-          <tr><td class="py-2 font-medium">Z2 steady</td><td>70-80 %</td><td>6:00-6:30</td><td>aerobic base</td></tr>
-          <tr><td class="py-2 font-medium text-amber-300">T-pace (tempo)</td><td>80-87 %</td><td>5:20-5:30</td><td>cruise 1-2 km reps</td></tr>
-          <tr><td class="py-2 font-medium text-pink-400">I-pace (5K)</td><td>90-95 %</td><td>5:00-5:10</td><td>VO2max 400-1000 m</td></tr>
-          <tr><td class="py-2 font-medium text-rose-400">R-pace (rep)</td><td>≥95 %</td><td>4:30-4:45</td><td>strides 100-200 m</td></tr>
+          <tr><td class="py-2 font-medium">Z1 easy</td><td>60-70 %</td><td>6:30-7:00</td><td>8.6-9.2</td><td>recovery, long</td></tr>
+          <tr><td class="py-2 font-medium">Z2 steady</td><td>70-80 %</td><td>6:00-6:30</td><td>9.2-10.0</td><td>aerobic base</td></tr>
+          <tr><td class="py-2 font-medium text-amber-300">T-pace (tempo)</td><td>80-87 %</td><td>5:20-5:30</td><td>10.9-11.3</td><td>cruise 1-2 km reps</td></tr>
+          <tr><td class="py-2 font-medium text-pink-400">I-pace (5K)</td><td>90-95 %</td><td>5:00-5:10</td><td>11.6-12.0</td><td>VO2max 400-1000 m</td></tr>
+          <tr><td class="py-2 font-medium text-rose-400">R-pace (rep)</td><td>≥95 %</td><td>4:30-4:45</td><td>12.6-13.3</td><td>strides 100-200 m</td></tr>
         </tbody>
       </table></div>
-      <div class="mt-3 text-xs text-slate-400">Tempa odhadnutá z HM ~5:40/km (sub-2:00). Po 5K TT 15.7. zaktualizovat. <strong>80/20:</strong> 80 % objemu easy (Z1/Z2), 20 % quality (T + I + R). <strong>I-pace (5K) = primární interval pace.</strong> R-pace jen pro strides (60-100 m, 15-20 s) — neuromuskulární, NE all-out sprint.</div>
+      <div class="mt-3 text-xs text-slate-400"><strong>Pás:</strong> km/h = 60 ÷ (min/km); nastav sklon 1 % ať to odpovídá běhu venku (nahrazuje chybějící odpor vzduchu). Tempa odhadnutá z HM ~5:40/km (sub-2:00). Po 5K TT 15.7. zaktualizovat. <strong>80/20:</strong> 80 % objemu easy (Z1/Z2), 20 % quality (T + I + R). <strong>I-pace (5K) = primární interval pace.</strong> R-pace jen pro strides (60-100 m, 15-20 s) — neuromuskulární, NE all-out sprint.</div>
     </details>
 
     <details id="refMtss" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
@@ -423,7 +423,7 @@ const PLAN = {
       id: "T1", name: "T1 — Reintegrace", start: "2026-05-25", end: "2026-05-31",
       days: [
         { date: "2026-05-25", type: "gym", workoutId: "gymA", modifier: "BEZ jump squat (foot reintegration)", title: "Gym A — Power lower (bez plyometrie)", detail: "Start nového bloku. Jump squat zatím vynechat — landing impact na nárt. Ostatní cviky normálně. Pokud dnes už nestihneš, swap za Út." },
-        { date: "2026-05-26", type: "run", title: "Easy 25 min Z1", km: 4, detail: "Pouze continuous Z1, tempo 6:30-7:00/km venku nebo 8.5-9.0 km/h na pásu. Žádné intervaly v reintegračním týdnu. Po běhu MTSS." },
+        { date: "2026-05-26", type: "run", title: "Easy 25 min Z1", km: 4, detail: "Pouze continuous Z1, tempo 6:30-7:00/km venku nebo 8.6-9.2 km/h na pásu (sklon 1 %). Žádné intervaly v reintegračním týdnu. Po běhu MTSS." },
         { date: "2026-05-27", type: "rest", title: "Rest + MTSS" },
         { date: "2026-05-28", type: "run", title: "Easy 30 min Z1 + 4×20s strides na konci", km: 5, detail: "Strides = 60-100 m zrychlení na ~85 % max, 60-90 s chůze recovery. Test reakce extensor šlachy na rychlejší mechaniku. Pokud při stride sharp pain → stop, zbytek Z1." },
         { date: "2026-05-29", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B — Upper power", detail: "Box jako vždy — fokus na čistotu, ne na max intenzitu (první týden plánu). Gym B post-box, ~30 min." },
@@ -541,13 +541,13 @@ function diffDays(a, b) { return Math.round((new Date(b) - new Date(a)) / 864000
 
 // --- Glossary: vysvětlivky zkratek (Z1 apod.) — klepni v aplikaci ---
 const GLOSS = {
-  "Z1": "Z1 — lehká zóna: 60–70 % max tepu, tempo ~6:30–7:00/km. Recovery a dlouhé běhy, pohodlné dýchání (udržíš souvislou větu).",
-  "Z2": "Z2 — aerobní base: 70–80 % max tepu, tempo ~6:00–6:30/km.",
-  "Z3": "Z3 — tempo/threshold pásmo: 80–87 % max tepu.",
-  "T-pace": "T-pace — threshold (tempo): ~5:20–5:30/km, RPE 6–7, comfortable hard (zvládneš jen krátké fráze). Buduje práh.",
-  "I-pace": "I-pace — interval/VO2max: 5K tempo ~5:00–5:10/km, RPE 9. Úseky 400–1000 m.",
-  "R-pace": "R-pace — rep: ~4:30–4:45/km, jen pro strides (krátká neuromuskulární zrychlení), NE all-out sprint.",
-  "5K pace": "5K pace — tempo na 5K závod, ~5:00–5:10/km (= I-pace, primární interval pace).",
+  "Z1": "Z1 — lehká zóna: 60–70 % max tepu, tempo ~6:30–7:00/km. Na páse ~8.6–9.2 km/h (sklon 1 %). Recovery a dlouhé běhy, pohodlné dýchání (udržíš souvislou větu).",
+  "Z2": "Z2 — aerobní base: 70–80 % max tepu, tempo ~6:00–6:30/km. Na páse ~9.2–10.0 km/h.",
+  "Z3": "Z3 — tempo/threshold pásmo: 80–87 % max tepu, na páse ~11 km/h.",
+  "T-pace": "T-pace — threshold (tempo): ~5:20–5:30/km, na páse ~10.9–11.3 km/h. RPE 6–7, comfortable hard (zvládneš jen krátké fráze). Buduje práh.",
+  "I-pace": "I-pace — interval/VO2max: 5K tempo ~5:00–5:10/km, na páse ~11.6–12.0 km/h. RPE 9. Úseky 400–1000 m.",
+  "R-pace": "R-pace — rep: ~4:30–4:45/km, na páse ~12.6–13.3 km/h. Jen pro strides (krátká neuromuskulární zrychlení), NE all-out sprint.",
+  "5K pace": "5K pace — tempo na 5K závod, ~5:00–5:10/km, na páse ~11.6–12.0 km/h (= I-pace, primární interval pace).",
   "strides": "Strides — krátká zrychlení 60–100 m na ~85 % max, pak chůze/poklus recovery. Trénují mechaniku, ne kondici.",
   "wu": "wu (warm-up) — rozklusání/rozcvičení před hlavní částí.",
   "cd": "cd (cool-down) — vyklusání/zklidnění na konci.",
