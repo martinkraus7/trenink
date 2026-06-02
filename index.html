@@ -26,6 +26,8 @@
     .check { width: 24px; height: 24px; }
     input[type=number], input[type=date] { font-size: 16px; }
     .spark { stroke-linecap: round; stroke-linejoin: round; }
+    .gloss { border-bottom: 1px dotted #64748b; cursor: help; }
+    #gtip { position: fixed; z-index: 60; background: #0b1220; border: 1px solid #334155; color: #e2e8f0; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; box-shadow: 0 8px 28px rgba(0,0,0,.5); }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
@@ -313,6 +315,9 @@
 <!-- TOAST -->
 <div id="toast" class="hidden fixed top-24 left-1/2 z-50 -translate-x-1/2 bg-emerald-500 text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg text-sm"></div>
 
+<!-- Glossary tooltip (Z1 apod.) -->
+<div id="gtip" class="hidden"></div>
+
 <!-- Pause timer banner -->
 <div id="pauseBanner" class="hidden fixed left-1/2 -translate-x-1/2 bg-sky-500 text-slate-900 font-bold px-5 py-3 rounded-full shadow-xl flex items-center gap-3 z-40" style="bottom: calc(env(safe-area-inset-bottom) + 5rem)">
   <span class="text-xl">⏱</span>
@@ -533,6 +538,47 @@ function fmtDateShort(iso) {
   return `${d.getDate()}.${d.getMonth()+1}.`;
 }
 function diffDays(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
+
+// --- Glossary: vysvětlivky zkratek (Z1 apod.) — klepni v aplikaci ---
+const GLOSS = {
+  "Z1": "Z1 — lehká zóna: 60–70 % max tepu, tempo ~6:30–7:00/km. Recovery a dlouhé běhy, pohodlné dýchání (udržíš souvislou větu).",
+  "Z2": "Z2 — aerobní base: 70–80 % max tepu, tempo ~6:00–6:30/km.",
+  "Z3": "Z3 — tempo/threshold pásmo: 80–87 % max tepu.",
+  "T-pace": "T-pace — threshold (tempo): ~5:20–5:30/km, RPE 6–7, comfortable hard (zvládneš jen krátké fráze). Buduje práh.",
+  "I-pace": "I-pace — interval/VO2max: 5K tempo ~5:00–5:10/km, RPE 9. Úseky 400–1000 m.",
+  "R-pace": "R-pace — rep: ~4:30–4:45/km, jen pro strides (krátká neuromuskulární zrychlení), NE all-out sprint.",
+  "5K pace": "5K pace — tempo na 5K závod, ~5:00–5:10/km (= I-pace, primární interval pace).",
+  "strides": "Strides — krátká zrychlení 60–100 m na ~85 % max, pak chůze/poklus recovery. Trénují mechaniku, ne kondici.",
+  "wu": "wu (warm-up) — rozklusání/rozcvičení před hlavní částí.",
+  "cd": "cd (cool-down) — vyklusání/zklidnění na konci.",
+  "rec": "rec (recovery) — zotavení mezi úseky. jog = poklus, walk = chůze.",
+  "RPE": "RPE — subjektivní náročnost na škále 1–10 (6–7 = comfortable hard, 9–10 = max).",
+  "TT": "TT (time trial) — měřený test naplno, slouží jako benchmark.",
+  "MTSS": "MTSS — shin splints, zánět/bolest holení z přetížení. Prevence cviky 5–10 min denně.",
+};
+const GLOSS_RE = /\b(?:Z[1-3]|[TIR]-pace|5K pace|strides|wu|cd|rec|RPE|TT|MTSS)\b/g;
+// Obalí známé zkratky tappable spanem s vysvětlivkou. Jeden průchod = vložené HTML se znovu neskenuje.
+function gloss(text) {
+  if (!text) return text;
+  return text.replace(GLOSS_RE, (m) => {
+    const d = GLOSS[m];
+    return d ? `<span class="gloss" data-g="${d}">${m}</span>` : m;
+  });
+}
+function showGloss(el) {
+  const tip = $("gtip");
+  tip.textContent = el.dataset.g;
+  tip.classList.remove("hidden");
+  const r = el.getBoundingClientRect();
+  const w = Math.min(280, window.innerWidth - 24);
+  tip.style.maxWidth = w + "px";
+  let left = r.left + r.width / 2 - w / 2;
+  left = Math.max(12, Math.min(left, window.innerWidth - w - 12));
+  tip.style.left = left + "px";
+  tip.style.top = (r.bottom + 8) + "px";
+  clearTimeout(tip._t);
+  tip._t = setTimeout(() => tip.classList.add("hidden"), 6000);
+}
 function getCurrentWeek() {
   const t = todayISO();
   for (const w of PLAN.weeks) if (t >= w.start && t <= w.end) return w;
@@ -772,8 +818,8 @@ function renderToday() {
   let body = `<div class="flex items-start gap-3">
     <div class="text-3xl">${typeIcon}</div>
     <div class="flex-1">
-      <div class="text-base font-semibold leading-snug">${d.title}</div>
-      ${d.detail ? `<div class="text-sm text-slate-400 mt-1">${d.detail}</div>` : ""}
+      <div class="text-base font-semibold leading-snug">${gloss(d.title)}</div>
+      ${d.detail ? `<div class="text-sm text-slate-400 mt-1">${gloss(d.detail)}</div>` : ""}
       ${d.km ? `<div class="text-xs text-slate-500 mt-1">~${d.km} km</div>` : ""}
       ${d.modifier ? `<div class="text-xs text-amber-400 mt-1">Modifikátor: ${d.modifier}</div>` : ""}
     </div>
@@ -855,7 +901,7 @@ function weekDayRow(d) {
   return `<div class="flex items-start gap-3 ${isToday ? "bg-sky-500/5 -mx-1 px-1 rounded" : ""}">
     <div class="text-xs text-slate-500 w-12 pt-1">${dow} ${date.getDate()}.${date.getMonth()+1}.</div>
     <div class="flex-1 text-sm">
-      <div class="${isToday ? "text-sky-300 font-medium" : ""}">${d.title}</div>
+      <div class="${isToday ? "text-sky-300 font-medium" : ""}">${gloss(d.title)}</div>
       ${d.km ? `<div class="text-xs text-slate-500">~${d.km} km</div>` : ""}
     </div>
   </div>`;
@@ -1283,6 +1329,13 @@ document.addEventListener("DOMContentLoaded", () => {
   renderAll();
   restorePauseTimer();
   handleURLParams();
+});
+
+// Vysvětlivky zkratek: klepnutí na .gloss ukáže bublinu, klepnutí jinam ji skryje
+document.addEventListener("click", (e) => {
+  const g = e.target.closest(".gloss");
+  if (g) { e.stopPropagation(); e.preventDefault(); showGloss(g); }
+  else { const tip = $("gtip"); if (tip) tip.classList.add("hidden"); }
 });
 
 // Register service worker for offline support
