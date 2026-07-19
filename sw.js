@@ -1,12 +1,20 @@
 // Service Worker for offline support
-// Strategy: network-first for HTML (always try latest), cache-first for assets
+// Strategy: network-first for same-origin HTML (always try latest), stale-while-revalidate for assets
 
-const CACHE = "trenink-v2";
+const CACHE = "trenink-v3";
 const SHELL = ["./", "./index.html"];
+// Tailwind Play CDN — opaque response; cache.add() ji odmítá (status 0), proto fetch + put
+const TAILWIND_URL = "https://cdn.tailwindcss.com/";
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((c) =>
+      c.addAll(SHELL).then(() =>
+        fetch(new Request(TAILWIND_URL, { mode: "no-cors" }))
+          .then((r) => c.put(TAILWIND_URL, r))
+          .catch(() => {})
+      )
+    ).then(() => self.skipWaiting())
   );
 });
 
@@ -28,26 +36,34 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  const isHTML = req.headers.get("accept")?.includes("text/html")
+  // Jen same-origin — jinak by CDN (pathname "/") spadlo do network-first větve
+  const isHTML = url.origin === self.location.origin && (
+    req.headers.get("accept")?.includes("text/html")
     || url.pathname.endsWith(".html")
-    || url.pathname.endsWith("/");
+    || url.pathname.endsWith("/")
+  );
 
   if (isHTML) {
-    // Network-first: get latest HTML when online, fall back to cache
+    // Network-first: get latest HTML when online, fall back to cache.
+    // Cachovat jen OK odpovědi — 404/captive portal nesmí otrávit cache.
+    // Klíč bez query stringu — denní shortcut URL (?hrv=…&save=1) by jinak množily kopie index.html.
+    const key = url.origin + url.pathname;
     e.respondWith(
       fetch(req).then((r) => {
-        const clone = r.clone();
-        caches.open(CACHE).then((c) => c.put(req, clone));
+        if (r.ok) {
+          const clone = r.clone();
+          caches.open(CACHE).then((c) => c.put(key, clone));
+        }
         return r;
-      }).catch(() => caches.match(req).then((c) => c || caches.match("./index.html")))
+      }).catch(() => caches.match(key).then((c) => c || caches.match("./index.html")))
     );
   } else {
-    // Stale-while-revalidate: vrať cache hned, na pozadí stáhni čerstvou verzi do cache
-    // (jinak by cache-first zamrzlo Tailwind CDN napořád)
+    // Stale-while-revalidate: vrať cache hned, na pozadí stáhni čerstvou verzi do cache.
+    // Opaque (Tailwind CDN, r.ok vždy false) cachovat taky — jinak by offline chyběly styly.
     e.respondWith(
       caches.match(req).then((cached) => {
         const network = fetch(req).then((r) => {
-          if (r.ok) {
+          if (r.ok || r.type === "opaque") {
             const clone = r.clone();
             caches.open(CACHE).then((c) => c.put(req, clone));
           }

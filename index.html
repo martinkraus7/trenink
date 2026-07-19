@@ -41,7 +41,7 @@
         <h1 class="text-lg font-semibold leading-tight" id="todayDate">—</h1>
       </div>
       <div class="text-right">
-        <div class="text-[10px] uppercase tracking-widest text-slate-400">do 5K testu</div>
+        <div class="text-[10px] uppercase tracking-widest text-slate-400" id="countdownLabel">do 5K testu</div>
         <div class="text-2xl font-bold text-sky-400" id="countdown">—</div>
       </div>
     </div>
@@ -584,9 +584,13 @@ function showGloss(el) {
 function getCurrentWeek() {
   const t = todayISO();
   for (const w of PLAN.weeks) if (t >= w.start && t <= w.end) return w;
-  if (t < PLAN.weeks[0].start) return null;
-  if (t > PLAN.weeks[PLAN.weeks.length - 1].end) return null;
-  return PLAN.weeks[PLAN.weeks.length - 1];
+  return null;
+}
+// Fáze bloku — stringové porovnání ISO dat (žádné new Date → žádné TZ pasti)
+function planState(t) {
+  if (t < PLAN.weeks[0].start) return "pre";
+  if (t > PLAN.endDate) return "post";
+  return "in";
 }
 function getTodaysDay() {
   const t = todayISO();
@@ -800,25 +804,36 @@ function renderHeader() {
   const d = new Date(t + "T00:00:00");
   $("todayDate").textContent = fmtDate(t);
   $("todayDayOfWeek").textContent = DAY_NAMES[d.getDay()];
-  const days = diffDays(t, PLAN.testDate);
-  $("countdown").innerHTML = days >= 0 ? `${days}<span class="text-sm text-slate-400"> dní</span>` : `${-days} po testu`;
+  const state = planState(t);
+  if (state === "post") {
+    $("countdownLabel").textContent = "Phase 1 ✓";
+    $("countdown").innerHTML = `+${diffDays(PLAN.endDate, t)}<span class="text-sm text-slate-400"> d</span>`;
+  } else {
+    const days = diffDays(t, PLAN.testDate);
+    $("countdownLabel").textContent = days >= 0 ? "do 5K testu" : "po 5K testu";
+    $("countdown").innerHTML = days >= 0
+      ? `${days}<span class="text-sm text-slate-400"> dní</span>`
+      : `+${-days}<span class="text-sm text-slate-400"> d</span>`;
+  }
   const w = getCurrentWeek();
-  $("weekLabel").textContent = w ? w.name : "Mimo plán";
+  $("weekLabel").textContent = state === "post" ? "Blok dokončen — přemostění" : (w ? w.name : "Mimo plán");
   // Global progress: how many days from plan start to end of block
   const total = diffDays(PLAN.weeks[0].start, PLAN.endDate);
   const done = Math.max(0, Math.min(total, diffDays(PLAN.weeks[0].start, t)));
   $("globalProgress").style.width = `${(done / total * 100).toFixed(1)}%`;
+  $("globalProgress").classList.toggle("bg-emerald-500", state === "post");
+  $("globalProgress").classList.toggle("bg-sky-500", state !== "post");
 }
 
 function renderToday() {
   const today = getTodaysDay();
-  if (!today) {
-    $("todayContent").innerHTML = `<div class="text-slate-400">Dnes není v plánu — relax nebo volný trénink.</div>`;
-    return;
-  }
-  const d = today.day;
-  const typeIcon = { rest: "🛌", run: "🏃", gym: "🏋", "gym+box": "🥊", regen: "🧘", race: "🏁" }[d.type] || "•";
-  let body = `<div class="flex items-start gap-3">
+  const state = planState(todayISO());
+  let body = "";
+  let showMtss = true;
+  if (today) {
+    const d = today.day;
+    const typeIcon = { rest: "🛌", run: "🏃", gym: "🏋", "gym+box": "🥊", regen: "🧘", race: "🏁" }[d.type] || "•";
+    body = `<div class="flex items-start gap-3">
     <div class="text-3xl">${typeIcon}</div>
     <div class="flex-1">
       <div class="text-base font-semibold leading-snug">${gloss(d.title)}</div>
@@ -827,28 +842,41 @@ function renderToday() {
       ${d.modifier ? `<div class="text-xs text-amber-400 mt-1">Modifikátor: ${gloss(d.modifier)}</div>` : ""}
     </div>
   </div>`;
-  if (d.workoutId) {
-    const w = WORKOUTS[d.workoutId];
-    body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
+    if (d.workoutId) {
+      const w = WORKOUTS[d.workoutId];
+      body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
       <div class="text-xs uppercase tracking-wider text-slate-400">${w.title}</div>
       <div class="text-xs text-slate-400">${w.meta}</div>
       ${w.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
     </div>`;
-  } else if (d.type === "run" || d.type === "race") {
-    body += `<div class="mt-4 pt-4 border-t border-slate-700">
+    } else if (d.type === "run" || d.type === "race") {
+      body += `<div class="mt-4 pt-4 border-t border-slate-700">
       <label class="flex items-center gap-3">
         <input type="checkbox" class="check accent-sky-500" ${isChecked(d.date, "run") ? "checked" : ""} onchange="toggleCheck('${d.date}','run')">
         <span class="text-sm">Hotovo</span>
       </label>
     </div>`;
+    }
+    showMtss = d.workoutId !== "mtss";
+  } else if (state === "post") {
+    // Přemostění: blok skončil, Phase 2 ještě není v appce
+    body = `<div class="flex items-start gap-3">
+    <div class="text-3xl">🧘</div>
+    <div class="flex-1">
+      <div class="text-base font-semibold leading-snug">Přemostění — volný trénink</div>
+      <div class="text-sm text-slate-400 mt-1">${gloss("Phase 1 hotová. Do startu Phase 2 (10K threshold) udržovací režim: 2–3× týdně easy běh Z1/Z2, box pátek dle zvyku, gym dle chuti. Denní MTSS níže — nevynechávat.")}</div>
+    </div>
+  </div>`;
+  } else {
+    body = `<div class="text-slate-400">Dnes není v plánu — relax nebo volný trénink.</div>`;
   }
-  // MTSS — denně, vždy zobrazit
-  if (d.workoutId !== "mtss") {
+  // MTSS — denně, vždy zobrazit (i mimo plán)
+  if (showMtss) {
     const m = WORKOUTS.mtss;
     body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
       <div class="text-xs uppercase tracking-wider text-slate-400">${m.title}</div>
       <div class="text-xs text-slate-400">${m.meta}</div>
-      ${m.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
+      ${m.exercises.map(e => exerciseRow(todayISO(), e, "today")).join("")}
     </div>`;
   }
   $("todayContent").innerHTML = body;
@@ -945,7 +973,7 @@ function renderGymLog() {
 function saveLift(id) {
   const w = parseFloat($(`log-${id}-w`).value);
   const r = parseInt($(`log-${id}-r`).value, 10);
-  if (!w || !r) return alert("Doplň váhu a opakování");
+  if (!w || !r) return showToast("Doplň váhu a opakování", 2500, "warn");
   const log = STORE.get("gymLog", []);
   log.push({ date: todayISO(), exercise: id, weight: w, reps: r });
   STORE.set("gymLog", log);
@@ -962,7 +990,7 @@ function saveHRV() {
   const rhrRaw = parseFloat($("in-rhr").value);
   const sleep = parseFloat($("in-sleep").value);
   const rpe = parseInt($("in-rpe").value, 10);
-  if (!hrvRaw && !rhrRaw && !sleep && !rpe) { alert("Doplň aspoň jednu hodnotu"); return false; }
+  if (!hrvRaw && !rhrRaw && !sleep && !rpe) { showToast("Doplň aspoň jednu hodnotu", 2500, "warn"); return false; }
   const hrv = hrvRaw ? Math.round(hrvRaw * 10) / 10 : null;
   const rhr = rhrRaw ? Math.round(rhrRaw) : null;
   const log = STORE.get("hrvLog", []);
@@ -990,10 +1018,12 @@ function saveHRV() {
 }
 
 function getHRVBaseline() {
+  // Klouzavý baseline: posledních ≤7 záznamů PŘED dneškem — dnešek se porovnává proti němu
   const log = STORE.get("hrvLog", []);
-  if (log.length === 0) return null;
-  const sorted = [...log].sort((a,b) => a.date.localeCompare(b.date));
-  const window = sorted.slice(0, Math.min(7, sorted.length));
+  const t = todayISO();
+  const sorted = log.filter(e => e.date < t).sort((a,b) => a.date.localeCompare(b.date));
+  if (sorted.length === 0) return null;
+  const window = sorted.slice(-7);
   const hrvVals = window.map(e => e.hrv).filter(v => v != null);
   const rhrVals = window.map(e => e.rhr).filter(v => v != null);
   if (hrvVals.length < 3 && rhrVals.length < 3) return null;
@@ -1008,7 +1038,7 @@ function renderHRV() {
   const log = STORE.get("hrvLog", []).sort((a,b) => a.date.localeCompare(b.date));
   const baseline = getHRVBaseline();
   $("hrvBaseline").textContent = baseline
-    ? `HRV ${baseline.hrv != null ? baseline.hrv.toFixed(0) : "—"} / RHR ${baseline.rhr != null ? baseline.rhr.toFixed(0) : "—"} (${baseline.count}d)`
+    ? `HRV ${baseline.hrv != null ? baseline.hrv.toFixed(0) : "—"} / RHR ${baseline.rhr != null ? baseline.rhr.toFixed(0) : "—"} (Ø posledních ${baseline.count})`
     : "—";
   const today = log.find(l => l.date === todayISO());
   const badge = $("hrvTodayBadge");
@@ -1023,7 +1053,7 @@ function renderHRV() {
   } else {
     badge.classList.add("hidden");
   }
-  drawSpark("hrvChart", log.slice(-14).map(e => e.hrv).filter(v => v != null), "#38bdf8");
+  drawSpark("hrvChart", log.map(e => e.hrv).filter(v => v != null).slice(-14), "#38bdf8");
 }
 
 function checkRedFlags() {
@@ -1044,7 +1074,7 @@ function checkRedFlags() {
 // =============================================================================
 function saveBody() {
   const weight = parseFloat($("in-weight").value);
-  if (!weight) return alert("Doplň váhu");
+  if (!weight) return showToast("Doplň váhu", 2500, "warn");
   const log = STORE.get("bodyLog", []);
   const i = log.findIndex(l => l.date === todayISO());
   const entry = { date: todayISO(), weight };
@@ -1076,7 +1106,7 @@ function renderBody() {
   } else {
     $("bodyReminder").textContent = "ještě nic neuloženo";
   }
-  drawSpark("weightChart", log.slice(-12).map(e => e.weight).filter(v => v != null), "#38bdf8");
+  drawSpark("weightChart", log.map(e => e.weight).filter(v => v != null).slice(-12), "#38bdf8");
 }
 
 // =============================================================================
@@ -1148,6 +1178,35 @@ function exportData() {
   URL.revokeObjectURL(url);
 }
 
+// Normalizace importu: rendery vkládají hodnoty z localStorage do innerHTML,
+// takže dovnitř smí jen čísla a validní ISO data — ne libovolné stringy z cizího JSONu.
+function sanitizeImport(d) {
+  // Pozor: Number(null) === 0 — null/"" musí zůstat null, jinak import zálohy korumpuje data
+  const num = (v) => { if (v == null || v === "") return null; const n = Number(v); return Number.isFinite(n) ? n : null; };
+  // Kalendářní round-trip (odmítne 2026-99-99 i 2026-02-30) + žádná budoucí data (logy jsou vždy ≤ dnes)
+  const isDate = (s) => {
+    if (typeof s !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(s) || s > todayISO()) return false;
+    const dt = new Date(s + "T00:00:00");
+    return s === `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+  };
+  const out = {};
+  if (d.checkboxes && typeof d.checkboxes === "object") {
+    out.checkboxes = {};
+    for (const [k, v] of Object.entries(d.checkboxes)) if (v === true) out.checkboxes[k] = true;
+  }
+  if (Array.isArray(d.hrvLog)) out.hrvLog = d.hrvLog
+    .filter(e => e && isDate(e.date))
+    .map(e => ({ date: e.date, hrv: num(e.hrv), rhr: num(e.rhr), sleep: num(e.sleep), rpe: num(e.rpe) }))
+    .filter(e => e.hrv != null || e.rhr != null || e.sleep != null || e.rpe != null);
+  if (Array.isArray(d.bodyLog)) out.bodyLog = d.bodyLog
+    .filter(e => e && isDate(e.date) && num(e.weight) != null)
+    .map(e => ({ date: e.date, weight: num(e.weight) }));
+  if (Array.isArray(d.gymLog)) out.gymLog = d.gymLog
+    .filter(e => e && isDate(e.date) && EXERCISES[e.exercise] && num(e.weight) != null && num(e.reps) != null)
+    .map(e => ({ date: e.date, exercise: e.exercise, weight: num(e.weight), reps: num(e.reps) }));
+  return out;
+}
+
 function importData() {
   const input = document.createElement("input");
   input.type = "file";
@@ -1158,14 +1217,14 @@ function importData() {
     const r = new FileReader();
     r.onload = () => {
       try {
-        const d = JSON.parse(r.result);
+        const d = sanitizeImport(JSON.parse(r.result));
         if (d.checkboxes) STORE.set("checkboxes", d.checkboxes);
         if (d.hrvLog) STORE.set("hrvLog", d.hrvLog);
         if (d.bodyLog) STORE.set("bodyLog", d.bodyLog);
         if (d.gymLog) STORE.set("gymLog", d.gymLog);
-        alert("Importováno.");
+        showToast("Importováno.");
         renderAll();
-      } catch (e) { alert("Neplatný JSON: " + e.message); }
+      } catch (e) { showToast("Neplatný JSON: " + e.message, 4000, "warn"); }
     };
     r.readAsText(file);
   };
@@ -1174,7 +1233,7 @@ function importData() {
 
 function resetWeek() {
   const w = getCurrentWeek();
-  if (!w) return;
+  if (!w) return showToast("Mimo plán — žádný aktivní týden", 2500, "warn");
   if (!confirm(`Smazat checkboxy pro ${w.name}?`)) return;
   const all = STORE.get("checkboxes", {});
   for (const k of Object.keys(all)) {
@@ -1205,8 +1264,8 @@ function getStorageMode() {
   const ua = navigator.userAgent;
   if (/CriOS/.test(ua)) return "Chrome";
   if (/FxiOS/.test(ua)) return "Firefox";
-  if (/EdgiOS/.test(ua)) return "Edge";
-  if (/Chrome/.test(ua) && !/Safari/.test(ua)) return "Chrome";
+  if (/EdgiOS|Edg\//.test(ua)) return "Edge";
+  if (/Chrome/.test(ua)) return "Chrome";
   return "Safari";
 }
 
@@ -1219,9 +1278,11 @@ function renderStorageBadge() {
   el.textContent = `${mode} storage · ${hrvCount} HRV / ${bodyCount} body`;
 }
 
-function showToast(msg, ms = 2500) {
+function showToast(msg, ms = 2500, type = "ok") {
   const t = $("toast");
   t.textContent = msg;
+  t.classList.toggle("bg-amber-400", type === "warn");
+  t.classList.toggle("bg-emerald-500", type !== "warn");
   t.classList.remove("hidden");
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.add("hidden"), ms);
@@ -1320,6 +1381,9 @@ function handleURLParams() {
   if (rhr) $("in-rhr").value = rhr;
   if (sleep) $("in-sleep").value = sleep;
   if (rpe) $("in-rpe").value = rpe;
+  // Vyčistit URL vždy — i při neúspěšném uložení. Stale parametry by při každém dalším
+  // otevření PWA znovu přepnuly na tracker a předvyplnily staré hodnoty.
+  history.replaceState({}, "", window.location.pathname);
   if (save === "1" && (hrv || rhr)) {
     const saved = saveHRV();
     if (saved) {
@@ -1327,7 +1391,6 @@ function handleURLParams() {
       if (saved.hrv) parts.push(`HRV ${saved.hrv}`); else parts.push(`HRV chybí`);
       if (saved.rhr) parts.push(`RHR ${saved.rhr}`); else parts.push(`RHR chybí`);
       showToast(`✓ Uloženo: ${parts.join(" · ")}`, 4000);
-      history.replaceState({}, "", window.location.pathname);
     }
   } else {
     setTimeout(() => $("hrvForm").scrollIntoView({behavior:"smooth", block:"start"}), 100);
@@ -1335,11 +1398,32 @@ function handleURLParams() {
   }
 }
 
+let _renderedDate = null;
 document.addEventListener("DOMContentLoaded", () => {
   switchView("today");
   renderAll();
+  _renderedDate = todayISO();
   restorePauseTimer();
   handleURLParams();
+});
+
+// iOS drží PWA v paměti dny — při návratu po půlnoci by bez re-renderu ukazovala včerejšek.
+// Re-render jen při změně data (jinak by se zbytečně zavíraly otevřené <details>).
+function rerenderIfNewDay() {
+  if (document.visibilityState !== "visible") return;
+  if (_renderedDate && todayISO() !== _renderedDate) {
+    _renderedDate = todayISO();
+    renderAll();
+  }
+}
+document.addEventListener("visibilitychange", rerenderIfNewDay);
+window.addEventListener("focus", rerenderIfNewDay);
+
+// Escape zavře modal cviku i glossary bublinu (desktop pohodlí; na touch nic nemění)
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (!$("modal").classList.contains("hidden")) closeModal();
+  $("gtip").classList.add("hidden");
 });
 
 // Vysvětlivky zkratek: klepnutí na .gloss ukáže bublinu, klepnutí jinam ji skryje
