@@ -516,14 +516,14 @@ const BLOCK = {
       focus: "Zpět na poslední váhy, pokud T1 šel bez problémů. Běh 25-30 min {Z1}/{Z2}. Žádný běh delší o víc než 10 min než nejdelší minulý týden.",
       modifiers: { gymB: "Bez jump squatu (nárt)." } },
     { start: "2026-09-21", name: "T3 — Rozjezd", quota: { gym: [2,3], run: [1,2] },
-      focus: "Normální progrese vah. Běh 30-40 min, do jednoho 4×20 s {strides}. Poslední týden bez jump squatu.",
+      focus: "Normální progrese vah. Běh 30-40 min, do jednoho 4×20 s strides. Poslední týden bez jump squatu.",
       modifiers: { gymB: "Bez jump squatu, poslední týden." } },
     { start: "2026-09-28", name: "T4 — Kalibrace", quota: { gym: [2,3], run: [1,2] },
       focus: "Kontrolní běh: 15 min rozklus, pak 3 km v tempu, kde jde říct jen krátkou frázi. Průměr těch 3 km = {T}, zapsat do appky (T_PACE_MEASURED). Při bolesti test přerušit a zkusit za týden. Druhý běh volný. Jump squat zpět, když nárt tři týdny mlčel." },
     { start: "2026-10-05", name: "T5 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: cruise, 10 min {wu} + 2×1 km @ {T} ({pace:T}/km) + 90 s klus + 10 min {cd}. Volný 40 min {Z1}/{Z2}. Při jednom běhu ten kvalitní." },
+      focus: "Kvalita: cruise, 10 min wu + 2×1 km @ {T} ({pace:T}/km) + 90 s klus + 10 min cd. Volný 40 min {Z1}/{Z2}. Při jednom běhu ten kvalitní." },
     { start: "2026-10-12", name: "T6 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: intervaly, 10 min {wu} + 4×3 min @ {I} ({pace:I}/km) + 2 min klus + 10 min {cd}. Volný 40-45 min." },
+      focus: "Kvalita: intervaly, 10 min wu + 4×3 min @ {I} ({pace:I}/km) + 2 min klus + 10 min cd. Volný 40-45 min." },
     { start: "2026-10-19", name: "T7 — Kvalita", quota: { gym: [2,3], run: [1,2] },
       focus: "Kvalita: cruise 3×1 km @ {T}, 90 s klus. Volný 45 min." },
     { start: "2026-10-26", name: "T8 — Deload", quota: { gym: [2,2], run: [1,1] }, deload: true,
@@ -679,7 +679,7 @@ function tpl(text) {
   if (!text) return text;
   return text.replace(/\{(?:(pace|kmh|split):)?([A-Za-z0-9-]+)(?::(\d+))?\}/g, (m, fn, zk, meters) => {
     const z = zoneByKey(zk);
-    if (!z) return m;
+    if (!z) return (!fn && typeof GLOSS === "object" && GLOSS[zk]) ? zk : m;   // {wu} → "wu"; neznámé nechat, ať je vidět
     if (!fn) return z.key;
     if (fn === "pace") return paceStr(z);
     if (fn === "kmh") return kmhStr(z);
