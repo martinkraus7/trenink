@@ -1,7 +1,7 @@
 // Service Worker for offline support
 // Strategy: network-first for same-origin HTML (always try latest), stale-while-revalidate for assets
 
-const CACHE = "trenink-v3";
+const CACHE = "trenink-v4";
 const SHELL = ["./", "./index.html"];
 // Tailwind Play CDN — opaque response; cache.add() ji odmítá (status 0), proto fetch + put
 const TAILWIND_URL = "https://cdn.tailwindcss.com/";

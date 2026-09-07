@@ -143,16 +143,10 @@
     <h2 class="text-xs uppercase tracking-widest text-slate-400 pt-4">Reference</h2>
 
     <details id="refZones" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
-      <summary class="font-semibold">Tempo zóny (5K block)</summary>
+      <summary class="font-semibold">Tempo zóny (5K block) <span id="zoneBadge" class="hidden ml-1 text-[10px] font-semibold uppercase tracking-wider text-amber-300">provizorní</span></summary>
       <div class="mt-3 overflow-x-auto"><table class="w-full text-sm">
         <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo min/km</th><th class="text-left">Pás km/h</th><th class="text-left">Použití</th></tr></thead>
-        <tbody class="divide-y divide-slate-700">
-          <tr><td class="py-2 font-medium">Z1 easy</td><td>60-70 %</td><td>6:30-7:00</td><td>8.6-9.2</td><td>recovery, long</td></tr>
-          <tr><td class="py-2 font-medium">Z2 steady</td><td>70-80 %</td><td>6:00-6:30</td><td>9.2-10.0</td><td>aerobic base</td></tr>
-          <tr><td class="py-2 font-medium text-amber-300">T-pace (tempo)</td><td>80-87 %</td><td>5:20-5:30</td><td>10.9-11.3</td><td>cruise 1-2 km reps</td></tr>
-          <tr><td class="py-2 font-medium text-pink-400">I-pace (5K)</td><td>90-95 %</td><td>5:00-5:10</td><td>11.6-12.0</td><td>VO2max 400-1000 m</td></tr>
-          <tr><td class="py-2 font-medium text-rose-400">R-pace (rep)</td><td>≥95 %</td><td>4:30-4:45</td><td>12.6-13.3</td><td>strides 100-200 m</td></tr>
-        </tbody>
+        <tbody id="zoneTableBody" class="divide-y divide-slate-700"></tbody>
       </table></div>
       <div class="mt-3 text-xs text-slate-400"><strong>Pás:</strong> km/h = 60 ÷ (min/km); nastav sklon 1 % ať to odpovídá běhu venku (nahrazuje chybějící odpor vzduchu). Tempa odhadnutá z HM ~5:40/km (sub-2:00). Po 5K TT 15.7. zaktualizovat. <strong>80/20:</strong> 80 % objemu easy (Z1/Z2), 20 % quality (T + I + R). <strong>I-pace (5K) = primární interval pace.</strong> R-pace jen pro strides (60-100 m, 15-20 s) — neuromuskulární, NE all-out sprint.</div>
     </details>
@@ -539,30 +533,80 @@ function fmtDateShort(iso) {
 }
 function diffDays(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
 
-// --- Glossary: vysvětlivky zkratek (Z1 apod.) — klepni v aplikaci ---
-const GLOSS = {
-  "Z1": "Z1 — lehká zóna: 60–70 % max tepu, tempo ~6:30–7:00/km. Na páse ~8.6–9.2 km/h (sklon 1 %). Recovery a dlouhé běhy, pohodlné dýchání (udržíš souvislou větu).",
-  "Z2": "Z2 — aerobní base: 70–80 % max tepu, tempo ~6:00–6:30/km. Na páse ~9.2–10.0 km/h.",
-  "Z3": "Z3 — tempo/threshold pásmo: 80–87 % max tepu, na páse ~11 km/h.",
-  "T-pace": "T-pace — threshold (tempo): ~5:20–5:30/km, na páse ~10.9–11.3 km/h. RPE 6–7, comfortable hard (zvládneš jen krátké fráze). Buduje práh.",
-  "I-pace": "I-pace — interval/VO2max: 5K tempo ~5:00–5:10/km, na páse ~11.6–12.0 km/h. RPE 9. Úseky 400–1000 m.",
-  "R-pace": "R-pace — rep: ~4:30–4:45/km, na páse ~12.6–13.3 km/h. Jen pro strides (krátká neuromuskulární zrychlení), NE all-out sprint.",
-  "5K pace": "5K pace — tempo na 5K závod, ~5:00–5:10/km, na páse ~11.6–12.0 km/h (= I-pace, primární interval pace).",
-  "strides": "Strides — krátká zrychlení 60–100 m na ~85 % max, pak chůze/poklus recovery. Trénují mechaniku, ne kondici.",
-  "wu": "wu (warm-up) — rozklusání/rozcvičení před hlavní částí.",
-  "cd": "cd (cool-down) — vyklusání/zklidnění na konci.",
-  "rec": "rec (recovery) — zotavení mezi úseky. jog = poklus, walk = chůze.",
-  "RPE": "RPE — subjektivní náročnost na škále 1–10 (6–7 = comfortable hard, 9–10 = max).",
-  "TT": "TT (time trial) — měřený test naplno, slouží jako benchmark.",
-  "MTSS": "MTSS — shin splints, zánět/bolest holení z přetížení. Prevence cviky 5–10 min denně.",
-  "VO2max": "VO2max — maximální spotřeba kyslíku. VO2max intervaly = krátké rychlé úseky (5K pace) rozvíjející aerobní strop a ekonomiku běhu.",
+// =============================================================================
+// TEMPO ZÓNY — jediný zdroj pravdy. Tabulka, glosář i texty plánu se odvozují odsud.
+// =============================================================================
+// T-pace v min/km jako desetinné číslo. MEASURED = z kontrolního běhu; null = jede se na PROVISIONAL.
+const T_PACE_PROVISIONAL = 5 + 20/60;   // 5:20 (odhad z HM ~5:40/km, květen 2026)
+const T_PACE_MEASURED    = null;
+const T_PACE = T_PACE_MEASURED ?? T_PACE_PROVISIONAL;
+// Posuny [od, do] v sekundách vůči T-pace. S T = 5:20 reprodukují původní ručně psanou tabulku přesně.
+const ZONE_OFFSETS = { Z1: [70, 100], Z2: [40, 70], T: [0, 10], I: [-20, -10], R: [-50, -35] };
+const ZONE_META = {
+  Z1: { key: "Z1",     label: "Z1 easy",        hr: "60-70 %", use: "recovery, long",     cls: "",
+        desc: "lehká zóna: %hr% max tepu, tempo %pace%/km. Na páse %kmh% km/h (sklon 1 %). Recovery a dlouhé běhy, pohodlné dýchání (udržíš souvislou větu)." },
+  Z2: { key: "Z2",     label: "Z2 steady",      hr: "70-80 %", use: "aerobic base",       cls: "",
+        desc: "aerobní base: %hr% max tepu, tempo %pace%/km. Na páse %kmh% km/h." },
+  T:  { key: "T-pace", label: "T-pace (tempo)", hr: "80-87 %", use: "cruise 1-2 km reps", cls: "text-amber-300",
+        desc: "threshold (tempo): %pace%/km, na páse %kmh% km/h. RPE 6-7, comfortable hard (zvládneš jen krátké fráze). Buduje práh." },
+  I:  { key: "I-pace", label: "I-pace (5K)",    hr: "90-95 %", use: "VO2max 400-1000 m",  cls: "text-pink-400",
+        desc: "interval/VO2max: 5K tempo %pace%/km, na páse %kmh% km/h. RPE 9. Úseky 400-1000 m." },
+  R:  { key: "R-pace", label: "R-pace (rep)",   hr: "≥95 %",   use: "strides 100-200 m",  cls: "text-rose-400",
+        desc: "rep: %pace%/km, na páse %kmh% km/h. Jen pro strides (krátká neuromuskulární zrychlení), NE all-out sprint." }
 };
-const GLOSS_RE = /\b(?:Z[1-3]|[TIR]-pace|5K pace|VO2max|strides|wu|cd|rec|RPE|TT|MTSS)\b/g;
+const ZONES = Object.fromEntries(Object.entries(ZONE_META).map(([k, m]) => {
+  const [a, b] = ZONE_OFFSETS[k];
+  return [k, { ...m, pace: [T_PACE + a/60, T_PACE + b/60] }];
+}));
+const mmss     = (min) => { const sec = Math.round(min * 60); return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,"0")}`; };
+const paceStr  = (z) => `${mmss(z.pace[0])}-${mmss(z.pace[1])}`;
+const kmhStr   = (z) => `${(60/z.pace[1]).toFixed(1)}-${(60/z.pace[0]).toFixed(1)}`;
+const splitStr = (z, m) => `${mmss(z.pace[0]*m/1000)}-${mmss(z.pace[1]*m/1000)}`;
+const zoneByKey = (k) => ZONES[k] || Object.values(ZONES).find(z => z.key === k) || (k === "Z3" ? ZONES.T : null);
+// Tokeny v textech: {I} → "I-pace", {pace:T} → "5:20-5:30", {kmh:Z1} → "8.6-9.2", {split:I:800} → "4:00-4:08". Čistě textové, bez HTML.
+function tpl(text) {
+  if (!text) return text;
+  return text.replace(/\{(?:(pace|kmh|split):)?([A-Za-z0-9-]+)(?::(\d+))?\}/g, (m, fn, zk, meters) => {
+    const z = zoneByKey(zk);
+    if (!z) return m;
+    if (!fn) return z.key;
+    if (fn === "pace") return paceStr(z);
+    if (fn === "kmh") return kmhStr(z);
+    if (fn === "split") return splitStr(z, +meters);
+    return m;
+  });
+}
+function renderZoneTable() {
+  const tb = $("zoneTableBody"); if (!tb) return;
+  tb.innerHTML = Object.values(ZONES).map(z =>
+    `<tr><td class="py-2 font-medium ${z.cls}">${z.label}</td><td>${z.hr}</td><td>${paceStr(z)}</td><td>${kmhStr(z)}</td><td>${z.use}</td></tr>`).join("");
+  const badge = $("zoneBadge"); if (badge) badge.classList.toggle("hidden", T_PACE_MEASURED != null);
+}
+
+// --- Glossary: vysvětlivky zkratek — klepni v aplikaci. Tempové položky se generují ze ZONES, ne ručně. ---
+const zoneGloss = (z) => `${z.key} — ` + z.desc.replace("%hr%", z.hr).replace("%pace%", paceStr(z)).replace("%kmh%", kmhStr(z));
+const GLOSS = Object.assign(
+  Object.fromEntries(Object.values(ZONES).map(z => [z.key, zoneGloss(z)])),
+  {
+    "Z3": `Z3 — totéž pásmo co T-pace: ${ZONES.T.hr} max tepu, ${paceStr(ZONES.T)}/km, na páse ${kmhStr(ZONES.T)} km/h.`,
+    "5K pace": `5K pace — tempo na 5K závod, ${paceStr(ZONES.I)}/km, na páse ${kmhStr(ZONES.I)} km/h (= I-pace, primární interval pace).`,
+    "strides": "Strides — krátká zrychlení 60–100 m na ~85 % max, pak chůze/poklus recovery. Trénují mechaniku, ne kondici.",
+    "wu": "wu (warm-up) — rozklusání/rozcvičení před hlavní částí.",
+    "cd": "cd (cool-down) — vyklusání/zklidnění na konci.",
+    "rec": "rec (recovery) — zotavení mezi úseky. jog = poklus, walk = chůze.",
+    "RPE": "RPE — subjektivní náročnost na škále 1–10 (6–7 = comfortable hard, 9–10 = max).",
+    "TT": "TT (time trial) — měřený test naplno, slouží jako benchmark.",
+    "MTSS": "MTSS — shin splints, zánět/bolest holení z přetížení. Prevence cviky 5–10 min denně.",
+    "VO2max": "VO2max — maximální spotřeba kyslíku. VO2max intervaly = krátké rychlé úseky (5K pace) rozvíjející aerobní strop a ekonomiku běhu.",
+  }
+);
+// Regex z klíčů (delší napřed, aby "Z1" neukousl začátek delšího klíče) — žádná ruční kopie seznamu.
+const GLOSS_RE = new RegExp("\\b(?:" + Object.keys(GLOSS).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")\\b", "g");
 const escAttr = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 // Obalí známé zkratky tappable spanem s vysvětlivkou. Jeden průchod = vložené HTML se znovu neskenuje.
 function gloss(text) {
   if (!text) return text;
-  return text.replace(GLOSS_RE, (m) => {
+  return tpl(text).replace(GLOSS_RE, (m) => {
     const d = GLOSS[m];
     return d ? `<span class="gloss" data-g="${escAttr(d)}">${m}</span>` : m;
   });
@@ -603,8 +647,15 @@ function getTodaysDay() {
 // =============================================================================
 const STORE = {
   get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
-  set(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+  set(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); }
+    catch (e) { console.error("STORE.set selhal", key, e); showToast("Uložení selhalo (plné úložiště?)", 3500, "warn"); }
+  }
 };
+// Manifest klíčů v localStorage s výchozími hodnotami. Export, import i migrace čtou odsud, ne z ručních seznamů —
+// nový klíč mimo manifest by z export→import round-tripu tiše vypadl.
+const SCHEMA_VERSION = 2;
+const STORE_KEYS = { checkboxes: {}, hrvLog: [], bodyLog: [], gymLog: [], doneLog: [] };
 
 // =============================================================================
 // MODAL
@@ -884,6 +935,7 @@ function renderToday() {
 
 function exerciseRow(date, e, context) {
   const ex = EXERCISES[e.id];
+  if (!ex) { console.error("exerciseRow: neznámý cvik", e.id); return `<div class="py-1.5 text-xs text-rose-400">⚠ Neznámý cvik: ${e.id}</div>`; }
   const label = e.pause < 60 ? e.pause + "s" : Math.floor(e.pause/60) + (e.pause % 60 ? ":" + (e.pause % 60).toString().padStart(2,"0") : "m");
   const pauseBtns = e.pause
     ? `<button onclick="startPause(${e.pause})" title="In-app countdown timer" class="shrink-0 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${label}</button>`
@@ -950,6 +1002,7 @@ function renderGymLog() {
   const log = STORE.get("gymLog", []);
   $("gymLogList").innerHTML = MAIN_LIFTS.map(id => {
     const ex = EXERCISES[id];
+    if (!ex) { console.error("renderGymLog: neznámý cvik v MAIN_LIFTS", id); return `<div class="border border-rose-500/40 rounded-lg p-3 text-xs text-rose-400">⚠ Neznámý cvik v MAIN_LIFTS: ${id}</div>`; }
     const history = log.filter(l => l.exercise === id).sort((a,b) => b.date.localeCompare(a.date));
     const last = history[0];
     const first = history[history.length - 1];
@@ -973,7 +1026,7 @@ function renderGymLog() {
 function saveLift(id) {
   const w = parseFloat($(`log-${id}-w`).value);
   const r = parseInt($(`log-${id}-r`).value, 10);
-  if (!w || !r) return showToast("Doplň váhu a opakování", 2500, "warn");
+  if (!Number.isFinite(w) || w < 0 || !r) return showToast("Doplň váhu (0 = vlastní váha) a opakování", 2500, "warn");
   const log = STORE.get("gymLog", []);
   log.push({ date: todayISO(), exercise: id, weight: w, reps: r });
   STORE.set("gymLog", log);
@@ -1163,12 +1216,8 @@ function renderTodayWarnings() {
 // EXPORT / IMPORT / RESET
 // =============================================================================
 function exportData() {
-  const data = {
-    checkboxes: STORE.get("checkboxes", {}),
-    hrvLog: STORE.get("hrvLog", []),
-    bodyLog: STORE.get("bodyLog", []),
-    gymLog: STORE.get("gymLog", [])
-  };
+  const data = { schemaVersion: SCHEMA_VERSION, exportedAt: todayISO() };
+  for (const [k, fb] of Object.entries(STORE_KEYS)) data[k] = STORE.get(k, fb);
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -1176,6 +1225,7 @@ function exportData() {
   a.download = `trenink-data-${todayISO()}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  STORE.set("lastExport", todayISO());
 }
 
 // Normalizace importu: rendery vkládají hodnoty z localStorage do innerHTML,
@@ -1203,7 +1253,21 @@ function sanitizeImport(d) {
     .map(e => ({ date: e.date, weight: num(e.weight) }));
   if (Array.isArray(d.gymLog)) out.gymLog = d.gymLog
     .filter(e => e && isDate(e.date) && EXERCISES[e.exercise] && num(e.weight) != null && num(e.reps) != null)
-    .map(e => ({ date: e.date, exercise: e.exercise, weight: num(e.weight), reps: num(e.reps) }));
+    .map(e => {
+      const o = { date: e.date, exercise: e.exercise, weight: num(e.weight), reps: num(e.reps) };
+      const rpe = num(e.rpe); if ([7, 8, 9].includes(rpe)) o.rpe = rpe;
+      const st = num(e.set);  if (st != null) o.set = st;
+      const ts = num(e.ts);   if (ts != null) o.ts = ts;
+      return o;
+    });
+  // doneLog = splněné tréninkové jednotky (týdenní kvóta). unit/cat jen bezpečné identifikátory.
+  if (Array.isArray(d.doneLog)) out.doneLog = d.doneLog
+    .filter(e => e && isDate(e.date) && typeof e.unit === "string" && /^[A-Za-z0-9_]{1,32}$/.test(e.unit))
+    .map(e => ({
+      date: e.date, unit: e.unit,
+      cat: (typeof e.cat === "string" && /^[a-z]{1,16}$/.test(e.cat)) ? e.cat : "other",
+      ts: num(e.ts) ?? Date.parse(e.date + "T12:00:00Z")
+    }));
   return out;
 }
 
@@ -1217,12 +1281,10 @@ function importData() {
     const r = new FileReader();
     r.onload = () => {
       try {
-        const d = sanitizeImport(JSON.parse(r.result));
-        if (d.checkboxes) STORE.set("checkboxes", d.checkboxes);
-        if (d.hrvLog) STORE.set("hrvLog", d.hrvLog);
-        if (d.bodyLog) STORE.set("bodyLog", d.bodyLog);
-        if (d.gymLog) STORE.set("gymLog", d.gymLog);
-        showToast("Importováno.");
+        const raw = JSON.parse(r.result);
+        const d = sanitizeImport(raw);
+        for (const k of Object.keys(STORE_KEYS)) if (d[k] !== undefined) STORE.set(k, d[k]);
+        showToast(raw && raw.schemaVersion >= 2 ? "Importováno." : "Importováno ze starší zálohy.", 3000);
         renderAll();
       } catch (e) { showToast("Neplatný JSON: " + e.message, 4000, "warn"); }
     };
@@ -1248,6 +1310,7 @@ function resetWeek() {
 // BOOT
 // =============================================================================
 function renderAll() {
+  renderZoneTable();
   renderHeader();
   renderStorageBadge();
   renderToday();
