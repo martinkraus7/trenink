@@ -41,7 +41,7 @@
         <h1 class="text-lg font-semibold leading-tight" id="todayDate">—</h1>
       </div>
       <div class="text-right">
-        <div class="text-[10px] uppercase tracking-widest text-slate-400" id="countdownLabel">do 5K testu</div>
+        <div class="text-[10px] uppercase tracking-widest text-slate-400" id="countdownLabel">—</div>
         <div class="text-2xl font-bold text-sky-400" id="countdown">—</div>
       </div>
     </div>
@@ -112,11 +112,11 @@
       </button>
       <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refZones').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
         <div class="text-sm font-semibold">Tempo zóny</div>
-        <div class="text-xs text-slate-400 mt-1">Z1/Z2/Z3 + HM</div>
+        <div class="text-xs text-slate-400 mt-1">Z1 až R-pace</div>
       </button>
       <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refRoadmap').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
-        <div class="text-sm font-semibold">Roadmap HM 2027</div>
-        <div class="text-xs text-slate-400 mt-1">12-měsíční plán</div>
+        <div class="text-sm font-semibold">Blok a pravidla</div>
+        <div class="text-xs text-slate-400 mt-1">Podzim 2026</div>
       </button>
     </div>
   </section>
@@ -127,28 +127,17 @@
     <div id="weeksList" class="space-y-2"></div>
 
     <h2 class="text-xs uppercase tracking-widest text-slate-400 pt-4">Tréninky</h2>
-    <details class="bg-slate-800 rounded-xl border border-slate-700 p-4" open>
-      <summary class="font-semibold">Gym A — Power lower</summary>
-      <div id="gymA-content" class="mt-3 space-y-2"></div>
-    </details>
-    <details class="bg-slate-800 rounded-xl border border-slate-700 p-4">
-      <summary class="font-semibold">Box + Gym B — Upper power & rotation</summary>
-      <div id="gymB-content" class="mt-3 space-y-2"></div>
-    </details>
-    <details class="bg-slate-800 rounded-xl border border-slate-700 p-4">
-      <summary class="font-semibold">MTSS prevence — denně</summary>
-      <div id="mtss-content" class="mt-3 space-y-2"></div>
-    </details>
+    <div id="workoutBlocks" class="space-y-3"></div>
 
     <h2 class="text-xs uppercase tracking-widest text-slate-400 pt-4">Reference</h2>
 
     <details id="refZones" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
-      <summary class="font-semibold">Tempo zóny (5K block) <span id="zoneBadge" class="hidden ml-1 text-[10px] font-semibold uppercase tracking-wider text-amber-300">provizorní</span></summary>
+      <summary class="font-semibold">Tempo zóny <span id="zoneBadge" class="hidden ml-1 text-[10px] font-semibold uppercase tracking-wider text-amber-300">provizorní</span></summary>
       <div class="mt-3 overflow-x-auto"><table class="w-full text-sm">
         <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo min/km</th><th class="text-left">Pás km/h</th><th class="text-left">Použití</th></tr></thead>
         <tbody id="zoneTableBody" class="divide-y divide-slate-700"></tbody>
       </table></div>
-      <div class="mt-3 text-xs text-slate-400"><strong>Pás:</strong> km/h = 60 ÷ (min/km); nastav sklon 1 % ať to odpovídá běhu venku (nahrazuje chybějící odpor vzduchu). Tempa odhadnutá z HM ~5:40/km (sub-2:00). Po 5K TT 15.7. zaktualizovat. <strong>80/20:</strong> 80 % objemu easy (Z1/Z2), 20 % quality (T + I + R). <strong>I-pace (5K) = primární interval pace.</strong> R-pace jen pro strides (60-100 m, 15-20 s) — neuromuskulární, NE all-out sprint.</div>
+      <div class="mt-3 text-xs text-slate-400"><strong>Pás:</strong> km/h = 60 ÷ (min/km); nastav sklon 1 % ať to odpovídá běhu venku (nahrazuje chybějící odpor vzduchu). Zóny se odvozují z T-pace pevnými posuny. Dokud není zapsané naměřené T-pace z kontrolního běhu (T4), jsou provizorní: dohad po sedmi týdnech útlumu, ne měření. <strong>80/20:</strong> 80 % objemu easy (Z1/Z2), 20 % quality (T + I + R). <strong>I-pace (5K) = primární interval pace.</strong> R-pace jen pro strides (60-100 m, 15-20 s) — neuromuskulární, NE all-out sprint.</div>
     </details>
 
     <details id="refMtss" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
@@ -189,14 +178,14 @@
         <div class="border-l-2 border-red-600 pl-3 mt-2">
           <strong>🔴 RED:</strong> Plný rest. Hard bone tenderness / night pain / walking pain &gt;4/10 → doktor 24-48 h.
         </div>
-        <p class="text-xs text-slate-400 pt-2">User volba (2026-05-25): „Jdu naplno, nárt řeším za pochodu." Plán je quality-from-start. Foot signál = autoritativní — pokud při intervalu bolest, zbytek běhu Z1 only.</p>
+        <p class="text-xs text-slate-400 pt-2">Režim od 7. 9. 2026: preventivní. Nárt se občas ozve, proto návrat v T1 až T3 jen volně, strides až v T3, jump squat až od T4. Bolest při běhu = dojít v chůzi, další běh až po dvou dnech bez bolesti.</p>
       </div>
     </details>
 
     <details id="refPrinciples" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
       <summary class="font-semibold">7 principů</summary>
       <ol class="mt-3 space-y-2 text-sm list-decimal pl-5 text-slate-300">
-        <li><strong>Pořadí v tréninku</strong>: skill → power → strength → endurance. <span class="text-slate-400">Box napřed gym (combat sport = skill/CNS). Síla napřed běh. Výjimka: hard sparring s kontaktem = jak závod, NE těžkou silovku potom.</span></li>
+        <li><strong>Pořadí v tréninku</strong>: síla napřed běh. <span class="text-slate-400">Kvalitní běh a Full body A (těžký dřep) nikdy ve stejný den. Když se sejde gym a běh, gym napřed a běh jen volný. Box je na pauze; až se vrátí, jde jako skill napřed před gym.</span></li>
         <li>80/20 polarizace běhu (80 % easy, 20 % quality)</li>
         <li>Cluster sady pro explozivitu (jump squat, med ball)</li>
         <li>Med ball max 3 kg (těžší = tlak, ne úder)</li>
@@ -207,15 +196,8 @@
     </details>
 
     <details id="refRoadmap" class="bg-slate-800 rounded-xl border border-slate-700 p-4 border-l-4 border-l-sky-500">
-      <summary class="font-semibold">12-měsíční roadmap (cíl HM 2027)</summary>
-      <div class="mt-3 space-y-2 text-sm text-slate-300">
-        <div class="border-l-2 border-sky-500 pl-3"><strong>Phase 1 (květen–červenec 2026) ← JSI TADY</strong><br><span class="text-slate-400">5K speed + box power. VO2max intervaly, cruise tempo, max 5K race rehearsal. 8 týdnů, končí 5K TT 15. 7. <br>Logika: speed reserve napřed = pulls up later HM pace.</span></div>
-        <div class="border-l-2 border-slate-600 pl-3"><strong>Phase 2 (srpen–říjen 2026)</strong><br><span class="text-slate-400">10K threshold block. Delší intervaly (1-2 km), více tempa, threshold dominance. Možný 10K závod jako test.</span></div>
-        <div class="border-l-2 border-slate-600 pl-3"><strong>Phase 3 (listopad 2026–leden 2027)</strong><br><span class="text-slate-400">HM base build. Extend long runs do 90+ min, threshold volume.</span></div>
-        <div class="border-l-2 border-slate-600 pl-3"><strong>Phase 4 (únor–květen 2027)</strong><br><span class="text-slate-400">HM specific. Marathon pace work, long progressions. Gym přesun na power maintenance.</span></div>
-        <div class="border-l-2 border-emerald-500 pl-3"><strong>Phase 5 (květen/červen 2027)</strong><br><span class="text-slate-400">Taper + HM závod.</span></div>
-        <div class="text-xs text-slate-400 pt-2 border-t border-slate-700">Box běží paralelně celý rok. Pátek lapy/sparring = fixní bod. Gym A/B se postupně přesouvá z power-build do power-maintain v Phase 3+. <strong>Periodizační logika:</strong> speed (5K) → threshold (10K) → endurance (HM) — buduje engine zezdola.</div>
-      </div>
+      <summary class="font-semibold">Blok a pravidla</summary>
+      <div class="mt-3 space-y-3 text-sm text-slate-300" id="blockInfo"></div>
     </details>
 
   </section>
@@ -281,7 +263,7 @@
         <button onclick="exportData()" class="flex-1 bg-slate-700 hover:bg-slate-600 rounded-lg py-2 text-sm">Export JSON</button>
         <button onclick="importData()" class="flex-1 bg-slate-700 hover:bg-slate-600 rounded-lg py-2 text-sm">Import JSON</button>
       </div>
-      <button onclick="resetWeek()" class="mt-2 w-full bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg py-2 text-sm">Smazat checkboxy tohoto týdne</button>
+      <button onclick="resetWeek()" class="mt-2 w-full bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg py-2 text-sm">Smazat záznamy tohoto týdne</button>
     </div>
 
   </section>
@@ -321,6 +303,16 @@
 
 
 <!-- EXERCISE MODAL -->
+<!-- Výběr jednotky pro týdenní kvótu (prázdný slot) -->
+<div id="logSheet" class="fixed inset-0 z-40 hidden">
+  <div class="absolute inset-0 bg-black/70" onclick="closeLogSheet()"></div>
+  <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl p-5 space-y-3 border-t border-slate-700" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom))">
+    <div class="text-xs uppercase tracking-wider text-slate-400" id="logSheetTitle">Zapsat</div>
+    <div id="logSheetUnits" class="space-y-2"></div>
+    <label class="flex items-center gap-3 text-sm text-slate-300">Datum <input type="date" id="logSheetDate" class="flex-1 bg-slate-950/60 ring-1 ring-slate-700 rounded px-2 py-1.5 text-sm"></label>
+    <button onclick="closeLogSheet()" class="w-full py-2 text-sm text-slate-400">Zrušit</button>
+  </div>
+</div>
 <div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onclick="closeModal(event)">
   <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl border-t border-slate-700 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="sticky top-0 bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-800 flex items-start justify-between">
@@ -348,17 +340,17 @@
 // EXERCISE DATA (videos found by research agent)
 // =============================================================================
 const EXERCISES = {
-  backSquat: { name: "Dřep s činkou (vzadu)", videoUrl: "https://www.youtube.com/watch?v=7v_V6xiA_AA", cues: ["Hrudník nahoru, břicho zpevněné", "Kolena ven, ve směru špiček", "Sed do paty, hloubka pod paralelu"] },
+  backSquat: { mainLift: 1, name: "Dřep s činkou (vzadu)", videoUrl: "https://www.youtube.com/watch?v=7v_V6xiA_AA", cues: ["Hrudník nahoru, břicho zpevněné", "Kolena ven, ve směru špiček", "Sed do paty, hloubka pod paralelu"] },
   landmineRotation: { name: "Landmine rotace", videoUrl: "https://www.youtube.com/watch?v=2YIkhfRc060", cues: ["Rotace vychází z boků, ne z paží", "Zadní pata se otáčí jako při úderu", "Jádro pevné, páteř neutrální"] },
-  weightedPullUp: { name: "Shyby se zátěží", videoUrl: "https://www.youtube.com/watch?v=oPigwqlUng0", cues: ["Plný visený start, ramena dolů a zpět", "Lokty táhni dolů k bokům, hrudník k tyči", "Kontrolovaná excentrická fáze"] },
-  benchPress: { name: "Bench press", videoUrl: "https://www.youtube.com/watch?v=vcBig73ojpE", cues: ["Lopatky stažené dolů a k sobě", "Tyč na spodní část hrudníku, lokty cca 45°", "Nohy pevně v zemi, lehký oblouk v zádech"] },
-  seatedCalfRaise: { name: "Calf raise v sedě (soleus)", videoUrl: "https://www.youtube.com/watch?v=CmAEHLla14I", cues: ["Koleno v 90°, izoluje soleus", "Plný rozsah - hluboký strečink dole", "Pomalý pohyb, 1-2s pauza nahoře"] },
-  standingCalfRaise: { name: "Calf raise ve stoje (gastroc)", videoUrl: "https://www.youtube.com/watch?v=YMmgqO8Jo-k", cues: ["Kolena propnutá - cílí gastrocnemius", "Plné natažení nahoře, hluboký drop dole", "Bez hupkání, kontrolované tempo"] },
+  weightedPullUp: { mainLift: 4, name: "Shyby se zátěží", videoUrl: "https://www.youtube.com/watch?v=oPigwqlUng0", cues: ["Plný visený start, ramena dolů a zpět", "Lokty táhni dolů k bokům, hrudník k tyči", "Kontrolovaná excentrická fáze"] },
+  benchPress: { mainLift: 2, name: "Bench press", videoUrl: "https://www.youtube.com/watch?v=vcBig73ojpE", cues: ["Lopatky stažené dolů a k sobě", "Tyč na spodní část hrudníku, lokty cca 45°", "Nohy pevně v zemi, lehký oblouk v zádech"] },
+  seatedCalfRaise: { retired: true, name: "Calf raise v sedě (soleus)", videoUrl: "https://www.youtube.com/watch?v=CmAEHLla14I", cues: ["Koleno v 90°, izoluje soleus", "Plný rozsah - hluboký strečink dole", "Pomalý pohyb, 1-2s pauza nahoře"] },
+  standingCalfRaise: { retired: true, name: "Calf raise ve stoje (gastroc)", videoUrl: "https://www.youtube.com/watch?v=YMmgqO8Jo-k", cues: ["Kolena propnutá - cílí gastrocnemius", "Plné natažení nahoře, hluboký drop dole", "Bez hupkání, kontrolované tempo"] },
   jumpSquat: { name: "Jump squat (30-45% 1RM)", videoUrl: "https://www.youtube.com/watch?v=hO4lUEXfriY", cues: ["Maximální výbušnost vzhůru, triple extension", "Měkké přistání, kolena ven", "Nízká zátěž, fokus na rychlost, ne objem"] },
-  singleLegRDL: { name: "Single-leg RDL", videoUrl: "https://www.youtube.com/watch?v=Zfr6wizR8rs", cues: ["Hip hinge - boky vzad, ne dřep", "Záda rovná, lopatky stažené", "Stojná noha mírně pokrčená, bok zarovnaný"] },
+  singleLegRDL: { mainLift: 3, name: "Single-leg RDL", videoUrl: "https://www.youtube.com/watch?v=Zfr6wizR8rs", cues: ["Hip hinge - boky vzad, ne dřep", "Záda rovná, lopatky stažené", "Stojná noha mírně pokrčená, bok zarovnaný"] },
   medBallPunchThrow: { name: "Medicine ball punch throw", videoUrl: "https://www.youtube.com/watch?v=A7I5XHkPlqE", cues: ["Síla z paty, přes boky do rukou", "Zadní pata se točí, jako při direktu", "Maximální záměr a rychlost vyhození"], note: "Med ball max 3 kg! Těžší = tlak místo úderu." },
   pallofPress: { name: "Pallof press", videoUrl: "https://www.youtube.com/watch?v=xeFp4MXad98", cues: ["Odolávej rotaci - tělo zůstává čelně", "Vytlač rukojeť přímo před hrudník", "Zpevněné břicho, hýždě sevřené"] },
-  abWheelRollout: { name: "Ab-wheel rollout", videoUrl: "https://www.youtube.com/watch?v=j6lR4u193gE", cues: ["Posterior pelvic tilt - bedra v neutrálu", "Roluj jen tak daleko, kolik udržíš pevné jádro", "Žádný průhyb v bedrech, kontrolovaný návrat"] },
+  abWheelRollout: { retired: true, name: "Ab-wheel rollout", videoUrl: "https://www.youtube.com/watch?v=j6lR4u193gE", cues: ["Posterior pelvic tilt - bedra v neutrálu", "Roluj jen tak daleko, kolik udržíš pevné jádro", "Žádný průhyb v bedrech, kontrolovaný návrat"] },
   eccentricCalfRaise: { name: "Eccentric calf raise ze schodu", videoUrl: "https://www.youtube.com/watch?v=Shb5bmT-ysc", cues: ["Nahoru oběma, dolů jen postiženou nohou", "Pomalý spuštění minimálně 3 sekundy", "Pata pod úroveň schodu - plný strečink"] },
   toeYoga: { name: "Toe yoga", videoUrl: "https://www.youtube.com/watch?v=Vyof9r7DNok", cues: ["1) Palec nahoru, ostatní 4 prsty dole (10×)", "2) Palec dole, ostatní 4 prsty nahoru (10×)", "3) Roztáhni všechny prsty do stran (splay, 10× výdrž 2s)", "4) Short foot / krabičkování — vytáhni klenbu, nehrabej prsty (10× výdrž 3s)", "Sed, chodidlo plně na zemi, izoluj vědomě každý pohyb"] },
   towelCurls: { name: "Towel curls", videoUrl: "https://www.youtube.com/watch?v=dVDMUuWtX00", cues: ["Pata zůstává na zemi po celou dobu", "1) Shrnuj ručník prsty k sobě (15×) — flexory", "2) Pak prsty roztáhni a tlač ručník od sebe (15×) — extenzory", "Obě fáze pracují s opačnými svaly chodidla", "Pro progresi přidej závaží na konec ručníku"] },
@@ -371,25 +363,26 @@ const EXERCISES = {
 // =============================================================================
 const WORKOUTS = {
   gymA: {
-    title: "Gym A — Power lower",
-    meta: "~45 min · Po · Power & strength, ne hypertrofie · RPE 7-8, ne k selhání",
+    title: "Full body A — síla",
+    meta: "~50 min · všechny čtyři hlavní cviky těžce · RPE 7-8, ne k selhání · pořadí = priorita, když dojde čas, vypadává odspodu",
     exercises: [
-      { id: "backSquat", sets: "3 × 4-6", pause: 180, protocol: "compound" },
-      { id: "jumpSquat", sets: "3 × cluster (2+2+2)", pause: 20, protocol: "cluster" },
-      { id: "singleLegRDL", sets: "3 × 8 / noha", pause: 90, protocol: "accessory" },
-      { id: "standingCalfRaise", sets: "3 × 12-15", pause: 60, protocol: "isolation" },
-      { id: "pallofPress", sets: "3 × 8 / strana", pause: 60, protocol: "isolation" }
+      { id: "backSquat",      sets: "3 × 4-6",        reps: [4, 6], pause: 180, protocol: "compound" },
+      { id: "benchPress",     sets: "3 × 6-8",        reps: [6, 8], pause: 150, protocol: "compound" },
+      { id: "weightedPullUp", sets: "3 × 4-6",        reps: [4, 6], pause: 150, protocol: "compound" },
+      { id: "singleLegRDL",   sets: "3 × 8 / noha",   reps: [8, 8], pause: 90,  protocol: "accessory" },
+      { id: "pallofPress",    sets: "3 × 8 / strana", reps: [8, 8], pause: 60,  protocol: "isolation" }
     ]
   },
   gymB: {
-    title: "Box + Gym B — Upper power & rotation",
-    meta: "45 min box (lapy/sparring) napřed (fresh CNS) → 30 min gym · pátek",
+    title: "Full body B — výbušnost a rotace",
+    meta: "~50-55 min · výbušnost napřed, hlavní cviky lehčeji a rychle, rotace na konec · med ball vypadává první, když dojde čas",
     exercises: [
-      { id: "weightedPullUp", sets: "3 × 4-6", pause: 180, protocol: "compound" },
-      { id: "benchPress", sets: "3 × 6-8", pause: 180, protocol: "compound" },
-      { id: "landmineRotation", sets: "3 × 6 / strana", pause: 90, protocol: "accessory" },
-      { id: "medBallPunchThrow", sets: "3 × 5 / strana", pause: 90, protocol: "accessory" },
-      { id: "abWheelRollout", sets: "3 × 6-8", pause: 60, protocol: "isolation" }
+      { id: "jumpSquat",         sets: "3 × cluster (2+2+2)",           pause: 20,  protocol: "cluster" },
+      { id: "backSquat",         sets: "3 × 6-8, max rychlost nahoru",  reps: [6, 8],  pause: 150, protocol: "compound" },
+      { id: "weightedPullUp",    sets: "3 × 6-8",                       reps: [6, 8],  pause: 150, protocol: "compound" },
+      { id: "benchPress",        sets: "3 × 8-10",                      reps: [8, 10], pause: 120, protocol: "compound" },
+      { id: "landmineRotation",  sets: "3 × 6 / strana",                reps: [6, 6],  pause: 90,  protocol: "accessory" },
+      { id: "medBallPunchThrow", sets: "3 × 5 / strana",                reps: [5, 5],  pause: 90,  protocol: "accessory", optional: true }
     ]
   },
   mtss: {
@@ -408,111 +401,79 @@ const WORKOUTS = {
 // =============================================================================
 // WEEKLY PLAN
 // =============================================================================
-const PLAN = {
-  testDate: "2026-07-15",   // 5K time trial = countdown target
-  endDate: "2026-07-19",    // konec bloku = progress bar denominator
-  goal: "5K speed + box power (Phase 1/5 — cíl HM 2027)",
+// =============================================================================
+// BLOK — týdenní kvóta místo datovaných dnů. Trénink nemá datum, nedá se zmeškat.
+// Vrstvy: CATS (kategorie kvóty, zapnout/vypnout = jeden příznak) · UNITS (menu jednotek) · BLOCK (kolik čeho v týdnu)
+// =============================================================================
+const CATS = {
+  gym:  { label: "Gym",  icon: "🏋", enabled: true,  fallbackQuota: [2, 3] },
+  run:  { label: "Běh",  icon: "🏃", enabled: true,  fallbackQuota: [1, 2] },
+  mtss: { label: "MTSS", icon: "🦵", enabled: true,  fallbackQuota: [6, 7], daily: true },
+  box:  { label: "Box",  icon: "🥊", enabled: false, fallbackQuota: [1, 2],
+          pausedNote: "Box je na pauze od září 2026. Návrat = v CATS nastavit box.enabled na true, nic dalšího." }
+};
+const UNITS = {
+  gymA:       { label: "Full body A — síla",               short: "FB A",    cat: "gym",  workoutId: "gymA" },
+  gymB:       { label: "Full body B — výbušnost a rotace", short: "FB B",    cat: "gym",  workoutId: "gymB" },
+  boxSession: { label: "Box — lapy / sparring",            short: "Box",     cat: "box",  workoutId: null, note: "45 min. Skill napřed, gym potom." },
+  runEasy:    { label: "Volný běh {Z1}/{Z2}",              short: "Volný",   cat: "run",  workoutId: null },
+  runQuality: { label: "Kvalita — cruise / intervaly",     short: "Kvalita", cat: "run",  workoutId: null },
+  runTest:    { label: "Kontrolní běh 3 km",               short: "Test",    cat: "run",  workoutId: null },
+  mtss:       { label: "MTSS prevence",                    short: "MTSS",    cat: "mtss", workoutId: "mtss" }
+};
+const BLOCK = {
+  name: "Podzim 2026 — síla a udržení běhu",
+  goal: "Málo času, box na pauze, půlmaraton 2027 odložený. Cíl: neztratit sílu ani aerobní základ při 2-3 gymech a 1-2 bězích týdně. Plní se týdenní kvóta, ne dny.",
+  gap: "Co odešlo s boxem a náhradu nemá: kondice. 45 min lap týdně nenahradí dvě full body jednotky a čas na kondiční dodatek v gymu není. Kryje to jen kvalitní běh; při jednom běhu týdně je tohle skutečná díra bloku.",
+  rules: [
+    "Kvalitní běh a Full body A (těžký dřep) nikdy ve stejný den. Když se sejde gym a běh, gym napřed a běh jen volný.",
+    "Jednotky se střídají A, B, A, B bez ohledu na týden. Pořadí cviků je priorita; když dojde čas, vypadává odspodu, nikdy hlavní cviky.",
+    "Při snížené frekvenci drží formu intenzita, ne kilometry: při jednom běhu týdně je to ten kvalitní.",
+    "Dva dny po sobě červený HRV signál = tento týden jako deload: série o jednu dolů, běh jen volný.",
+    "Nárt: bolest při doskoku = zbytek bloku bez jump squatu. Bolest při běhu = dojít v chůzi, další běh až po dvou dnech bez bolesti."
+  ],
+  start: "2026-09-07", end: "2026-12-27",
   weeks: [
-    {
-      id: "T1", name: "T1 — Reintegrace", start: "2026-05-25", end: "2026-05-31",
-      days: [
-        { date: "2026-05-25", type: "gym", workoutId: "gymA", modifier: "BEZ jump squat (foot reintegration)", title: "Gym A — Power lower (bez plyometrie)", detail: "Start nového bloku. Jump squat zatím vynechat — landing impact na nárt. Ostatní cviky normálně. Pokud dnes už nestihneš, swap za Út." },
-        { date: "2026-05-26", type: "run", title: "Easy 25 min Z1", km: 4, detail: "Pouze continuous Z1, tempo 6:30-7:00/km venku nebo 8.6-9.2 km/h na pásu (sklon 1 %). Žádné intervaly v reintegračním týdnu. Po běhu MTSS." },
-        { date: "2026-05-27", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-05-28", type: "run", title: "Easy 30 min Z1 + 4×20s strides na konci", km: 5, detail: "Strides = 60-100 m zrychlení na ~85 % max, 60-90 s chůze recovery. Test reakce extensor šlachy na rychlejší mechaniku. Pokud při stride sharp pain → stop, zbytek Z1." },
-        { date: "2026-05-29", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B — Upper power", detail: "Box jako vždy — fokus na čistotu, ne na max intenzitu (první týden plánu). Gym B post-box, ~30 min." },
-        { date: "2026-05-30", type: "run", title: "Long easy 45 min Z1", km: 7, detail: "Continuous Z1, conversational pace. Žádné push, foot je hlavní limit." },
-        { date: "2026-05-31", type: "rest", title: "Rest" }
-      ]
-    },
-    {
-      id: "T2", name: "T2 — Base build (první tempo)", start: "2026-06-01", end: "2026-06-07",
-      days: [
-        { date: "2026-06-01", type: "gym", workoutId: "gymA", title: "Gym A — Power lower (full)", detail: "Návrat jump squatu — pokud foot GREEN, jeď full verzi. Cluster 2+2+2, max rychlost, lehká zátěž (30-45 % 1RM)." },
-        { date: "2026-06-02", type: "run", title: "Easy 30 min Z1", km: 5, detail: "Conversational Z1. Pohodlné dýchání, mohl bys mluvit celou větu." },
-        { date: "2026-06-03", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-06-04", type: "run", title: "Cruise lite: 10 min wu + 2×1 km @ T-pace + 90s jog rec + 10 min cd", km: 6, detail: "T-pace ~5:20-5:30/km (LT, RPE 6-7, comfortable hard, můžeš mluvit jen krátké fráze). Mezi km jog (ne walk) — buduje schopnost recovery při běhu. POKUD foot reaguje → swap za 35 min easy Z1." },
-        { date: "2026-06-05", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
-        { date: "2026-06-06", type: "run", title: "Long easy 50 min Z1", km: 8, detail: "Pomalé tempo, ne push. Conversational." },
-        { date: "2026-06-07", type: "rest", title: "Rest" }
-      ]
-    },
-    {
-      id: "T3", name: "T3 — První intervaly", start: "2026-06-08", end: "2026-06-14",
-      days: [
-        { date: "2026-06-08", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
-        { date: "2026-06-09", type: "run", title: "VO2max: 10 min wu + 6×400 m @ 5K pace + 90s jog rec + 10 min cd", km: 7, detail: "5K pace ~5:00-5:10/km, 400 m ≈ 2:00-2:04. Jog recovery — fokus na rychlost, kvalita pohybu. Foot signál: pokud při 3. opakování bolest, stop a zbytek Z1." },
-        { date: "2026-06-10", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-06-11", type: "run", title: "Cruise: 10 min wu + 3×1 km @ T-pace + 90s jog rec + 10 min cd", km: 7, detail: "T-pace ~5:20-5:30/km, RPE 6-7, comfortable hard. Mezi km jog 90 s — kratší než plné zotavení, buduje threshold." },
-        { date: "2026-06-12", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
-        { date: "2026-06-13", type: "run", title: "Long easy 55 min Z1", km: 9 },
-        { date: "2026-06-14", type: "rest", title: "Rest" }
-      ]
-    },
-    {
-      id: "T4", name: "T4 — Deload", start: "2026-06-15", end: "2026-06-21",
-      days: [
-        { date: "2026-06-15", type: "gym", workoutId: "gymA", modifier: "-1 série / cvik (deload)", title: "Gym A (deload)", detail: "Redukce volume ~30 %. Stejná intenzita, méně sérií. Tělo si fixuje gainy." },
-        { date: "2026-06-16", type: "run", title: "Easy 25 min Z1", km: 4 },
-        { date: "2026-06-17", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-06-18", type: "run", title: "Easy 30 min Z1 + 4×20s strides", km: 5, detail: "Strides drží neuromuskulární tonus i v deload týdnu. Žádný aerobní stres." },
-        { date: "2026-06-19", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik (deload)", title: "Box (lehčí lapy) + Gym B (deload)", detail: "Řekni trenérovi že chceš lehčí session — kvalita pohybu, ne max intenzita." },
-        { date: "2026-06-20", type: "run", title: "Long easy 40 min Z1", km: 6 },
-        { date: "2026-06-21", type: "rest", title: "Rest" }
-      ]
-    },
-    {
-      id: "T5", name: "T5 — 5K block start", start: "2026-06-22", end: "2026-06-28",
-      days: [
-        { date: "2026-06-22", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
-        { date: "2026-06-23", type: "run", title: "VO2max: 10 min wu + 6×600 m @ 5K pace + 2 min jog rec + 10 min cd", km: 8, detail: "5K pace ~5:00-5:10/km, 600 m ≈ 3:00-3:06. Jog recovery — fokus na pace consistency, poslední rep nemá být výrazně pomalejší než první." },
-        { date: "2026-06-24", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-06-25", type: "run", title: "Cruise: 10 min wu + 4×1 km @ T-pace + 90s jog rec + 10 min cd", km: 8 },
-        { date: "2026-06-26", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
-        { date: "2026-06-27", type: "run", title: "Long easy 60 min Z1", km: 10 },
-        { date: "2026-06-28", type: "rest", title: "Rest" }
-      ]
-    },
-    {
-      id: "T6", name: "T6 — Build", start: "2026-06-29", end: "2026-07-05",
-      days: [
-        { date: "2026-06-29", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
-        { date: "2026-06-30", type: "run", title: "VO2max: 10 min wu + 5×800 m @ 5K pace + 2:30 jog rec + 10 min cd", km: 9, detail: "800 m @ 5K pace ≈ 4:00-4:08. Klíčový 5K-specific workout. Pokud poslední opakování významně pomalejší → zkrátit příště na 4×800 m, nebo prodloužit recovery na 3 min." },
-        { date: "2026-07-01", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-07-02", type: "run", title: "Cruise: 10 min wu + 5×1 km @ T-pace + 75s jog rec + 10 min cd", km: 9 },
-        { date: "2026-07-03", type: "gym+box", workoutId: "gymB", title: "Box (lapy) + Gym B" },
-        { date: "2026-07-04", type: "run", title: "Long easy 60 min Z1", km: 10 },
-        { date: "2026-07-05", type: "rest", title: "Rest" }
-      ]
-    },
-    {
-      id: "T7", name: "T7 — Peak quality (race rehearsal)", start: "2026-07-06", end: "2026-07-12",
-      days: [
-        { date: "2026-07-06", type: "gym", workoutId: "gymA", title: "Gym A — Power lower" },
-        { date: "2026-07-07", type: "run", title: "Race rehearsal: 10 min wu + 4×1000 m @ 5K pace + 2:30 jog rec + 10 min cd", km: 9, detail: "5K pace ~5:00-5:10/km, 1 km @ 5K pace ≈ 5:00-5:10. CELKEM 4 km @ race pace = race simulation. Pokud pace klesá &gt;10 s na opakování, snižuj kvalitou — lepší 3 dobrá než 4 propadlá." },
-        { date: "2026-07-08", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-07-09", type: "run", title: "Cruise: 10 min wu + 3×1.5 km @ T-pace + 2 min jog rec + 10 min cd", km: 9, detail: "Delší cruise reps pro threshold durability." },
-        { date: "2026-07-10", type: "gym+box", workoutId: "gymB", title: "Box (lapy/sparring) + Gym B", detail: "Pokud sparring s kontaktem = jako závod. Gym B redukuj o 1 sérii každého cviku." },
-        { date: "2026-07-11", type: "run", title: "Long easy 65 min Z1", km: 11 },
-        { date: "2026-07-12", type: "rest", title: "Rest" }
-      ]
-    },
-    {
-      id: "T8", name: "T8 — Test + review", start: "2026-07-13", end: "2026-07-19",
-      days: [
-        { date: "2026-07-13", type: "gym", workoutId: "gymA", modifier: "-1 série / cvik (taper na TT)", title: "Gym A (taper)", detail: "Lehčí session — TT je za 2 dny. Zachovej kvalitu pohybu, ne max zátěž." },
-        { date: "2026-07-14", type: "run", title: "Easy 25 min Z1 + 4×20s strides", km: 4, detail: "Aktivace před TT, žádný stress. Strides drží neuromuskulární spojení." },
-        { date: "2026-07-15", type: "race", title: "🏁 5K TIME TRIAL", km: 5, detail: "MĚŘENÝ BENCHMARK. 1.5 km warmup (postupně rychleji posledních 200 m) + 5 km all-out + 1 km cooldown. GPS + pulsmetr. Cíl indikativně: sub-25:00 (~4:55/km). Tento čas = baseline pro Phase 2 (srpen-říjen). Best terén: rovná trať, větru-mírné ráno. Caffeine 200 mg 45-60 min před." },
-        { date: "2026-07-16", type: "rest", title: "Rest + MTSS" },
-        { date: "2026-07-17", type: "gym+box", workoutId: "gymB", modifier: "-1 série / cvik (post-TT)", title: "Box (lehčí) + Gym B (post-TT)", detail: "Tělo regeneruje po TT, neházet další stress." },
-        { date: "2026-07-18", type: "run", title: "Long easy 50 min Z1", km: 8, detail: "Pohodový long, ne tempo. Aerobní udržení." },
-        { date: "2026-07-19", type: "rest", title: "🏁 KONEC BLOKU — review plánu", detail: "Phase 1 hotová. Zhodnotit: 5K TT čas (vs cíl), foot status, gym progresses, box pocit. Na základě výsledků naplánovat Phase 2 (srpen-říjen, 10K threshold block)." }
-      ]
-    }
+    { start: "2026-09-07", name: "T1 — Návrat", quota: { gym: [2,3], run: [1,2] },
+      focus: "Návrat. Váhy podle doporučení appky, po pauze níž. Běh 1-2× 20-25 min {Z1}. Žádná kvalita, žádné strides.",
+      modifiers: { gymB: "Bez jump squatu (nárt, sedm týdnů bez zátěže): místo něj jen back squat s max rychlostí nahoru." } },
+    { start: "2026-09-14", name: "T2 — Rozjezd", quota: { gym: [2,3], run: [1,2] },
+      focus: "Zpět na poslední váhy, pokud T1 šel bez problémů. Běh 25-30 min {Z1}/{Z2}. Žádný běh delší o víc než 10 min než nejdelší minulý týden.",
+      modifiers: { gymB: "Bez jump squatu (nárt)." } },
+    { start: "2026-09-21", name: "T3 — Rozjezd", quota: { gym: [2,3], run: [1,2] },
+      focus: "Normální progrese vah. Běh 30-40 min, do jednoho 4×20 s {strides}. Poslední týden bez jump squatu.",
+      modifiers: { gymB: "Bez jump squatu, poslední týden." } },
+    { start: "2026-09-28", name: "T4 — Kalibrace", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kontrolní běh: 15 min rozklus, pak 3 km v tempu, kde jde říct jen krátkou frázi. Průměr těch 3 km = {T}, zapsat do appky (T_PACE_MEASURED). Při bolesti test přerušit a zkusit za týden. Druhý běh volný. Jump squat zpět, když nárt tři týdny mlčel." },
+    { start: "2026-10-05", name: "T5 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: cruise, 10 min {wu} + 2×1 km @ {T} ({pace:T}/km) + 90 s klus + 10 min {cd}. Volný 40 min {Z1}/{Z2}. Při jednom běhu ten kvalitní." },
+    { start: "2026-10-12", name: "T6 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: intervaly, 10 min {wu} + 4×3 min @ {I} ({pace:I}/km) + 2 min klus + 10 min {cd}. Volný 40-45 min." },
+    { start: "2026-10-19", name: "T7 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: cruise 3×1 km @ {T}, 90 s klus. Volný 45 min." },
+    { start: "2026-10-26", name: "T8 — Deload", quota: { gym: [2,2], run: [1,1] }, deload: true,
+      focus: "Deload. Série o jednu dolů, běh jen volný 30-40 min. Žádná kvalita." },
+    { start: "2026-11-02", name: "T9 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: intervaly 5×3 min @ {I}, 2 min klus. Volný 45 min." },
+    { start: "2026-11-09", name: "T10 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: cruise 3×1 km @ {T}. Volný 45-50 min." },
+    { start: "2026-11-16", name: "T11 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: intervaly 5×3 min @ {I}. Volný 50 min." },
+    { start: "2026-11-23", name: "T12 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: cruise 3×1 km @ {T}. Volný 50 min." },
+    { start: "2026-11-30", name: "T13 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: intervaly 6×3 min @ {I}. Volný 50-60 min." },
+    { start: "2026-12-07", name: "T14 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: cruise 3×1 km @ {T}. Volný 60 min." },
+    { start: "2026-12-14", name: "T15 — Kvalita", quota: { gym: [2,3], run: [1,2] },
+      focus: "Kvalita: intervaly 6×3 min @ {I}. Volný 45 min." },
+    { start: "2026-12-21", name: "T16 — Svátky", quota: { gym: [1,2], run: [1,1] }, deload: true,
+      focus: "Svátky. Lehce, nic neměřit. Jeden volný běh, jde o návyk. Blok končí 27. 12." }
   ]
 };
 
-const MAIN_LIFTS = ["backSquat", "benchPress", "singleLegRDL", "weightedPullUp"];
+// Hlavní cviky pro tracker síly se odvozují z příznaku mainLift v EXERCISES (číslo = pořadí), ne z ručního seznamu.
+const MAIN_LIFTS = Object.keys(EXERCISES).filter(id => EXERCISES[id].mainLift).sort((a, b) => EXERCISES[a].mainLift - EXERCISES[b].mainLift);
 
 // =============================================================================
 // HELPERS
@@ -537,10 +498,10 @@ function diffDays(a, b) { return Math.round((new Date(b) - new Date(a)) / 864000
 // TEMPO ZÓNY — jediný zdroj pravdy. Tabulka, glosář i texty plánu se odvozují odsud.
 // =============================================================================
 // T-pace v min/km jako desetinné číslo. MEASURED = z kontrolního běhu; null = jede se na PROVISIONAL.
-const T_PACE_PROVISIONAL = 5 + 20/60;   // 5:20 (odhad z HM ~5:40/km, květen 2026)
+const T_PACE_PROVISIONAL = 5 + 40/60;   // 5:40 = dohad po sedmi týdnech útlumu (září 2026); přepíše se z kontrolního běhu v T4
 const T_PACE_MEASURED    = null;
 const T_PACE = T_PACE_MEASURED ?? T_PACE_PROVISIONAL;
-// Posuny [od, do] v sekundách vůči T-pace. S T = 5:20 reprodukují původní ručně psanou tabulku přesně.
+// Posuny [od, do] v sekundách vůči T-pace. S T = 5:20 reprodukovaly původní ručně psanou tabulku z Phase 1 přesně (ověřeno 7. 9. 2026).
 const ZONE_OFFSETS = { Z1: [70, 100], Z2: [40, 70], T: [0, 10], I: [-20, -10], R: [-50, -35] };
 const ZONE_META = {
   Z1: { key: "Z1",     label: "Z1 easy",        hr: "60-70 %", use: "recovery, long",     cls: "",
@@ -625,21 +586,77 @@ function showGloss(el) {
   clearTimeout(tip._t);
   tip._t = setTimeout(() => tip.classList.add("hidden"), 6000);
 }
-function getCurrentWeek() {
-  const t = todayISO();
-  for (const w of PLAN.weeks) if (t >= w.start && t <= w.end) return w;
-  return null;
+// --- Týden = ISO pondělí jako string. Výhradně v UTC: 25. 10. 2026 je uvnitř bloku změna času
+//     a lokální Date by kolem té neděle přiřadil záznam o den vedle.
+function mondayOf(iso) {
+  const d = new Date(iso + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() - (d.getUTCDay() + 6) % 7);
+  return d.toISOString().slice(0, 10);
 }
-// Fáze bloku — stringové porovnání ISO dat (žádné new Date → žádné TZ pasti)
-function planState(t) {
-  if (t < PLAN.weeks[0].start) return "pre";
-  if (t > PLAN.endDate) return "post";
-  return "in";
+const addDaysISO = (iso, n) => { const d = new Date(iso + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+function currentWeekKey() { return mondayOf(todayISO()); }
+function getCurrentWeek() { return BLOCK.weeks.find(w => w.start === currentWeekKey()) || null; }
+function planState(t) { if (t < BLOCK.start) return "pre"; if (t > BLOCK.end) return "post"; return "in"; }
+function quotaOf(week, cat) { const q = (week && week.quota && week.quota[cat]) || CATS[cat].fallbackQuota; return Array.isArray(q) ? q : [q, q]; }
+function activeCats() { return Object.entries(CATS).filter(([, c]) => c.enabled !== false); }
+function unitsOfCat(cat) { return Object.entries(UNITS).filter(([, u]) => u.cat === cat); }
+
+// --- doneLog: splněné jednotky. { date, unit, cat, ts }. cat je snapshot (kdyby jednotka zmizela), week se dopočítá z date.
+function buildWeekIndex() {
+  const idx = {};
+  for (const r of STORE.get("doneLog", [])) {
+    const wk = mondayOf(r.date);
+    const cat = r.cat || (UNITS[r.unit] && UNITS[r.unit].cat) || "other";
+    ((idx[wk] ||= {})[cat] ||= []).push(r);
+  }
+  for (const wk in idx) for (const c in idx[wk]) idx[wk][c].sort((x, y) => x.date.localeCompare(y.date) || x.ts - y.ts);
+  return idx;
 }
-function getTodaysDay() {
+function logUnit(unitId, date = todayISO()) {
+  const u = UNITS[unitId];
+  if (!u || date > todayISO()) return false;
+  const log = STORE.get("doneLog", []);
+  if (CATS[u.cat].daily && log.some(r => r.unit === unitId && r.date === date)) return false;
+  log.push({ date, unit: unitId, cat: u.cat, ts: Date.now() });
+  STORE.set("doneLog", log);
+  renderWeekly();
+  return true;
+}
+function unlogByTs(ts) {
+  STORE.set("doneLog", STORE.get("doneLog", []).filter(r => r.ts !== ts));
+  renderWeekly();
+}
+function weekProgress(week, idx, key) {
+  let done = 0, target = 0, allMin = true, allTarget = true;
+  for (const [cat] of activeCats()) {
+    const [mn, tg] = quotaOf(week, cat);
+    const n = ((idx[key] || {})[cat] || []).length;
+    done += Math.min(n, tg); target += tg;
+    if (n < mn) allMin = false;
+    if (n < tg) allTarget = false;
+  }
+  return { done, target, allMin, allTarget };
+}
+// Střídání gym jednotek A, B, A, B podle posledního záznamu; dnešní hotová jednotka zůstává na kartě do půlnoci.
+function nextGymUnit() {
+  const ids = unitsOfCat("gym").map(([id]) => id);
+  const last = STORE.get("doneLog", []).filter(r => r.cat === "gym" && ids.includes(r.unit)).sort((x, y) => y.date.localeCompare(x.date) || y.ts - x.ts)[0];
+  return last ? ids[(ids.indexOf(last.unit) + 1) % ids.length] : ids[0];
+}
+function todayGymUnit() {
   const t = todayISO();
-  for (const w of PLAN.weeks) for (const d of w.days) if (d.date === t) return { day: d, week: w };
-  return null;
+  const todays = STORE.get("doneLog", []).filter(r => r.cat === "gym" && r.date === t).sort((x, y) => y.ts - x.ts);
+  if (todays.length && UNITS[todays[0].unit]) return { id: todays[0].unit, done: true, ts: todays[0].ts };
+  const ov = STORE.get("gymOverride", null);
+  if (ov && ov.date === t && UNITS[ov.unit]) return { id: ov.unit, done: false };
+  return { id: nextGymUnit(), done: false };
+}
+function swapNextGym() {
+  const cur = todayGymUnit();
+  if (cur.done) return;
+  const ids = unitsOfCat("gym").map(([id]) => id);
+  STORE.set("gymOverride", { date: todayISO(), unit: ids[(ids.indexOf(cur.id) + 1) % ids.length] });
+  renderWeekly();
 }
 
 // =============================================================================
@@ -656,6 +673,14 @@ const STORE = {
 // nový klíč mimo manifest by z export→import round-tripu tiše vypadl.
 const SCHEMA_VERSION = 2;
 const STORE_KEYS = { checkboxes: {}, hrvLog: [], bodyLog: [], gymLog: [], doneLog: [] };
+// Migrace schématu. v1 → v2 (7. 9. 2026): nic se nemaže ani nepřepisuje, jen se založí doneLog.
+// Starý blok (do 19. 7.) se z checkboxů nedopočítává — heuristika by vyrobila falešná data.
+function migrate() {
+  const v = STORE.get("schemaVersion", 1);
+  if (v >= SCHEMA_VERSION) return;
+  if (localStorage.getItem("doneLog") === null) STORE.set("doneLog", []);
+  STORE.set("schemaVersion", SCHEMA_VERSION);
+}
 
 // =============================================================================
 // MODAL
@@ -785,13 +810,15 @@ function renderProtocol(type) {
   </div>`;
 }
 
-function openExercise(id) {
+function openExercise(id, unitId) {
   const ex = EXERCISES[id];
   if (!ex) return;
   $("modalTitle").textContent = ex.name;
-  const allWorkouts = [WORKOUTS.gymA, WORKOUTS.gymB, WORKOUTS.mtss];
+  // Předpis hledat v jednotce, ze které řádek přišel: stejný cvik je ve full body A i B s jiným rozsahem.
+  const u = unitId && UNITS[unitId];
+  const pool = u && u.workoutId && WORKOUTS[u.workoutId] ? [WORKOUTS[u.workoutId]] : Object.values(WORKOUTS);
   let sets = "", protocol = "";
-  for (const w of allWorkouts) {
+  for (const w of pool) {
     const found = w.exercises.find(e => e.id === id);
     if (found) { sets = found.sets; protocol = found.protocol; break; }
   }
@@ -828,13 +855,22 @@ function isChecked(date, slug) {
   const all = STORE.get("checkboxes", {});
   return !!all[checkKey(date, slug)];
 }
-function toggleCheck(date, slug, el) {
+function toggleCheck(date, slug, el, unitId) {
   const all = STORE.get("checkboxes", {});
   const k = checkKey(date, slug);
   if (all[k]) delete all[k]; else all[k] = true;
   STORE.set("checkboxes", all);
   if (el) el.checked = !!all[k];
-  // Globální progress bar je čistě časový (dny plánu), odškrtnutí ho needělá → není co překreslovat.
+  // MTSS se do týdenní kvóty zapíše sám, když jsou odškrtnuté všechny jeho cviky; odškrtnutí zpět záznam odebere.
+  if (unitId === "mtss") {
+    const complete = WORKOUTS.mtss.exercises.every(x => isChecked(date, x.id));
+    if (complete) logUnit("mtss", date);
+    else {
+      const log = STORE.get("doneLog", []);
+      const i = log.findIndex(r => r.unit === "mtss" && r.date === date);
+      if (i >= 0) { log.splice(i, 1); STORE.set("doneLog", log); renderWeekly(); }
+    }
+  }
 }
 
 // =============================================================================
@@ -856,94 +892,137 @@ function renderHeader() {
   $("todayDate").textContent = fmtDate(t);
   $("todayDayOfWeek").textContent = DAY_NAMES[d.getDay()];
   const state = planState(t);
-  if (state === "post") {
-    $("countdownLabel").textContent = "Phase 1 ✓";
-    $("countdown").innerHTML = `+${diffDays(PLAN.endDate, t)}<span class="text-sm text-slate-400"> d</span>`;
-  } else {
-    const days = diffDays(t, PLAN.testDate);
-    $("countdownLabel").textContent = days >= 0 ? "do 5K testu" : "po 5K testu";
-    $("countdown").innerHTML = days >= 0
-      ? `${days}<span class="text-sm text-slate-400"> dní</span>`
-      : `+${-days}<span class="text-sm text-slate-400"> d</span>`;
-  }
   const w = getCurrentWeek();
-  $("weekLabel").textContent = state === "post" ? "Blok dokončen — přemostění" : (w ? w.name : "Mimo plán");
-  // Global progress: how many days from plan start to end of block
-  const total = diffDays(PLAN.weeks[0].start, PLAN.endDate);
-  const done = Math.max(0, Math.min(total, diffDays(PLAN.weeks[0].start, t)));
-  $("globalProgress").style.width = `${(done / total * 100).toFixed(1)}%`;
-  $("globalProgress").classList.toggle("bg-emerald-500", state === "post");
-  $("globalProgress").classList.toggle("bg-sky-500", state !== "post");
+  const key = currentWeekKey();
+  const prog = weekProgress(w, buildWeekIndex(), key);
+  const total = BLOCK.weeks.length;
+  if (state === "pre") {
+    $("weekLabel").textContent = BLOCK.name;
+    $("countdownLabel").textContent = "do startu bloku";
+    $("countdown").innerHTML = `${diffDays(t, BLOCK.start)}<span class="text-sm text-slate-400"> dní</span>`;
+  } else if (state === "post") {
+    $("weekLabel").textContent = "Blok dokončen";
+    $("countdownLabel").textContent = "týdnů";
+    $("countdown").innerHTML = `${total}<span class="text-sm text-slate-400">/${total}</span>`;
+  } else {
+    $("weekLabel").textContent = w ? `${w.name}${w.deload ? " · deload" : ""}` : "Mimo plán";
+    $("countdownLabel").textContent = "týden bloku";
+    $("countdown").innerHTML = `${w ? BLOCK.weeks.indexOf(w) + 1 : "–"}<span class="text-sm text-slate-400">/${total}</span>`;
+  }
+  // Progress bar = splnění TOHOTO týdne (Σ hotovo / Σ cíl), ne kalendář. Emerald = vše na cíli, amber = vše aspoň na minimu.
+  const bar = $("globalProgress");
+  bar.style.width = `${(prog.target ? prog.done / prog.target * 100 : 0).toFixed(1)}%`;
+  bar.classList.toggle("bg-emerald-500", prog.allTarget);
+  bar.classList.toggle("bg-amber-400", !prog.allTarget && prog.allMin);
+  bar.classList.toggle("bg-sky-500", !prog.allMin);
+}
+
+// Řádek kvóty: sloty. Plný slot = tap vrátí zpět, prázdný = otevře výběr jednotky (i se zpětným datem).
+// Denní kategorie (MTSS) se kreslí jako 7 dní týdne, loguje se sama z checkboxů.
+function quotaRow(cat, week, idx, key) {
+  const c = CATS[cat];
+  const [mn, tg] = quotaOf(week, cat);
+  const recs = (idx[key] || {})[cat] || [];
+  const n = recs.length;
+  let slots;
+  if (c.daily) {
+    slots = Array.from({ length: 7 }, (_, i) => {
+      const day = addDaysISO(key, i);
+      const r = recs.find(x => x.date === day);
+      const isToday = day === todayISO();
+      const cls = r ? "bg-emerald-500/70" : day > todayISO() ? "bg-slate-700/30 ring-1 ring-slate-600/60" : "bg-slate-700";
+      return r
+        ? `<button onclick="unlogByTs(${r.ts})" title="${escAttr(fmtDateShort(day) + " — klepni pro vrácení")}" class="h-6 w-6 rounded ${cls} ${isToday ? "ring-2 ring-sky-400" : ""} active:scale-95 transition"></button>`
+        : `<div class="h-6 w-6 rounded ${cls} ${isToday ? "ring-2 ring-sky-400" : ""}"></div>`;
+    }).join("");
+  } else {
+    slots = Array.from({ length: Math.max(tg, n) }, (_, i) => {
+      const r = recs[i];
+      if (!r) return `<button onclick="openLogPicker('${cat}')" class="h-8 min-w-8 px-2.5 rounded-lg bg-slate-700/60 text-slate-400 text-sm ring-1 ring-slate-600 active:scale-95 transition">+</button>`;
+      const u = UNITS[r.unit];
+      return `<button onclick="unlogByTs(${r.ts})" title="${escAttr((u ? u.label : r.unit) + " · " + fmtDateShort(r.date) + " — klepni pro vrácení")}" class="h-8 px-2.5 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-semibold ring-1 ring-emerald-400/30 active:scale-95 transition">${u ? u.short : "✓"}</button>`;
+    }).join("");
+  }
+  const stateCls = n >= tg ? "text-emerald-400" : n >= mn ? "text-amber-300" : "text-slate-300";
+  return `<div class="flex items-center gap-3 py-1.5">
+    <div class="w-16 shrink-0 text-sm font-medium">${c.icon} ${c.label}</div>
+    <div class="flex flex-wrap gap-1.5 flex-1">${slots}</div>
+    <div class="text-sm font-semibold tabular-nums ${stateCls}">${n}<span class="text-slate-500 font-normal">/${tg}</span></div>
+  </div>`;
 }
 
 function renderToday() {
-  const today = getTodaysDay();
-  const state = planState(todayISO());
+  const t = todayISO();
+  const state = planState(t);
+  const w = getCurrentWeek();
+  const idx = buildWeekIndex();
+  const key = currentWeekKey();
   let body = "";
-  let showMtss = true;
-  if (today) {
-    const d = today.day;
-    const typeIcon = { rest: "🛌", run: "🏃", gym: "🏋", "gym+box": "🥊", regen: "🧘", race: "🏁" }[d.type] || "•";
-    body = `<div class="flex items-start gap-3">
-    <div class="text-3xl">${typeIcon}</div>
-    <div class="flex-1">
-      <div class="text-base font-semibold leading-snug">${gloss(d.title)}</div>
-      ${d.detail ? `<div class="text-sm text-slate-400 mt-1">${gloss(d.detail)}</div>` : ""}
-      ${d.km ? `<div class="text-xs text-slate-400 mt-1">~${d.km} km</div>` : ""}
-      ${d.modifier ? `<div class="text-xs text-amber-400 mt-1">Modifikátor: ${gloss(d.modifier)}</div>` : ""}
-    </div>
-  </div>`;
-    if (d.workoutId) {
-      const w = WORKOUTS[d.workoutId];
-      body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
-      <div class="text-xs uppercase tracking-wider text-slate-400">${w.title}</div>
-      <div class="text-xs text-slate-400">${w.meta}</div>
-      ${w.exercises.map(e => exerciseRow(d.date, e, "today")).join("")}
-    </div>`;
-    } else if (d.type === "run" || d.type === "race") {
-      body += `<div class="mt-4 pt-4 border-t border-slate-700">
-      <label class="flex items-center gap-3">
-        <input type="checkbox" class="check accent-sky-500" ${isChecked(d.date, "run") ? "checked" : ""} onchange="toggleCheck('${d.date}','run')">
-        <span class="text-sm">Hotovo</span>
-      </label>
-    </div>`;
-    }
-    showMtss = d.workoutId !== "mtss";
+  if (state === "pre") {
+    body = `<div class="text-slate-400">${BLOCK.name} začíná ${fmtDateShort(BLOCK.start)}. Do té doby volný trénink, MTSS denně.</div>`;
   } else if (state === "post") {
-    // Přemostění: blok skončil, Phase 2 ještě není v appce
-    body = `<div class="flex items-start gap-3">
-    <div class="text-3xl">🧘</div>
-    <div class="flex-1">
-      <div class="text-base font-semibold leading-snug">Přemostění — volný trénink</div>
-      <div class="text-sm text-slate-400 mt-1">${gloss("Phase 1 hotová. Do startu Phase 2 (10K threshold) udržovací režim: 2–3× týdně easy běh Z1/Z2, box pátek dle zvyku, gym dle chuti. Denní MTSS níže — nevynechávat.")}</div>
-    </div>
-  </div>`;
+    body = `<div class="text-slate-400">Blok skončil ${fmtDateShort(BLOCK.end)}. Do dalšího bloku volný trénink, MTSS denně.</div>`;
   } else {
-    body = `<div class="text-slate-400">Dnes není v plánu — relax nebo volný trénink.</div>`;
-  }
-  // MTSS — denně, vždy zobrazit (i mimo plán)
-  if (showMtss) {
-    const m = WORKOUTS.mtss;
+    body = `<div class="text-xs uppercase tracking-wider text-slate-400 mb-1">Tento týden${w && w.deload ? ' <span class="text-amber-300">· deload</span>' : ""}</div>
+      ${activeCats().map(([cat]) => quotaRow(cat, w, idx, key)).join("")}
+      ${w && w.focus ? `<div class="text-sm text-slate-300 mt-3">${gloss(w.focus)}</div>` : ""}`;
+    const cur = todayGymUnit();
+    const u = UNITS[cur.id];
+    const wk = WORKOUTS[u.workoutId];
+    const mod = w && w.modifiers && w.modifiers[cur.id];
     body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
-      <div class="text-xs uppercase tracking-wider text-slate-400">${m.title}</div>
-      <div class="text-xs text-slate-400">${m.meta}</div>
-      ${m.exercises.map(e => exerciseRow(todayISO(), e, "today")).join("")}
+      <div class="flex items-center justify-between gap-3">
+        <div><div class="text-xs uppercase tracking-wider text-slate-400">${cur.done ? "Dnes hotovo" : "Na řadě"}</div><div class="text-base font-semibold">${wk.title}</div></div>
+        ${cur.done
+          ? `<button onclick="unlogByTs(${cur.ts})" class="shrink-0 rounded-lg px-3 py-2 text-sm font-semibold bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 active:scale-95 transition">✓ Hotovo</button>`
+          : `<button onclick="logUnit('${cur.id}')" class="shrink-0 rounded-lg px-3 py-2 text-sm font-semibold bg-sky-500 text-slate-900 active:scale-95 transition">Hotovo</button>`}
+      </div>
+      <div class="text-xs text-slate-400">${gloss(wk.meta)}</div>
+      ${mod ? `<div class="text-xs text-sky-300">Tento týden: ${gloss(mod)}</div>` : ""}
+      ${wk.exercises.map(e => exerciseRow(t, e, "today", cur.id)).join("")}
+      ${cur.done ? "" : `<button onclick="swapNextGym()" class="text-xs text-slate-500 underline pt-1">Dnes dělám tu druhou</button>`}
     </div>`;
   }
+  const m = WORKOUTS.mtss;
+  body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
+    <div class="text-xs uppercase tracking-wider text-slate-400">${m.title}</div>
+    <div class="text-xs text-slate-400">${m.meta}</div>
+    ${m.exercises.map(e => exerciseRow(t, e, "today", "mtss")).join("")}
+  </div>`;
   $("todayContent").innerHTML = body;
 }
 
-function exerciseRow(date, e, context) {
+// Výběr jednotky pro prázdný slot, s datem (max dnes) pro zpětný zápis.
+function openLogPicker(cat) {
+  const c = CATS[cat];
+  $("logSheetTitle").textContent = `Zapsat: ${c.label}`;
+  $("logSheetUnits").innerHTML = unitsOfCat(cat).map(([id, u]) =>
+    `<button onclick="pickUnit('${id}')" class="w-full text-left rounded-xl bg-slate-800 ring-1 ring-slate-700 px-4 py-3 text-sm font-medium active:scale-[0.98] transition">${tpl(u.label)}</button>`).join("");
+  const di = $("logSheetDate"); di.max = todayISO(); di.value = todayISO();
+  $("logSheet").classList.remove("hidden");
+}
+function pickUnit(id) {
+  const date = $("logSheetDate").value || todayISO();
+  if (logUnit(id, date)) closeLogSheet();
+  else showToast("Nejde zapsat: budoucí datum, nebo už je zapsáno", 2500, "warn");
+}
+function closeLogSheet() { $("logSheet").classList.add("hidden"); }
+// Překreslit jen to, co závisí na doneLog (ne renderAll — ten zavírá otevřené <details> u tréninků).
+function renderWeekly() { renderHeader(); renderToday(); renderWeeks(); }
+
+function exerciseRow(date, e, context, unitId) {
   const ex = EXERCISES[e.id];
   if (!ex) { console.error("exerciseRow: neznámý cvik", e.id); return `<div class="py-1.5 text-xs text-rose-400">⚠ Neznámý cvik: ${e.id}</div>`; }
   const label = e.pause < 60 ? e.pause + "s" : Math.floor(e.pause/60) + (e.pause % 60 ? ":" + (e.pause % 60).toString().padStart(2,"0") : "m");
   const pauseBtns = e.pause
     ? `<button onclick="startPause(${e.pause})" title="In-app countdown timer" class="shrink-0 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${label}</button>`
     : "";
-  return `<div class="flex items-center gap-3 py-1.5">
-    <input type="checkbox" class="check accent-sky-500 shrink-0" ${isChecked(date, e.id) ? "checked" : ""} onchange="toggleCheck('${date}','${e.id}', this)">
-    <button onclick="openExercise('${e.id}')" class="flex-1 text-left">
-      <div class="text-sm font-medium">${ex.name}</div>
+  // V referenčním přehledu (context "plan") checkbox není — odškrtává se jen na kartě Dnes.
+  const cb = context === "plan" ? "" : `<input type="checkbox" class="check accent-sky-500 shrink-0" ${isChecked(date, e.id) ? "checked" : ""} onchange="toggleCheck('${date}','${e.id}', this, '${unitId || ""}')">`;
+  return `<div class="flex items-center gap-3 py-1.5" id="row-${context}-${unitId || "x"}-${e.id}">
+    ${cb}
+    <button onclick="openExercise('${e.id}','${unitId || ""}')" class="flex-1 text-left">
+      <div class="text-sm font-medium">${ex.name}${e.optional ? ' <span class="text-[10px] text-slate-500 font-normal">volitelné</span>' : ""}</div>
       <div class="text-xs text-slate-400">${e.sets}</div>
     </button>
     ${pauseBtns}
@@ -953,46 +1032,64 @@ function exerciseRow(date, e, context) {
 // =============================================================================
 // RENDER: PLAN VIEW
 // =============================================================================
-function renderPlan() {
-  // Weeks
+function renderWeeks() {
+  const key = currentWeekKey();
+  const idx = buildWeekIndex();
   const t = todayISO();
-  $("weeksList").innerHTML = PLAN.weeks.map(w => {
-    const isCurrent = t >= w.start && t <= w.end;
+  $("weeksList").innerHTML = BLOCK.weeks.map(w => {
+    const isCurrent = w.start === key;
+    const end = addDaysISO(w.start, 6);
+    const past = end < t;
+    const counts = activeCats().map(([cat]) => {
+      const [mn, tg] = quotaOf(w, cat);
+      const n = ((idx[w.start] || {})[cat] || []).length;
+      const cls = n >= tg ? "text-emerald-400" : n >= mn ? "text-amber-300" : past ? "text-rose-400" : "text-slate-500";
+      return `<span class="${cls} tabular-nums">${CATS[cat].icon} ${n}/${tg}</span>`;
+    }).join('<span class="text-slate-600 mx-1">·</span>');
     return `<details class="bg-slate-800 rounded-xl border ${isCurrent ? "border-sky-500/60" : "border-slate-700"} p-4" ${isCurrent ? "open" : ""}>
       <summary class="font-semibold">
-        <span class="${isCurrent ? "text-sky-400" : ""}">${w.name}</span>
-        <span class="text-xs text-slate-400 ml-2">${fmtDateShort(w.start)} – ${fmtDateShort(w.end)}</span>
+        <span class="${isCurrent ? "text-sky-400" : ""}">${w.name}</span>${w.deload ? ' <span class="text-[10px] uppercase tracking-wider text-amber-300 ml-1">deload</span>' : ""}
+        <span class="text-xs text-slate-400 ml-2">${fmtDateShort(w.start)} – ${fmtDateShort(end)}</span>
+        <div class="text-xs mt-1 font-normal">${counts}</div>
       </summary>
-      <div class="mt-3 space-y-2">
-        ${w.days.map(d => weekDayRow(d)).join("")}
+      <div class="mt-3 space-y-2 text-sm text-slate-300">
+        ${w.focus ? `<div>${gloss(w.focus)}</div>` : ""}
+        ${w.modifiers ? Object.entries(w.modifiers).map(([uid, m]) => `<div class="text-xs text-sky-300">${UNITS[uid] ? UNITS[uid].short : uid}: ${gloss(m)}</div>`).join("") : ""}
       </div>
     </details>`;
   }).join("");
-
-  // Workouts
-  $("gymA-content").innerHTML = renderWorkoutBlock("gymA");
-  $("gymB-content").innerHTML = renderWorkoutBlock("gymB");
-  $("mtss-content").innerHTML = renderWorkoutBlock("mtss");
 }
 
-function weekDayRow(d) {
-  const date = new Date(d.date + "T00:00:00");
-  const dow = DAY_SHORT[date.getDay()];
-  const isToday = d.date === todayISO();
-  return `<div class="flex items-start gap-3 ${isToday ? "bg-sky-500/5 -mx-1 px-1 rounded" : ""}">
-    <div class="text-xs text-slate-400 w-12 pt-1">${dow} ${date.getDate()}.${date.getMonth()+1}.</div>
-    <div class="flex-1 text-sm">
-      <div class="${isToday ? "text-sky-300 font-medium" : ""}">${gloss(d.title)}</div>
-      ${d.km ? `<div class="text-xs text-slate-400">~${d.km} km</div>` : ""}
-    </div>
-  </div>`;
+// Referenční bloky tréninků se generují z UNITS: přidání jednotky = jeden záznam, žádné ruční DOM id.
+// Volat jen z bootu a importu — každé překreslení sbalí otevřené <details>.
+function renderWorkoutBlocks() {
+  const el = $("workoutBlocks"); if (!el) return;
+  el.innerHTML = Object.entries(UNITS)
+    .filter(([, u]) => u.workoutId && CATS[u.cat].enabled !== false)
+    .map(([uid, u], i) => {
+      const w = WORKOUTS[u.workoutId];
+      return `<details class="bg-slate-800 rounded-xl border border-slate-700 p-4" ${i === 0 ? "open" : ""}>
+        <summary class="font-semibold">${w.title}</summary>
+        <div class="mt-3 space-y-2">${renderWorkoutBlock(uid)}</div>
+      </details>`;
+    }).join("");
 }
-
-function renderWorkoutBlock(id) {
-  const w = WORKOUTS[id];
+function renderWorkoutBlock(uid) {
+  const u = UNITS[uid];
+  const w = WORKOUTS[u.workoutId];
   const today = todayISO();
-  return `<div class="text-xs text-slate-400 mb-2">${w.meta}</div>
-    ${w.exercises.map(e => exerciseRow(today, e, "plan")).join("")}`;
+  return `<div class="text-xs text-slate-400 mb-2">${gloss(w.meta)}</div>
+    ${w.exercises.map(e => exerciseRow(today, e, "plan", uid)).join("")}`;
+}
+function renderBlockInfo() {
+  const el = $("blockInfo"); if (!el) return;
+  const deloads = BLOCK.weeks.filter(w => w.deload).map(w => w.name.split(" ")[0]).join(" a ");
+  el.innerHTML = `
+    <div><strong>${BLOCK.name}</strong><div class="text-xs text-slate-400 mt-0.5">${fmtDateShort(BLOCK.start)} – ${fmtDateShort(BLOCK.end)} · ${BLOCK.weeks.length} týdnů · deload ${deloads}</div></div>
+    <div class="text-slate-400">${gloss(BLOCK.goal)}</div>
+    <div class="border-l-2 border-amber-500 pl-3 text-slate-400">${gloss(BLOCK.gap)}</div>
+    <ul class="list-disc pl-5 space-y-1">${BLOCK.rules.map(r => `<li>${gloss(r)}</li>`).join("")}</ul>
+    <div class="text-xs text-slate-400 pt-2 border-t border-slate-700">${CATS.box.pausedNote} Půlmaraton 2027 je odložený, ne zrušený. O dalším bloku se rozhodne v lednu 2027 podle času a formy.</div>`;
 }
 
 // =============================================================================
@@ -1285,6 +1382,7 @@ function importData() {
         const d = sanitizeImport(raw);
         for (const k of Object.keys(STORE_KEYS)) if (d[k] !== undefined) STORE.set(k, d[k]);
         showToast(raw && raw.schemaVersion >= 2 ? "Importováno." : "Importováno ze starší zálohy.", 3000);
+        migrate();
         renderAll();
       } catch (e) { showToast("Neplatný JSON: " + e.message, 4000, "warn"); }
     };
@@ -1294,15 +1392,14 @@ function importData() {
 }
 
 function resetWeek() {
+  const key = currentWeekKey();
   const w = getCurrentWeek();
-  if (!w) return showToast("Mimo plán — žádný aktivní týden", 2500, "warn");
-  if (!confirm(`Smazat checkboxy pro ${w.name}?`)) return;
+  const end = addDaysISO(key, 6);
+  if (!confirm(`Smazat záznamy tohoto týdne (${w ? w.name : key})? Checkboxy a splněné jednotky. Historie vah zůstane.`)) return;
   const all = STORE.get("checkboxes", {});
-  for (const k of Object.keys(all)) {
-    const d = k.split("__")[0];
-    if (d >= w.start && d <= w.end) delete all[k];
-  }
+  for (const k of Object.keys(all)) { const d = k.split("__")[0]; if (d >= key && d <= end) delete all[k]; }
   STORE.set("checkboxes", all);
+  STORE.set("doneLog", STORE.get("doneLog", []).filter(r => mondayOf(r.date) !== key));
   renderAll();
 }
 
@@ -1314,7 +1411,9 @@ function renderAll() {
   renderHeader();
   renderStorageBadge();
   renderToday();
-  renderPlan();
+  renderWeeks();
+  renderWorkoutBlocks();
+  renderBlockInfo();
   renderGymLog();
   renderHRV();
   renderBody();
@@ -1464,6 +1563,7 @@ function handleURLParams() {
 let _renderedDate = null;
 document.addEventListener("DOMContentLoaded", () => {
   switchView("today");
+  migrate();
   renderAll();
   _renderedDate = todayISO();
   restorePauseTimer();
