@@ -27,6 +27,10 @@
     input[type=number], input[type=date] { font-size: 16px; }
     .spark { stroke-linecap: round; stroke-linejoin: round; }
     .gloss { border-bottom: 1px dotted #64748b; cursor: help; }
+    body { touch-action: manipulation; }
+    @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.12)} 100%{transform:scale(1)} }
+    .pop { animation: pop .26s cubic-bezier(.34,1.56,.64,1); }
+    @media (prefers-reduced-motion: reduce) { .pop { animation: none } }
     #gtip { position: fixed; z-index: 60; background: #0b1220; border: 1px solid #334155; color: #e2e8f0; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; box-shadow: 0 8px 28px rgba(0,0,0,.5); }
   </style>
 </head>
@@ -289,7 +293,7 @@
 </nav>
 
 <!-- TOAST -->
-<div id="toast" class="hidden fixed top-24 left-1/2 z-50 -translate-x-1/2 bg-emerald-500 text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg text-sm"></div>
+<div id="toast" class="hidden fixed left-1/2 z-50 -translate-x-1/2 bg-emerald-500 text-slate-900 px-4 py-2 rounded-lg font-semibold shadow-lg text-sm flex items-center" style="bottom: calc(env(safe-area-inset-bottom) + 9rem)"></div>
 
 <!-- Glossary tooltip (Z1 apod.) -->
 <div id="gtip" class="hidden"></div>
@@ -313,6 +317,31 @@
     <button onclick="closeLogSheet()" class="w-full py-2 text-sm text-slate-400">Zrušit</button>
   </div>
 </div>
+<!-- Ruční zápis série: stepper, bez klávesnice -->
+<div id="setSheet" class="fixed inset-0 z-40 hidden">
+  <div class="absolute inset-0 bg-black/70" onclick="closeSetSheet()"></div>
+  <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl p-5 space-y-4 border-t border-slate-700" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom))">
+    <div>
+      <div class="text-xs uppercase tracking-wider text-slate-400" id="shTitle">Zapsat sérii</div>
+      <div class="text-xs text-slate-500 mt-0.5" id="shHint"></div>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="shBump('w', -1)" class="h-14 w-14 rounded-2xl bg-slate-800 text-2xl font-light ring-1 ring-slate-700 active:scale-95 transition">−</button>
+      <div class="flex-1 text-center"><div id="shWeight" class="text-4xl font-bold tabular-nums leading-none">—</div><div class="mt-1 text-[10px] uppercase tracking-widest text-slate-500">kg</div></div>
+      <button onclick="shBump('w', 1)" class="h-14 w-14 rounded-2xl bg-slate-800 text-2xl font-light ring-1 ring-slate-700 active:scale-95 transition">+</button>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="shBump('r', -1)" class="h-12 w-12 rounded-2xl bg-slate-800 text-xl font-light ring-1 ring-slate-700 active:scale-95 transition">−</button>
+      <div class="flex-1 text-center"><div id="shReps" class="text-2xl font-bold tabular-nums leading-none">—</div><div class="mt-1 text-[10px] uppercase tracking-widest text-slate-500">opakování</div></div>
+      <button onclick="shBump('r', 1)" class="h-12 w-12 rounded-2xl bg-slate-800 text-xl font-light ring-1 ring-slate-700 active:scale-95 transition">+</button>
+    </div>
+    <button onclick="shSave()" id="shSave" class="w-full rounded-xl bg-sky-500 py-3 text-sm font-semibold text-slate-900 active:scale-[0.98] transition">Zapsat sérii</button>
+    <div class="flex gap-2">
+      <button onclick="shDeleteLast()" id="shDelete" class="flex-1 py-2 text-xs text-rose-300">Smazat poslední dnešní sérii</button>
+      <button onclick="closeSetSheet()" class="flex-1 py-2 text-xs text-slate-400">Zrušit</button>
+    </div>
+  </div>
+</div>
 <div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onclick="closeModal(event)">
   <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl border-t border-slate-700 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="sticky top-0 bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-800 flex items-start justify-between">
@@ -328,6 +357,21 @@
       <div>
         <div class="text-xs uppercase tracking-wider text-slate-400 mb-2">Klíčové cues</div>
         <ul id="modalCues" class="space-y-1.5 text-sm"></ul>
+      </div>
+      <div id="modalSuggest" class="hidden rounded-2xl bg-gradient-to-br from-sky-500/15 to-sky-500/5 p-4 ring-1 ring-sky-400/25">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-sky-300/80">Dnešní návrh</div>
+            <div class="mt-1 flex items-baseline gap-1.5">
+              <span id="sgWeight" class="text-4xl font-bold tabular-nums tracking-tight text-sky-200">—</span>
+              <span class="text-sm text-sky-300/70">kg</span>
+              <span id="sgDelta" class="ml-1 text-sm font-bold text-emerald-400"></span>
+            </div>
+          </div>
+          <span id="sgBadge" class="hidden shrink-0 rounded-full bg-amber-400/15 px-2.5 py-1 text-[11px] font-semibold text-amber-300 ring-1 ring-amber-400/30"></span>
+        </div>
+        <p id="sgWhy" class="mt-2.5 text-[13px] leading-relaxed text-slate-300"></p>
+        <div id="sgWarmup" class="mt-3 flex flex-wrap gap-1.5"></div>
       </div>
       <div id="modalProtocol" class="hidden"></div>
       <div id="modalNote" class="text-sm text-amber-300 hidden"></div>
@@ -474,6 +518,81 @@ const BLOCK = {
 
 // Hlavní cviky pro tracker síly se odvozují z příznaku mainLift v EXERCISES (číslo = pořadí), ne z ručního seznamu.
 const MAIN_LIFTS = Object.keys(EXERCISES).filter(id => EXERCISES[id].mainLift).sort((a, b) => EXERCISES[a].mainLift - EXERCISES[b].mainLift);
+
+// =============================================================================
+// DOPORUČENÁ VÁHA — přírůstky per cvik; rozsah opakování se čte z jednotky (A a B mají u stejného cviku jiný).
+// Historie se drží per (cvik, jednotka): A 4-6 a B 6-8 nemohou sdílet jednu váhu. Staré záznamy bez unit platí pro obě.
+// =============================================================================
+const LOAD = {
+  backSquat:        { inc: 5,   min: 20 },
+  benchPress:       { inc: 2.5, min: 20 },
+  weightedPullUp:   { inc: 2.5, min: 0, bodyweight: true },
+  singleLegRDL:     { inc: 2.5, min: 0 },
+  landmineRotation: { inc: 2.5, min: 0 }
+};
+const roundTo = (w, step) => Number((Math.round(w / step) * step).toFixed(2));
+function workoutEntry(exId, unitId) { const u = UNITS[unitId]; const w = u && WORKOUTS[u.workoutId]; return w ? w.exercises.find(x => x.id === exId) || null : null; }
+function repsFor(exId, unitId) {
+  const e = workoutEntry(exId, unitId);
+  if (e && e.reps) return e.reps;
+  for (const w of Object.values(WORKOUTS)) { const f = w.exercises.find(x => x.id === exId && x.reps); if (f) return f.reps; }
+  return [5, 5];
+}
+// Tréninky daného cviku (v dané jednotce), nejnovější první. Rozhoduje poslední série na nejtěžší váze — ta nese únavu.
+function sessionsFor(exId, unitId) {
+  const byDate = {};
+  for (const l of STORE.get("gymLog", [])) {
+    if (l.exercise !== exId) continue;
+    if (unitId && l.unit && l.unit !== unitId) continue;
+    (byDate[l.date] ||= []).push(l);
+  }
+  return Object.keys(byDate).sort().reverse().map(date => {
+    const sets = byDate[date].slice().sort((a, b) => (a.set || 0) - (b.set || 0) || (a.ts || 0) - (b.ts || 0));
+    const top = sets.reduce((a, b) => (b.weight > a.weight ? b : a), sets[0]);
+    const dec = sets.filter(x => x.weight === top.weight).slice(-1)[0];
+    return { date, sets, weight: top.weight, reps: dec.reps, rpe: dec.rpe ?? null, unit: dec.unit || null };
+  });
+}
+function suggestLoad(exId, unitId) {
+  const cfg = LOAD[exId];
+  if (!cfg) return null;
+  const [lo, hi] = repsFor(exId, unitId);
+  const t = todayISO();
+  const hist = sessionsFor(exId, unitId).filter(x => x.date < t);       // dnešek o dnešku nerozhoduje
+  if (!hist.length) {
+    const other = sessionsFor(exId, null).filter(x => x.date < t && x.unit && x.unit !== unitId)[0];
+    return { weight: null, kind: "first", why: (other
+      ? `V ${UNITS[other.unit] ? UNITS[other.unit].short : other.unit} jsi dal ${other.weight} kg × ${other.reps}. Tady je rozsah ${lo}-${hi}, tak začni ${lo < other.reps ? "o 5-10 % výš" : "o 5-10 % níž"}. `
+      : "Zatím žádný záznam. První sérii najdi na cit: váha, se kterou dáš horní hranici rozsahu a zbyla by 2-3 opakování. ")
+      + "Zapiš ji přes ⋯ a od příště počítám já." };
+  }
+  const last = hist[0];
+  const gap = diffDays(last.date, t);
+  if (gap >= 14) {
+    const f = gap >= 56 ? 0.70 : gap >= 35 ? 0.80 : 0.90;
+    const w = Math.max(cfg.min, roundTo(last.weight * f, cfg.inc));
+    return { weight: w, kind: "deload", badge: "Po pauze", last,
+      why: `${gap} dní od posledního zápisu (${last.weight} kg × ${last.reps}). Jedeš na ${Math.round(f * 100)} %: ` + (gap >= 56 ? "první dva tréninky technika a rozsah, pak jeden krok za trénink." : "zpět na plnou váhu za 2-3 tréninky.") };
+  }
+  const rate = x => x.rpe ?? (x.reps >= hi ? 7 : x.reps < lo ? 9 : 8);   // starý záznam bez RPE: odhad z opakování
+  const rpe = rate(last), prevRpe = hist[1] ? rate(hist[1]) : null;
+  let w = last.weight, kind = "hold", why;
+  if (rpe <= 7 && last.reps >= hi) { w = roundTo(last.weight + cfg.inc, cfg.inc); kind = "up"; why = `Minule ${last.weight} kg × ${last.reps} a bylo to lehké → +${cfg.inc} kg.`; }
+  else if (rpe <= 7) why = `Minule ${last.weight} kg × ${last.reps}: lehké, ale pod horní hranicí ${hi}. Stejná váha, dotáhni opakování, pak se zvedne.`;
+  else if (rpe === 8) why = `Minule ${last.weight} kg × ${last.reps}, akorát → drž váhu.`;
+  else if (prevRpe >= 9 || last.reps < lo) { w = Math.max(cfg.min, roundTo(last.weight - cfg.inc, cfg.inc)); kind = "down"; why = `Dvakrát po sobě těžké, nebo pod dolní hranicí ${lo} → −${cfg.inc} kg a rozjet znovu.`; }
+  else why = `Minule ${last.weight} kg × ${last.reps}, těžké. Zopakuj stejnou váhu, jeden špatný den nic neznamená.`;
+  if (kind === "up" && checkRedFlags().count >= 2) return { weight: last.weight, kind: "hold", badge: "HRV stop", last, why: `Dnes HRV/pulz mimo baseline → drž ${last.weight} kg, přidáš příště.` };
+  return { weight: w, kind, why, last };
+}
+function warmupSets(working, cfg) {
+  if (!cfg || cfg.bodyweight || working == null) return [];
+  return [[0.5, 5], [0.7, 3], [0.85, 1]].map(([f, r]) => ({ weight: Math.max(cfg.min, roundTo(working * f, 2.5)), reps: r }));
+}
+function todaySets(exId, unitId) {
+  const t = todayISO();
+  return STORE.get("gymLog", []).filter(l => l.exercise === exId && l.date === t && (!l.unit || !unitId || l.unit === unitId)).sort((a, b) => (a.set || 0) - (b.set || 0) || (a.ts || 0) - (b.ts || 0));
+}
 
 // =============================================================================
 // HELPERS
@@ -685,8 +804,9 @@ function migrate() {
 // =============================================================================
 // MODAL
 // =============================================================================
-function renderProtocol(type) {
+function renderProtocol(type, exId) {
   if (!type) return "";
+  const inc = (exId && LOAD[exId] && LOAD[exId].inc) || 2.5;
   const protos = {
     compound: {
       title: "Protokol — Compound (těžký složený cvik)",
@@ -703,8 +823,9 @@ function renderProtocol(type) {
           { text: "Pauza mezi pracovními sériemi", pause: 180 }
         ]},
         { label: "Progression (per session)", items: [
-          "Pokud poslední rep poslední série RPE ≤7 (mohl bys 3+) → +2.5 kg příště",
-          "Pokud RPE 9-10 (poslední rep skoro k selhání) → drž nebo -2.5 kg",
+          `Poslední série lehká (RPE ≤7, 3+ v rezervě) a horní hranice rozsahu → +${inc} kg příště`,
+          `Těžké (RPE 9) poprvé → drž; dvakrát po sobě → −${inc} kg`,
+          "Přijde to samo: appka to z tvých zápisů počítá (karta Dnešní návrh)",
           "Nikdy ne pyramida až k 1RM — zbytečný CNS náklad"
         ]}
       ]
@@ -823,8 +944,20 @@ function openExercise(id, unitId) {
     if (found) { sets = found.sets; protocol = found.protocol; break; }
   }
   $("modalSets").textContent = sets;
-  $("modalProtocol").innerHTML = renderProtocol(protocol);
+  $("modalProtocol").innerHTML = renderProtocol(protocol, id);
   $("modalProtocol").classList.toggle("hidden", !protocol);
+  // Dnešní návrh váhy (jen cviky s LOAD a známou jednotkou)
+  const sg = LOAD[id] && u ? suggestLoad(id, unitId) : null;
+  $("modalSuggest").classList.toggle("hidden", !sg);
+  if (sg) {
+    $("sgWeight").textContent = sg.weight == null ? "?" : sg.weight;
+    $("sgDelta").textContent = sg.kind === "up" ? `+${LOAD[id].inc}` : sg.kind === "down" ? `−${LOAD[id].inc}` : "";
+    $("sgDelta").className = `ml-1 text-sm font-bold ${sg.kind === "down" ? "text-amber-300" : "text-emerald-400"}`;
+    $("sgBadge").textContent = sg.badge || ""; $("sgBadge").classList.toggle("hidden", !sg.badge);
+    $("sgWhy").textContent = sg.why;
+    $("sgWarmup").innerHTML = warmupSets(sg.weight, LOAD[id]).map(x => `<span class="rounded-lg bg-slate-950/50 px-2 py-1 font-mono text-xs tabular-nums text-slate-300 ring-1 ring-slate-700">${x.weight}×${x.reps}</span>`).join("")
+      + (sg.weight != null && !LOAD[id].bodyweight ? `<span class="text-[10px] text-slate-500 self-center">rozehřátí 50 / 70 / 85 %</span>` : "");
+  }
   const m = ex.videoUrl.match(/[?&]v=([^&]+)/);
   if (m) {
     $("modalVideo").innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
@@ -1017,6 +1150,8 @@ function exerciseRow(date, e, context, unitId) {
   const pauseBtns = e.pause
     ? `<button onclick="startPause(${e.pause})" title="In-app countdown timer" class="shrink-0 px-2.5 py-1 bg-slate-700 hover:bg-slate-600 active:bg-slate-500 rounded text-xs font-medium font-mono">⏱ ${label}</button>`
     : "";
+  // Cviky s doporučenou váhou mají na kartě Dnes místo checkboxu tlačítka sérií (jeden tap = zapsaná série).
+  if (context === "today" && LOAD[e.id] && unitId) return setRow(date, e, unitId, pauseBtns);
   // V referenčním přehledu (context "plan") checkbox není — odškrtává se jen na kartě Dnes.
   const cb = context === "plan" ? "" : `<input type="checkbox" class="check accent-sky-500 shrink-0" ${isChecked(date, e.id) ? "checked" : ""} onchange="toggleCheck('${date}','${e.id}', this, '${unitId || ""}')">`;
   return `<div class="flex items-center gap-3 py-1.5" id="row-${context}-${unitId || "x"}-${e.id}">
@@ -1027,6 +1162,141 @@ function exerciseRow(date, e, context, unitId) {
     </button>
     ${pauseBtns}
   </div>`;
+}
+
+const FEEL = { 7: "lehké", 8: "akorát", 9: "těžké" };
+function setRow(date, e, unitId, pauseBtns) {
+  const ex = EXERCISES[e.id];
+  const sg = suggestLoad(e.id, unitId);
+  const sets = todaySets(e.id, unitId);
+  const n = sets.length, target = 3;
+  const [lo, hi] = repsFor(e.id, unitId);
+  const last = sets[n - 1];
+  const done = n >= target;
+  const needFeel = done && last && last.rpe == null;
+  const kindCls = { up: "text-emerald-400", down: "text-amber-300", deload: "text-amber-300", hold: "text-slate-400", first: "text-slate-500" }[sg.kind] || "text-slate-400";
+  const kindTxt = sg.kind === "up" ? `+${LOAD[e.id].inc}` : sg.kind === "down" ? `−${LOAD[e.id].inc}` : sg.badge || (sg.kind === "hold" ? "drž" : "");
+  const lastTxt = sg.last ? ` · minule ${sg.last.weight}×${sg.last.reps}` : "";
+  const setBtns = Array.from({ length: Math.max(target, n) }, (_, i) => {
+    const st = sets[i];
+    if (st) return `<div class="h-11 flex-1 rounded-lg bg-emerald-500/15 text-emerald-300 text-xs font-semibold ring-1 ring-emerald-400/30 flex items-center justify-center tabular-nums">✓ ${st.weight}×${st.reps}</div>`;
+    const next = i === n;
+    return `<button onclick="logSet('${e.id}','${unitId}')" ${next ? "" : "disabled"} class="h-11 flex-1 rounded-lg text-sm font-bold transition active:scale-95 ${next ? "bg-sky-500/20 text-sky-200 ring-1 ring-sky-400/40" : "bg-slate-700/40 text-slate-600"}">${i + 1}</button>`;
+  }).join("");
+  const feel = needFeel ? `<div class="mt-2 rounded-lg bg-slate-950/50 p-3 ring-1 ring-slate-700">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Jak šla poslední série?</div>
+      <div class="mt-2 grid grid-cols-3 gap-2">
+        <button onclick="rateSet('${e.id}','${unitId}',7)" class="h-12 rounded-lg bg-emerald-500/10 text-sm font-semibold text-emerald-300 ring-1 ring-emerald-400/25 active:scale-95">Lehké<div class="text-[10px] font-normal opacity-60">3+ v rezervě</div></button>
+        <button onclick="rateSet('${e.id}','${unitId}',8)" class="h-12 rounded-lg bg-sky-500/10 text-sm font-semibold text-sky-300 ring-1 ring-sky-400/25 active:scale-95">Akorát<div class="text-[10px] font-normal opacity-60">2 v rezervě</div></button>
+        <button onclick="rateSet('${e.id}','${unitId}',9)" class="h-12 rounded-lg bg-amber-500/10 text-sm font-semibold text-amber-300 ring-1 ring-amber-400/25 active:scale-95">Těžké<div class="text-[10px] font-normal opacity-60">0-1 v rezervě</div></button>
+      </div>
+      <div class="mt-2 flex items-center justify-center gap-2 text-[11px] text-slate-500"><span>opakování v poslední:</span>
+        ${Array.from({ length: hi - lo + 1 }, (_, i) => lo + i).map(r => `<button onclick="fixReps('${e.id}','${unitId}',${r})" class="rounded px-2 py-0.5 tabular-nums ring-1 ${last.reps === r ? "ring-sky-400 text-sky-300" : "ring-slate-700"}">${r}</button>`).join("")}
+      </div>
+    </div>` : "";
+  const summary = done && !needFeel ? `<div class="mt-1 text-xs text-emerald-400">✓ ${n} série · ${last.weight} kg · ${FEEL[last.rpe] || ""}</div>` : "";
+  return `<div class="py-2 ${done && !needFeel ? "opacity-70" : ""}" id="row-today-${unitId}-${e.id}">
+    <div class="flex items-start gap-3">
+      <button onclick="openExercise('${e.id}','${unitId}')" class="flex-1 text-left">
+        <div class="text-sm font-medium ${done ? "text-slate-400" : ""}">${ex.name}</div>
+        <div class="text-xs text-slate-400">${e.sets}${lastTxt}</div>
+      </button>
+      <div class="text-right leading-none shrink-0">
+        <div class="text-xl font-bold tabular-nums text-sky-300">${sg.weight == null ? "?" : sg.weight}<span class="text-[11px] font-medium text-sky-300/60"> kg</span></div>
+        <div class="mt-1 text-[10px] font-semibold ${kindCls}">${kindTxt}</div>
+      </div>
+      ${pauseBtns}
+    </div>
+    <div class="mt-2 flex items-center gap-2">
+      ${setBtns}
+      <button onclick="openSetSheet('${e.id}','${unitId}')" class="h-11 w-11 shrink-0 rounded-lg bg-slate-800 text-slate-400 ring-1 ring-slate-700 active:scale-95 transition" title="Ručně">⋯</button>
+    </div>
+    ${feel}${summary}
+  </div>`;
+}
+function renderExerciseRow(exId, unitId) {
+  const el = $(`row-today-${unitId}-${exId}`); if (!el) return;
+  const e = workoutEntry(exId, unitId); if (!e) return;
+  el.outerHTML = exerciseRow(todayISO(), e, "today", unitId);
+  const fresh = $(`row-today-${unitId}-${exId}`); if (fresh) { fresh.classList.add("pop"); setTimeout(() => fresh.classList.remove("pop"), 300); }
+}
+// Jeden tap = série s doporučenou váhou a DOLNÍ hranicí rozsahu. Optimistický zápis by nafoukl progresi o opakování,
+// která neproběhla; podhodnocení ji jen zpomalí, což je u programu "ne k selhání" správná strana chyby.
+function logSet(exId, unitId) {
+  const sg = suggestLoad(exId, unitId);
+  if (!sg || sg.weight == null) return openSetSheet(exId, unitId);
+  writeSet(exId, unitId, sg.weight, repsFor(exId, unitId)[0]);
+}
+function writeSet(exId, unitId, weight, reps) {
+  const n = todaySets(exId, unitId).length + 1;
+  const log = STORE.get("gymLog", []);
+  const entry = { date: todayISO(), exercise: exId, unit: unitId, weight, reps, set: n, ts: Date.now() };
+  log.push(entry); STORE.set("gymLog", log);
+  const cfg = workoutEntry(exId, unitId);
+  // Pauza startuje sama; při doklepání zpožděných sérií neresetovat běžící odpočet
+  if (cfg && cfg.pause && !(_pauseInterval && _pauseEnd - Date.now() > 5000)) startPause(cfg.pause);
+  if (navigator.vibrate) navigator.vibrate(12);
+  toastUndo(`${weight} kg × ${reps} · série ${n}`, entry.ts);
+  renderExerciseRow(exId, unitId);
+  renderGymLog();
+  return entry;
+}
+function undoSet(ts) {
+  const log = STORE.get("gymLog", []);
+  const i = log.findIndex(l => l.ts === ts); if (i < 0) return;
+  const [e] = log.splice(i, 1); STORE.set("gymLog", log);
+  $("toast").classList.add("hidden");
+  renderExerciseRow(e.exercise, e.unit); renderGymLog();
+}
+function rateSet(exId, unitId, rpe) {
+  const log = STORE.get("gymLog", []);
+  const mine = todaySets(exId, unitId); const last = mine[mine.length - 1]; if (!last) return;
+  const i = log.findIndex(l => l.ts === last.ts); if (i >= 0) { log[i].rpe = rpe; STORE.set("gymLog", log); }
+  renderExerciseRow(exId, unitId); renderGymLog();
+}
+function fixReps(exId, unitId, reps) {
+  const log = STORE.get("gymLog", []);
+  const mine = todaySets(exId, unitId); const last = mine[mine.length - 1]; if (!last) return;
+  const i = log.findIndex(l => l.ts === last.ts); if (i >= 0) { log[i].reps = reps; STORE.set("gymLog", log); }
+  renderExerciseRow(exId, unitId); renderGymLog();
+}
+// --- Ruční zápis přes stepper (první záznam, korekce, jiná váha) ---
+let _sh = null;
+function openSetSheet(exId, unitId) {
+  const cfg = LOAD[exId]; if (!cfg) return;
+  const sg = suggestLoad(exId, unitId);
+  const sets = todaySets(exId, unitId);
+  const [lo] = repsFor(exId, unitId);
+  const lastAny = sessionsFor(exId, null)[0];
+  _sh = { exId, unitId, w: sg.weight ?? (sets.length ? sets[sets.length - 1].weight : (lastAny ? lastAny.weight : cfg.min)), r: sets.length ? sets[sets.length - 1].reps : lo };
+  $("shTitle").textContent = `${EXERCISES[exId].name} · série ${sets.length + 1}`;
+  $("shHint").textContent = sg.weight == null ? sg.why : `Návrh ${sg.weight} kg. ${sg.why}`;
+  $("shDelete").classList.toggle("hidden", sets.length === 0);
+  shRender();
+  $("setSheet").classList.remove("hidden");
+}
+function shBump(what, dir) {
+  if (!_sh) return;
+  const cfg = LOAD[_sh.exId];
+  if (what === "w") _sh.w = Math.max(cfg.min, roundTo(_sh.w + dir * cfg.inc, cfg.inc));
+  else _sh.r = Math.max(1, _sh.r + dir);
+  shRender();
+}
+function shRender() { $("shWeight").textContent = _sh.w; $("shReps").textContent = _sh.r; }
+function shSave() { if (!_sh) return; writeSet(_sh.exId, _sh.unitId, _sh.w, _sh.r); closeSetSheet(); }
+function shDeleteLast() {
+  if (!_sh) return;
+  const mine = todaySets(_sh.exId, _sh.unitId); const last = mine[mine.length - 1]; if (!last) return;
+  undoSet(last.ts); closeSetSheet();
+}
+function closeSetSheet() { $("setSheet").classList.add("hidden"); _sh = null; }
+function toastUndo(msg, ts) {
+  const t = $("toast");
+  t.innerHTML = `<span>${msg}</span><button onclick="undoSet(${ts})" class="ml-3 rounded bg-black/20 px-2 py-0.5 text-xs font-bold">Zpět</button>`;
+  t.classList.remove("bg-amber-400"); t.classList.add("bg-emerald-500");
+  t.classList.remove("hidden");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.add("hidden"), 5000);
 }
 
 // =============================================================================
@@ -1100,14 +1370,14 @@ function renderGymLog() {
   $("gymLogList").innerHTML = MAIN_LIFTS.map(id => {
     const ex = EXERCISES[id];
     if (!ex) { console.error("renderGymLog: neznámý cvik v MAIN_LIFTS", id); return `<div class="border border-rose-500/40 rounded-lg p-3 text-xs text-rose-400">⚠ Neznámý cvik v MAIN_LIFTS: ${id}</div>`; }
-    const history = log.filter(l => l.exercise === id).sort((a,b) => b.date.localeCompare(a.date));
-    const last = history[0];
-    const first = history[history.length - 1];
-    const delta = last && first && last.weight !== first.weight ? (last.weight - first.weight).toFixed(1) : null;
+    const sessions = sessionsFor(id, null);
+    const last = sessions[0], prev = sessions[1];
+    // Delta vs minulý trénink (ne vs první záznam: po deloadu z pauzy by to vypadalo jako regrese)
+    const delta = last && prev && last.weight !== prev.weight ? (last.weight - prev.weight).toFixed(1) : null;
     return `<div class="border border-slate-700 rounded-lg p-3">
       <div class="flex items-center justify-between mb-2">
         <div class="font-medium text-sm">${ex.name}</div>
-        ${delta !== null ? `<div class="text-xs ${parseFloat(delta) >= 0 ? "text-emerald-400" : "text-amber-400"}">${delta > 0 ? "+" : ""}${delta} kg</div>` : ""}
+        ${delta !== null ? `<div class="text-xs tabular-nums ${parseFloat(delta) >= 0 ? "text-emerald-400" : "text-amber-400"}">${delta > 0 ? "+" : ""}${delta} kg vs minule</div>` : ""}
       </div>
       <div class="flex gap-2 items-center text-xs">
         <input type="number" id="log-${id}-w" placeholder="kg" class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-sm">
@@ -1115,7 +1385,7 @@ function renderGymLog() {
         <input type="number" id="log-${id}-r" placeholder="op." class="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-sm">
         <button onclick="saveLift('${id}')" class="ml-auto bg-sky-500 text-slate-900 font-medium px-3 py-1.5 rounded text-xs">Uložit</button>
       </div>
-      ${last ? `<div class="text-xs text-slate-400 mt-2">Poslední: ${last.weight} kg × ${last.reps} op. (${fmtDateShort(last.date)})</div>` : ""}
+      ${last ? `<div class="text-xs text-slate-400 mt-2 tabular-nums">Poslední: ${last.weight} kg × ${last.reps} op.${last.rpe ? " · " + FEEL[last.rpe] : ""} (${fmtDateShort(last.date)}${last.unit && UNITS[last.unit] ? ", " + UNITS[last.unit].short : ""})${last.sets.length > 1 ? ` · ${last.sets.length} série` : ""}</div>` : ""}
     </div>`;
   }).join("");
 }
@@ -1125,7 +1395,7 @@ function saveLift(id) {
   const r = parseInt($(`log-${id}-r`).value, 10);
   if (!Number.isFinite(w) || w < 0 || !r) return showToast("Doplň váhu (0 = vlastní váha) a opakování", 2500, "warn");
   const log = STORE.get("gymLog", []);
-  log.push({ date: todayISO(), exercise: id, weight: w, reps: r });
+  log.push({ date: todayISO(), exercise: id, weight: w, reps: r, set: todaySets(id, null).length + 1, ts: Date.now() });
   STORE.set("gymLog", log);
   $(`log-${id}-w`).value = "";
   $(`log-${id}-r`).value = "";
@@ -1355,6 +1625,7 @@ function sanitizeImport(d) {
       const rpe = num(e.rpe); if ([7, 8, 9].includes(rpe)) o.rpe = rpe;
       const st = num(e.set);  if (st != null) o.set = st;
       const ts = num(e.ts);   if (ts != null) o.ts = ts;
+      if (typeof e.unit === "string" && UNITS[e.unit]) o.unit = e.unit;
       return o;
     });
   // doneLog = splněné tréninkové jednotky (týdenní kvóta). unit/cat jen bezpečné identifikátory.
@@ -1464,8 +1735,18 @@ function unlockAudio() {
     if (_audioCtx.state === "suspended") _audioCtx.resume();
   } catch (e) {}
 }
+// Displej nezhasne během pauzy. Sentinel se při přepnutí appky uvolní sám, proto po návratu znovu požádat.
+let _wake = null;
+async function keepAwake(on) {
+  try {
+    if (on && !_wake && navigator.wakeLock) { _wake = await navigator.wakeLock.request("screen"); _wake.addEventListener("release", () => { _wake = null; }); }
+    if (!on && _wake) { await _wake.release(); _wake = null; }
+  } catch (e) { console.warn("wakeLock:", e.message); _wake = null; }
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && _pauseInterval) keepAwake(true); });
 function startPause(seconds) {
   unlockAudio();
+  keepAwake(true);
   if (_pauseInterval) clearInterval(_pauseInterval);
   if (_pauseDoneTimeout) { clearTimeout(_pauseDoneTimeout); _pauseDoneTimeout = null; }
   _pauseEnd = Date.now() + seconds * 1000;
@@ -1474,6 +1755,7 @@ function startPause(seconds) {
   _pauseInterval = setInterval(updatePauseBanner, 250);
 }
 function cancelPause() {
+  keepAwake(false);
   if (_pauseInterval) { clearInterval(_pauseInterval); _pauseInterval = null; }
   if (_pauseDoneTimeout) { clearTimeout(_pauseDoneTimeout); _pauseDoneTimeout = null; }
   localStorage.removeItem("pauseEnd");
@@ -1485,6 +1767,7 @@ function updatePauseBanner() {
   const text = $("pauseTimerText");
   if (remaining <= 0) {
     clearInterval(_pauseInterval); _pauseInterval = null;
+    keepAwake(false);
     localStorage.removeItem("pauseEnd");
     text.textContent = "✓";
     banner.classList.remove("hidden");
