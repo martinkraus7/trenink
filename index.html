@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#020617">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -31,28 +31,29 @@
     @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.12)} 100%{transform:scale(1)} }
     .pop { animation: pop .26s cubic-bezier(.34,1.56,.64,1); }
     @media (prefers-reduced-motion: reduce) { .pop { animation: none } }
-    #gtip { position: fixed; z-index: 60; background: #0b1220; border: 1px solid #334155; color: #e2e8f0; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; box-shadow: 0 8px 28px rgba(0,0,0,.5); }
+    button { transition: transform .08s ease; }
+    button:active:not(:disabled) { transform: scale(.97); }
+    #gtip { position: fixed; z-index: 60; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 8px 10px; border-radius: 8px; font-size: 12px; line-height: 1.45; box-shadow: 0 8px 28px rgba(0,0,0,.5); }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
+<body class="bg-slate-950 text-slate-100 min-h-screen">
 
 <!-- HEADER -->
-<header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+<header class="sticky top-0 z-30 bg-slate-950/80 backdrop-blur border-b border-slate-800/80">
   <div class="px-4 pt-4 pb-3" style="padding-top: max(1rem, env(safe-area-inset-top))">
     <div class="flex items-baseline justify-between">
       <div>
-        <div class="text-[10px] uppercase tracking-widest text-slate-400" id="weekLabel">—</div>
+        <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500" id="weekLabel">—</div>
         <h1 class="text-lg font-semibold leading-tight" id="todayDate">—</h1>
       </div>
       <div class="text-right">
-        <div class="text-[10px] uppercase tracking-widest text-slate-400" id="countdownLabel">—</div>
-        <div class="text-2xl font-bold text-sky-400" id="countdown">—</div>
+        <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500" id="countdownLabel">—</div>
+        <div class="text-2xl font-bold text-sky-400 tabular-nums" id="countdown">—</div>
       </div>
     </div>
     <div class="mt-3 h-1.5 bg-slate-800 rounded-full overflow-hidden">
       <div id="globalProgress" class="h-full bg-sky-500 transition-all" style="width:0%"></div>
     </div>
-    <div id="storageBadge" class="mt-2 text-[10px] text-slate-400 font-mono">—</div>
   </div>
 </header>
 
@@ -96,9 +97,9 @@
     </div>
 
     <!-- TODAY CARD -->
-    <div id="todayCard" class="bg-slate-800 rounded-2xl p-4 border border-slate-700">
+    <div id="todayCard" class="bg-slate-900 rounded-2xl p-4 ring-1 ring-white/5 shadow-lg shadow-black/30">
       <div class="flex items-center justify-between mb-2">
-        <div class="text-xs uppercase tracking-wider text-slate-400">Dnes</div>
+        <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dnes</div>
         <div class="text-xs text-slate-400" id="todayDayOfWeek">—</div>
       </div>
       <div id="todayContent">—</div>
@@ -106,19 +107,19 @@
 
     <!-- Quick links -->
     <div class="grid grid-cols-2 gap-3">
-      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refMtss').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refMtss').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-900 ring-1 ring-white/5 rounded-xl p-3 text-left">
         <div class="text-sm font-semibold">MTSS prevence</div>
         <div class="text-xs text-slate-400 mt-1">5-10 min denně</div>
       </button>
-      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refSoreness').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refSoreness').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-900 ring-1 ring-white/5 rounded-xl p-3 text-left">
         <div class="text-sm font-semibold">Soreness rules</div>
         <div class="text-xs text-slate-400 mt-1">Když něco bolí</div>
       </button>
-      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refZones').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refZones').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-900 ring-1 ring-white/5 rounded-xl p-3 text-left">
         <div class="text-sm font-semibold">Tempo zóny</div>
         <div class="text-xs text-slate-400 mt-1">Z1 až R-pace</div>
       </button>
-      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refRoadmap').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-800 border border-slate-700 rounded-xl p-3 text-left">
+      <button onclick="switchView('plan'); setTimeout(()=>document.getElementById('refRoadmap').scrollIntoView({behavior:'smooth'}),100)" class="bg-slate-900 ring-1 ring-white/5 rounded-xl p-3 text-left">
         <div class="text-sm font-semibold">Blok a pravidla</div>
         <div class="text-xs text-slate-400 mt-1">Podzim 2026</div>
       </button>
@@ -127,15 +128,15 @@
 
   <!-- VIEW: PLAN -->
   <section id="view-plan" class="view px-4 pt-4 space-y-3 hidden">
-    <h2 class="text-xs uppercase tracking-widest text-slate-400">Týdny</h2>
+    <h2 class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">Týdny</h2>
     <div id="weeksList" class="space-y-2"></div>
 
-    <h2 class="text-xs uppercase tracking-widest text-slate-400 pt-4">Tréninky</h2>
+    <h2 class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 pt-4">Tréninky</h2>
     <div id="workoutBlocks" class="space-y-3"></div>
 
-    <h2 class="text-xs uppercase tracking-widest text-slate-400 pt-4">Reference</h2>
+    <h2 class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 pt-4">Reference</h2>
 
-    <details id="refZones" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+    <details id="refZones" class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <summary class="font-semibold">Tempo zóny <span id="zoneBadge" class="hidden ml-1 text-[10px] font-semibold uppercase tracking-wider text-amber-300">provizorní</span></summary>
       <div class="mt-3 overflow-x-auto"><table class="w-full text-sm">
         <thead class="text-xs text-slate-400"><tr><th class="text-left py-1">Zóna</th><th class="text-left">HRmax</th><th class="text-left">Tempo min/km</th><th class="text-left">Pás km/h</th><th class="text-left">Použití</th></tr></thead>
@@ -144,14 +145,14 @@
       <div class="mt-3 text-xs text-slate-400"><strong>Pás:</strong> km/h = 60 ÷ (min/km); nastav sklon 1 % ať to odpovídá běhu venku (nahrazuje chybějící odpor vzduchu). Zóny se odvozují z T-pace pevnými posuny. Dokud není zapsané naměřené T-pace z kontrolního běhu (T4), jsou provizorní: dohad po sedmi týdnech útlumu, ne měření. <strong>80/20:</strong> 80 % objemu easy (Z1/Z2), 20 % quality (T + I + R). <strong>I-pace (5K) = primární interval pace.</strong> R-pace jen pro strides (60-100 m, 15-20 s) — neuromuskulární, NE all-out sprint.</div>
     </details>
 
-    <details id="refMtss" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+    <details id="refMtss" class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <summary class="font-semibold">MTSS prevence (povinné)</summary>
       <div class="mt-3 text-sm text-slate-300">
         5-10 min denně, hlavně před běhy. Bolavé holeně po prvním HM = poslední varování. Detail s videy je v sekci „MTSS prevence — denně" výše.
       </div>
     </details>
 
-    <details id="refSoreness" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+    <details id="refSoreness" class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <summary class="font-semibold">Soreness rules</summary>
       <div class="mt-3 space-y-2 text-sm">
         <div class="border-l-2 border-red-500 pl-3"><strong>Bolest ve warmup zhoršuje se</strong> → STOP, 2 dny volno, o úroveň níž</div>
@@ -162,7 +163,7 @@
       </div>
     </details>
 
-    <details id="refFootAssessment" class="bg-slate-800 rounded-xl border border-slate-700 p-4 border-l-4 border-l-amber-500">
+    <details id="refFootAssessment" class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4 border-l-4 border-l-amber-500">
       <summary class="font-semibold">⚠️ Ranní foot assessment (před každým během)</summary>
       <div class="mt-3 space-y-2 text-sm text-slate-300">
         <p><strong>Před každým během dokud nárt necítíš 0/10.</strong> Ráno hned po probuzení, před warmupem. Extensor tendinopatie reaguje pozitivně na warmup — pokud bolest mizí během rozběhu, je to dobré znamení.</p>
@@ -186,7 +187,7 @@
       </div>
     </details>
 
-    <details id="refPrinciples" class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+    <details id="refPrinciples" class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <summary class="font-semibold">7 principů</summary>
       <ol class="mt-3 space-y-2 text-sm list-decimal pl-5 text-slate-300">
         <li><strong>Pořadí v tréninku</strong>: síla napřed běh. <span class="text-slate-400">Kvalitní běh a Full body A (těžký dřep) nikdy ve stejný den. Když se sejde gym a běh, gym napřed a běh jen volný. Box je na pauze; až se vrátí, jde jako skill napřed před gym.</span></li>
@@ -199,7 +200,7 @@
       </ol>
     </details>
 
-    <details id="refRoadmap" class="bg-slate-800 rounded-xl border border-slate-700 p-4 border-l-4 border-l-sky-500">
+    <details id="refRoadmap" class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4 border-l-4 border-l-sky-500">
       <summary class="font-semibold">Blok a pravidla</summary>
       <div class="mt-3 space-y-3 text-sm text-slate-300" id="blockInfo"></div>
     </details>
@@ -209,65 +210,95 @@
   <!-- VIEW: TRACKER -->
   <section id="view-tracker" class="view px-4 pt-4 space-y-4 hidden">
 
+    <!-- Konzistence -->
+    <div class="bg-slate-900 rounded-2xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold">Konzistence</h3>
+        <div class="text-xs text-slate-400">12 týdnů · gym / běh / MTSS</div>
+      </div>
+      <div id="consistency" class="flex items-end gap-[3px]"></div>
+    </div>
+
     <!-- HRV -->
-    <div id="hrvForm" class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+    <div id="hrvForm" class="bg-slate-900 rounded-2xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-semibold">HRV / klidový pulz</h3>
-        <div class="text-xs text-slate-400">baseline: <span id="hrvBaseline">—</span></div>
+        <div class="text-xs text-slate-400 tabular-nums">baseline: <span id="hrvBaseline">—</span></div>
       </div>
       <div id="hrvTodayBadge" class="hidden mb-3 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-sm"></div>
       <div class="grid grid-cols-2 gap-3 text-sm">
         <label>HRV (ms)
-          <input type="number" id="in-hrv" min="0" max="200" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+          <input type="number" id="in-hrv" min="0" max="200" class="mt-1 w-full bg-slate-950/60 ring-1 ring-slate-800 rounded-lg px-3 py-2 tabular-nums">
         </label>
         <label>RHR (bpm)
-          <input type="number" id="in-rhr" min="30" max="120" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+          <input type="number" id="in-rhr" min="30" max="120" class="mt-1 w-full bg-slate-950/60 ring-1 ring-slate-800 rounded-lg px-3 py-2 tabular-nums">
         </label>
         <label>Spánek (h)
-          <input type="number" id="in-sleep" min="0" max="14" step="0.5" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+          <input type="number" id="in-sleep" min="0" max="14" step="0.5" class="mt-1 w-full bg-slate-950/60 ring-1 ring-slate-800 rounded-lg px-3 py-2 tabular-nums">
         </label>
         <label>Pocit (1-5)
-          <input type="number" id="in-rpe" min="1" max="5" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+          <input type="number" id="in-rpe" min="1" max="5" class="mt-1 w-full bg-slate-950/60 ring-1 ring-slate-800 rounded-lg px-3 py-2 tabular-nums">
+        </label>
+        <label class="col-span-2">Nárt dnes
+          <select id="in-foot" class="mt-1 w-full bg-slate-950/60 ring-1 ring-slate-800 rounded-lg px-3 py-2 text-base">
+            <option value="">— nevyplněno —</option>
+            <option value="0">0 · nic</option>
+            <option value="1">1 · cítím ho</option>
+            <option value="2">2 · bolí</option>
+            <option value="3">3 · bolelo při běhu</option>
+          </select>
         </label>
       </div>
       <button onclick="saveHRV()" class="mt-3 w-full bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-slate-900 font-semibold py-2.5 rounded-lg">Uložit dnešní</button>
       <div class="mt-4">
-        <div class="text-xs text-slate-400 mb-1">HRV trend (14 dní)</div>
-        <svg id="hrvChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
+        <div class="text-xs text-slate-400 mb-1">HRV, 30 dní · pásmo = baseline ±10 %</div>
+        <svg id="hrvChart" class="w-full h-auto block"></svg>
+        <div id="hrvChart-empty" class="hidden rounded-xl bg-slate-950/40 ring-1 ring-dashed ring-slate-700 px-4 py-6 text-center text-xs text-slate-500"></div>
+        <div id="hrvChart-read" class="h-4 mt-1 text-[11px] text-slate-400 tabular-nums"></div>
+      </div>
+      <div class="mt-3">
+        <div class="text-xs text-slate-400 mb-1">Klidový pulz, 30 dní · červený bod = nad baseline +5</div>
+        <svg id="rhrChart" class="w-full h-auto block"></svg>
+        <div id="rhrChart-empty" class="hidden rounded-xl bg-slate-950/40 ring-1 ring-dashed ring-slate-700 px-4 py-6 text-center text-xs text-slate-500"></div>
+        <div id="rhrChart-read" class="h-4 mt-1 text-[11px] text-slate-400 tabular-nums"></div>
       </div>
     </div>
 
     <!-- Tělo -->
-    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+    <div class="bg-slate-900 rounded-2xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-semibold">Tělo (váha)</h3>
-        <div class="text-xs text-slate-400" id="bodyReminder">—</div>
+        <div class="text-xs text-slate-400 tabular-nums" id="bodyReminder">—</div>
       </div>
       <div id="bodyTodayBadge" class="hidden mb-3 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-sm"></div>
       <label class="text-sm block">Váha (kg)
-        <input type="number" id="in-weight" min="40" max="200" step="0.1" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+        <input type="number" id="in-weight" min="40" max="200" step="0.1" class="mt-1 w-full bg-slate-950/60 ring-1 ring-slate-800 rounded-lg px-3 py-2 tabular-nums">
       </label>
       <button onclick="saveBody()" class="mt-3 w-full bg-sky-500 hover:bg-sky-400 active:bg-sky-600 text-slate-900 font-semibold py-2.5 rounded-lg">Uložit dnešní</button>
       <div class="mt-4">
-        <div class="text-xs text-slate-400 mb-1">Váha (kg)</div>
-        <svg id="weightChart" viewBox="0 0 300 80" class="w-full h-20"></svg>
+        <div class="text-xs text-slate-400 mb-1">Váha, 90 dní · světlá čára = 7denní průměr</div>
+        <svg id="weightChart" class="w-full h-auto block"></svg>
+        <div id="weightChart-empty" class="hidden rounded-xl bg-slate-950/40 ring-1 ring-dashed ring-slate-700 px-4 py-6 text-center text-xs text-slate-500"></div>
+        <div id="weightChart-read" class="h-4 mt-1 text-[11px] text-slate-400 tabular-nums"></div>
       </div>
     </div>
 
     <!-- Gym log -->
-    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+    <div class="bg-slate-900 rounded-2xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <h3 class="font-semibold mb-3">Záznam vah (hlavní cviky)</h3>
       <div id="gymLogList" class="space-y-3 text-sm"></div>
     </div>
 
     <!-- Export/reset -->
-    <div class="bg-slate-800 rounded-2xl border border-slate-700 p-4">
+    <div class="bg-slate-900 rounded-2xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4">
       <h3 class="font-semibold mb-3">Data</h3>
       <div class="flex gap-2">
         <button onclick="exportData()" class="flex-1 bg-slate-700 hover:bg-slate-600 rounded-lg py-2 text-sm">Export JSON</button>
         <button onclick="importData()" class="flex-1 bg-slate-700 hover:bg-slate-600 rounded-lg py-2 text-sm">Import JSON</button>
       </div>
       <button onclick="resetWeek()" class="mt-2 w-full bg-amber-900/40 hover:bg-amber-900/60 border border-amber-800 rounded-lg py-2 text-sm">Smazat záznamy tohoto týdne</button>
+      <div id="storageBadge" class="mt-3 text-[10px] text-slate-500 font-mono">—</div>
+      <div id="exportNote" class="text-xs mt-1"></div>
     </div>
 
   </section>
@@ -275,7 +306,7 @@
 </main>
 
 <!-- BOTTOM NAV -->
-<nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 z-30" style="padding-bottom: env(safe-area-inset-bottom)">
+<nav class="fixed bottom-0 left-0 right-0 bg-slate-950/80 backdrop-blur border-t border-slate-800/80 z-30" style="padding-bottom: env(safe-area-inset-bottom)">
   <div class="grid grid-cols-3 max-w-screen-sm mx-auto">
     <button data-view="today" onclick="switchView('today')" class="navbtn flex flex-col items-center py-3 text-xs">
       <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -311,7 +342,7 @@
 <div id="logSheet" class="fixed inset-0 z-40 hidden">
   <div class="absolute inset-0 bg-black/70" onclick="closeLogSheet()"></div>
   <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl p-5 space-y-3 border-t border-slate-700" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom))">
-    <div class="text-xs uppercase tracking-wider text-slate-400" id="logSheetTitle">Zapsat</div>
+    <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500" id="logSheetTitle">Zapsat</div>
     <div id="logSheetUnits" class="space-y-2"></div>
     <label class="flex items-center gap-3 text-sm text-slate-300">Datum <input type="date" id="logSheetDate" class="flex-1 bg-slate-950/60 ring-1 ring-slate-700 rounded px-2 py-1.5 text-sm"></label>
     <button onclick="closeLogSheet()" class="w-full py-2 text-sm text-slate-400">Zrušit</button>
@@ -322,7 +353,7 @@
   <div class="absolute inset-0 bg-black/70" onclick="closeSetSheet()"></div>
   <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl p-5 space-y-4 border-t border-slate-700" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom))">
     <div>
-      <div class="text-xs uppercase tracking-wider text-slate-400" id="shTitle">Zapsat sérii</div>
+      <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500" id="shTitle">Zapsat sérii</div>
       <div class="text-xs text-slate-500 mt-0.5" id="shHint"></div>
     </div>
     <div class="flex items-center gap-3">
@@ -342,7 +373,7 @@
     </div>
   </div>
 </div>
-<div id="modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onclick="closeModal(event)">
+<div id="modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm" onclick="closeModal(event)">
   <div class="absolute inset-x-0 bottom-0 bg-slate-900 rounded-t-3xl border-t border-slate-700 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
     <div class="sticky top-0 bg-slate-900 px-5 pt-4 pb-3 border-b border-slate-800 flex items-start justify-between">
       <div>
@@ -355,7 +386,7 @@
       <div id="modalVideo" class="video-wrap"></div>
       <a id="modalVideoLink" href="#" target="_blank" rel="noopener" class="hidden text-sm text-sky-400 underline">Otevřít v YouTube ↗</a>
       <div>
-        <div class="text-xs uppercase tracking-wider text-slate-400 mb-2">Klíčové cues</div>
+        <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">Klíčové cues</div>
         <ul id="modalCues" class="space-y-1.5 text-sm"></ul>
       </div>
       <div id="modalSuggest" class="hidden rounded-2xl bg-gradient-to-br from-sky-500/15 to-sky-500/5 p-4 ring-1 ring-sky-400/25">
@@ -913,7 +944,7 @@ function renderProtocol(type, exId) {
   const p = protos[type];
   if (!p) return "";
   return `<div>
-    <div class="text-xs uppercase tracking-wider text-slate-400 mb-2">${p.title}</div>
+    <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">${p.title}</div>
     ${p.blocks.map(b => `
       <div class="mb-3">
         <div class="text-xs font-semibold text-sky-300 mb-1">${b.label}</div>
@@ -993,7 +1024,7 @@ function toggleCheck(date, slug, el, unitId) {
   const k = checkKey(date, slug);
   if (all[k]) delete all[k]; else all[k] = true;
   STORE.set("checkboxes", all);
-  if (el) el.checked = !!all[k];
+  if (el) { el.checked = !!all[k]; const nm = el.parentElement && el.parentElement.querySelector(".exname"); if (nm) { nm.classList.toggle("line-through", !!all[k]); nm.classList.toggle("text-slate-500", !!all[k]); } }
   // MTSS se do týdenní kvóty zapíše sám, když jsou odškrtnuté všechny jeho cviky; odškrtnutí zpět záznam odebere.
   if (unitId === "mtss") {
     const complete = WORKOUTS.mtss.exercises.every(x => isChecked(date, x.id));
@@ -1096,16 +1127,17 @@ function renderToday() {
   } else if (state === "post") {
     body = `<div class="text-slate-400">Blok skončil ${fmtDateShort(BLOCK.end)}. Do dalšího bloku volný trénink, MTSS denně.</div>`;
   } else {
-    body = `<div class="text-xs uppercase tracking-wider text-slate-400 mb-1">Tento týden${w && w.deload ? ' <span class="text-amber-300">· deload</span>' : ""}</div>
+    body = `<div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-1">Tento týden${w && w.deload ? ' <span class="text-amber-300">· deload</span>' : ""}</div>
       ${activeCats().map(([cat]) => quotaRow(cat, w, idx, key)).join("")}
-      ${w && w.focus ? `<div class="text-sm text-slate-300 mt-3">${gloss(w.focus)}</div>` : ""}`;
+      ${w && w.focus ? `<div class="text-sm text-slate-300 mt-3">${gloss(w.focus)}</div>` : ""}
+      ${(() => { const fs = footStatus(); return fs ? `<div class="text-xs ${fs.cls} mt-1">${fs.text}</div>` : ""; })()}`;
     const cur = todayGymUnit();
     const u = UNITS[cur.id];
     const wk = WORKOUTS[u.workoutId];
     const mod = w && w.modifiers && w.modifiers[cur.id];
     body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
       <div class="flex items-center justify-between gap-3">
-        <div><div class="text-xs uppercase tracking-wider text-slate-400">${cur.done ? "Dnes hotovo" : "Na řadě"}</div><div class="text-base font-semibold">${wk.title}</div></div>
+        <div><div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">${cur.done ? "Dnes hotovo" : "Na řadě"}</div><div class="text-base font-semibold">${wk.title}</div></div>
         ${cur.done
           ? `<button onclick="unlogByTs(${cur.ts})" class="shrink-0 rounded-lg px-3 py-2 text-sm font-semibold bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30 active:scale-95 transition">✓ Hotovo</button>`
           : `<button onclick="logUnit('${cur.id}')" class="shrink-0 rounded-lg px-3 py-2 text-sm font-semibold bg-sky-500 text-slate-900 active:scale-95 transition">Hotovo</button>`}
@@ -1118,7 +1150,7 @@ function renderToday() {
   }
   const m = WORKOUTS.mtss;
   body += `<div class="mt-4 pt-4 border-t border-slate-700 space-y-2">
-    <div class="text-xs uppercase tracking-wider text-slate-400">${m.title}</div>
+    <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">${m.title}</div>
     <div class="text-xs text-slate-400">${m.meta}</div>
     ${m.exercises.map(e => exerciseRow(t, e, "today", "mtss")).join("")}
   </div>`;
@@ -1141,7 +1173,7 @@ function pickUnit(id) {
 }
 function closeLogSheet() { $("logSheet").classList.add("hidden"); }
 // Překreslit jen to, co závisí na doneLog (ne renderAll — ten zavírá otevřené <details> u tréninků).
-function renderWeekly() { renderHeader(); renderToday(); renderWeeks(); }
+function renderWeekly() { renderHeader(); renderToday(); renderWeeks(); renderConsistency(); renderStorageBadge(); }
 
 function exerciseRow(date, e, context, unitId) {
   const ex = EXERCISES[e.id];
@@ -1157,7 +1189,7 @@ function exerciseRow(date, e, context, unitId) {
   return `<div class="flex items-center gap-3 py-1.5" id="row-${context}-${unitId || "x"}-${e.id}">
     ${cb}
     <button onclick="openExercise('${e.id}','${unitId || ""}')" class="flex-1 text-left">
-      <div class="text-sm font-medium">${ex.name}${e.optional ? ' <span class="text-[10px] text-slate-500 font-normal">volitelné</span>' : ""}</div>
+      <div class="text-sm font-medium exname ${context !== "plan" && isChecked(date, e.id) ? "line-through text-slate-500" : ""}">${ex.name}${e.optional ? ' <span class="text-[10px] text-slate-500 font-normal">volitelné</span>' : ""}</div>
       <div class="text-xs text-slate-400">${e.sets}</div>
     </button>
     ${pauseBtns}
@@ -1316,7 +1348,7 @@ function renderWeeks() {
       const cls = n >= tg ? "text-emerald-400" : n >= mn ? "text-amber-300" : past ? "text-rose-400" : "text-slate-500";
       return `<span class="${cls} tabular-nums">${CATS[cat].icon} ${n}/${tg}</span>`;
     }).join('<span class="text-slate-600 mx-1">·</span>');
-    return `<details class="bg-slate-800 rounded-xl border ${isCurrent ? "border-sky-500/60" : "border-slate-700"} p-4" ${isCurrent ? "open" : ""}>
+    return `<details class="bg-slate-900 rounded-xl ring-1 ${isCurrent ? "ring-sky-500/60" : "ring-white/5"} shadow-lg shadow-black/30 p-4" ${isCurrent ? "open" : ""}>
       <summary class="font-semibold">
         <span class="${isCurrent ? "text-sky-400" : ""}">${w.name}</span>${w.deload ? ' <span class="text-[10px] uppercase tracking-wider text-amber-300 ml-1">deload</span>' : ""}
         <span class="text-xs text-slate-400 ml-2">${fmtDateShort(w.start)} – ${fmtDateShort(end)}</span>
@@ -1338,7 +1370,7 @@ function renderWorkoutBlocks() {
     .filter(([, u]) => u.workoutId && CATS[u.cat].enabled !== false)
     .map(([uid, u], i) => {
       const w = WORKOUTS[u.workoutId];
-      return `<details class="bg-slate-800 rounded-xl border border-slate-700 p-4" ${i === 0 ? "open" : ""}>
+      return `<details class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4" ${i === 0 ? "open" : ""}>
         <summary class="font-semibold">${w.title}</summary>
         <div class="mt-3 space-y-2">${renderWorkoutBlock(uid)}</div>
       </details>`;
@@ -1367,27 +1399,40 @@ function renderBlockInfo() {
 // =============================================================================
 function renderGymLog() {
   const log = STORE.get("gymLog", []);
-  $("gymLogList").innerHTML = MAIN_LIFTS.map(id => {
+  const anySession = MAIN_LIFTS.some(id => sessionsFor(id, null).length);
+  const emptyNote = anySession ? "" : `<div class="rounded-xl bg-slate-950/40 ring-1 ring-dashed ring-slate-700 px-4 py-5 text-center">
+      <div class="text-sm font-medium text-slate-300">Zatím žádná série</div>
+      <div class="text-xs text-slate-500 mt-1">Zapiš první trénink na kartě Dnes jedním tapem na sérii. Od druhého tréninku ti appka váhu navrhuje sama.</div></div>`;
+  $("gymLogList").innerHTML = emptyNote + MAIN_LIFTS.map(id => {
     const ex = EXERCISES[id];
     if (!ex) { console.error("renderGymLog: neznámý cvik v MAIN_LIFTS", id); return `<div class="border border-rose-500/40 rounded-lg p-3 text-xs text-rose-400">⚠ Neznámý cvik v MAIN_LIFTS: ${id}</div>`; }
     const sessions = sessionsFor(id, null);
     const last = sessions[0], prev = sessions[1];
+    const bwLift = LOAD[id] && LOAD[id].bodyweight;
+    const rmPts = sessions.slice().reverse().map(x => ({ d: x.date, v: e1rm(x.weight, x.reps, bwLift ? bodyWeightAt(x.date) : 0) }));
+    const isPR = rmPts.length > 1 && rmPts[rmPts.length - 1].v >= Math.max(...rmPts.map(x => x.v)) && rmPts[rmPts.length - 1].v > Math.max(...rmPts.slice(0, -1).map(x => x.v));
     // Delta vs minulý trénink (ne vs první záznam: po deloadu z pauzy by to vypadalo jako regrese)
     const delta = last && prev && last.weight !== prev.weight ? (last.weight - prev.weight).toFixed(1) : null;
-    return `<div class="border border-slate-700 rounded-lg p-3">
+    return `<div class="bg-slate-950/40 ring-1 ring-slate-800 rounded-lg p-3">
       <div class="flex items-center justify-between mb-2">
-        <div class="font-medium text-sm">${ex.name}</div>
+        <div class="font-medium text-sm">${ex.name}${isPR ? ' <span class="ml-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold text-emerald-300 ring-1 ring-emerald-400/30">PR</span>' : ""}</div>
         ${delta !== null ? `<div class="text-xs tabular-nums ${parseFloat(delta) >= 0 ? "text-emerald-400" : "text-amber-400"}">${delta > 0 ? "+" : ""}${delta} kg vs minule</div>` : ""}
       </div>
+      ${rmPts.length ? `<div class="mb-2"><div class="text-[10px] text-slate-500 mb-0.5">odhad 1RM${bwLift ? " (s tělesnou váhou)" : ""} · poslední ${rmPts[rmPts.length - 1].v} kg</div><svg id="lift-${id}" class="w-full h-auto block"></svg><div id="lift-${id}-read" class="h-4 text-[11px] text-slate-400 tabular-nums"></div></div>` : ""}
       <div class="flex gap-2 items-center text-xs">
-        <input type="number" id="log-${id}-w" placeholder="kg" class="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-sm">
+        <input type="number" id="log-${id}-w" placeholder="kg" class="w-20 bg-slate-950/60 ring-1 ring-slate-800 rounded px-2 py-1.5 text-sm tabular-nums">
         <span class="text-slate-400">×</span>
-        <input type="number" id="log-${id}-r" placeholder="op." class="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-sm">
+        <input type="number" id="log-${id}-r" placeholder="op." class="w-16 bg-slate-950/60 ring-1 ring-slate-800 rounded px-2 py-1.5 text-sm tabular-nums">
         <button onclick="saveLift('${id}')" class="ml-auto bg-sky-500 text-slate-900 font-medium px-3 py-1.5 rounded text-xs">Uložit</button>
       </div>
       ${last ? `<div class="text-xs text-slate-400 mt-2 tabular-nums">Poslední: ${last.weight} kg × ${last.reps} op.${last.rpe ? " · " + FEEL[last.rpe] : ""} (${fmtDateShort(last.date)}${last.unit && UNITS[last.unit] ? ", " + UNITS[last.unit].short : ""})${last.sets.length > 1 ? ` · ${last.sets.length} série` : ""}</div>` : ""}
     </div>`;
   }).join("");
+  for (const id of MAIN_LIFTS) {
+    const bwLift = LOAD[id] && LOAD[id].bodyweight;
+    const pts = sessionsFor(id, null).slice().reverse().map(x => ({ d: x.date, v: e1rm(x.weight, x.reps, bwLift ? bodyWeightAt(x.date) : 0) }));
+    if (pts.length) drawChart(`lift-${id}`, { points: pts, color: "#34d399", dec: 0, gapDays: 30, fmt: p => `${p.v} kg (1RM odhad)` });
+  }
 }
 
 function saveLift(id) {
@@ -1410,7 +1455,8 @@ function saveHRV() {
   const rhrRaw = parseFloat($("in-rhr").value);
   const sleep = parseFloat($("in-sleep").value);
   const rpe = parseInt($("in-rpe").value, 10);
-  if (!hrvRaw && !rhrRaw && !sleep && !rpe) { showToast("Doplň aspoň jednu hodnotu", 2500, "warn"); return false; }
+  const footSel = $("in-foot").value; const foot = footSel === "" ? null : parseInt(footSel, 10);   // 0 je platná hodnota, ne "prázdno"
+  if (!hrvRaw && !rhrRaw && !sleep && !rpe && foot == null) { showToast("Doplň aspoň jednu hodnotu", 2500, "warn"); return false; }
   const hrv = hrvRaw ? Math.round(hrvRaw * 10) / 10 : null;
   const rhr = rhrRaw ? Math.round(rhrRaw) : null;
   const log = STORE.get("hrvLog", []);
@@ -1421,7 +1467,8 @@ function saveHRV() {
     hrv: hrv ?? existing.hrv ?? null,
     rhr: rhr ?? existing.rhr ?? null,
     sleep: sleep || existing.sleep || null,
-    rpe: rpe || existing.rpe || null
+    rpe: rpe || existing.rpe || null,
+    foot: foot ?? existing.foot ?? null
   };
   if (i >= 0) log[i] = entry; else log.push(entry);
   try {
@@ -1430,7 +1477,7 @@ function saveHRV() {
     alert("Chyba při ukládání: " + e.message);
     return false;
   }
-  ["in-hrv","in-rhr","in-sleep","in-rpe"].forEach(id => $(id).value = "");
+  ["in-hrv","in-rhr","in-sleep","in-rpe","in-foot"].forEach(id => $(id).value = "");
   renderHRV();
   renderTodayWarnings();
   renderStorageBadge();
@@ -1469,11 +1516,19 @@ function renderHRV() {
     if (today.rhr != null) parts.push(`RHR <strong>${today.rhr}</strong>`);
     if (today.sleep) parts.push(`spánek ${today.sleep} h`);
     if (today.rpe) parts.push(`pocit ${today.rpe}/5`);
+    if (today.foot != null) parts.push(`nárt ${today.foot}`);
     badge.innerHTML = `✓ Dnes uloženo: ${parts.join(" · ")}`;
   } else {
     badge.classList.add("hidden");
   }
-  drawSpark("hrvChart", log.map(e => e.hrv).filter(v => v != null).slice(-14), "#38bdf8");
+  const recent = log.filter(e => withinDays(e.date, 30));
+  drawChart("hrvChart", { points: recent.filter(e => e.hrv != null).map(e => ({ d: e.date, v: e.hrv })), color: "#38bdf8", dec: 0,
+    band: baseline && baseline.hrv != null ? { lo: baseline.hrv * 0.9, hi: baseline.hrv * 1.1, mid: baseline.hrv } : null,
+    empty: "Zatím žádné HRV. Zapiš ranní hodnotu z Health app, trend se ukáže od druhého dne.", fmt: p => `HRV ${p.v}` });
+  drawChart("rhrChart", { points: recent.filter(e => e.rhr != null).map(e => ({ d: e.date, v: e.rhr })), color: "#a78bfa", dec: 0,
+    band: baseline && baseline.rhr != null ? { lo: baseline.rhr - 5, hi: baseline.rhr + 5, mid: baseline.rhr } : null,
+    flag: p => baseline && baseline.rhr != null && p.v > baseline.rhr + 5,
+    empty: "Zatím žádný klidový pulz.", fmt: p => `RHR ${p.v}` });
 }
 
 function checkRedFlags() {
@@ -1526,34 +1581,91 @@ function renderBody() {
   } else {
     $("bodyReminder").textContent = "ještě nic neuloženo";
   }
-  drawSpark("weightChart", log.map(e => e.weight).filter(v => v != null).slice(-12), "#38bdf8");
+  const pts = log.filter(e => e.weight != null && withinDays(e.date, 90)).map(e => ({ d: e.date, v: e.weight }));
+  drawChart("weightChart", { points: pts, color: "#38bdf8", dec: 1, gapDays: 21, line2: pts.length > 2 ? ema(pts, 7) : [], line2Color: "#e2e8f0",
+    empty: "Zatím žádná váha. Nedělní vážení po probuzení stačí.", fmt: p => `${p.v} kg` });
 }
 
 // =============================================================================
 // SPARKLINE
 // =============================================================================
-function drawSpark(id, values, color) {
-  const svg = $(id);
-  if (!svg) return;
-  if (values.length < 2) {
-    svg.innerHTML = `<text x="150" y="45" text-anchor="middle" fill="#94a3b8" font-size="11">${values.length === 0 ? "Žádná data" : "Potřeba alespoň 2 záznamy"}</text>`;
-    return;
+// Graf podle data (ne indexu): mezera v datech je vidět jako mezera, ne jako jeden krok. Bez knihovny.
+const CH = { w: 320, h: 120, pl: 34, pr: 8, pt: 10, pb: 18 };
+const dms = iso => Date.parse(iso + "T00:00:00Z");
+function drawChart(id, o) {
+  const svg = $(id); if (!svg) return;
+  const empty = $(id + "-empty"), read = $(id + "-read");
+  const pts = (o.points || []).filter(p => p && p.v != null && p.d).sort((a, b) => a.d.localeCompare(b.d));
+  if (!pts.length) { svg.classList.add("hidden"); if (empty) { empty.textContent = o.empty || "Žádná data"; empty.classList.remove("hidden"); } if (read) read.textContent = ""; return; }
+  svg.classList.remove("hidden"); if (empty) empty.classList.add("hidden");
+  const t0 = dms(pts[0].d), span = (dms(pts[pts.length - 1].d) - t0) || 86400000;
+  const vals = pts.map(p => p.v).concat(o.extra || []).concat(o.band ? [o.band.lo, o.band.hi] : []);
+  let min = Math.min(...vals), max = Math.max(...vals);
+  if (max === min) { min -= 1; max += 1; }
+  const pad = (max - min) * 0.12; const lo = min - pad, hi = max + pad;
+  const X = d => CH.pl + (dms(d) - t0) / span * (CH.w - CH.pl - CH.pr);
+  const Y = v => CH.pt + (hi - v) / (hi - lo) * (CH.h - CH.pt - CH.pb);
+  const gapMs = (o.gapDays || 10) * 86400000;
+  const segs = [[pts[0]]];
+  for (let i = 1; i < pts.length; i++) (dms(pts[i].d) - dms(pts[i - 1].d) > gapMs) ? segs.push([pts[i]]) : segs[segs.length - 1].push(pts[i]);
+  const gid = id + "-grad";                       // id per graf, jinak si grafy tiše přebírají výplně
+  const path = sg => sg.map((p, i) => `${i ? "L" : "M"}${X(p.d).toFixed(1)} ${Y(p.v).toFixed(1)}`).join(" ");
+  const dec = o.dec ?? 0;
+  const grid = [max, (max + min) / 2, min].map(v => `<line x1="${CH.pl}" x2="${CH.w - CH.pr}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="#1e293b" stroke-width="1"/><text x="${CH.pl - 5}" y="${(Y(v) + 3).toFixed(1)}" text-anchor="end" fill="#64748b" font-size="9">${v.toFixed(dec)}</text>`).join("");
+  const xlab = [pts[0], pts[pts.length - 1]].map((p, i) => `<text x="${X(p.d).toFixed(1)}" y="${CH.h - 4}" text-anchor="${i ? "end" : "start"}" fill="#64748b" font-size="9">${fmtDateShort(p.d)}</text>`).join("");
+  const band = o.band ? `<rect x="${CH.pl}" y="${Y(o.band.hi).toFixed(1)}" width="${CH.w - CH.pl - CH.pr}" height="${Math.max(0, Y(o.band.lo) - Y(o.band.hi)).toFixed(1)}" fill="${o.color}" opacity=".08"/><line x1="${CH.pl}" x2="${CH.w - CH.pr}" y1="${Y(o.band.mid).toFixed(1)}" y2="${Y(o.band.mid).toFixed(1)}" stroke="${o.color}" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>` : "";
+  const l2 = (o.line2 || []).filter(p => p.v != null);
+  const line2 = l2.length > 1 ? `<path d="${path(l2)}" fill="none" stroke="${o.line2Color || "#e2e8f0"}" stroke-width="1.5" opacity=".75" class="spark"/>` : "";
+  const r = pts.length > 25 ? 1.8 : 2.8;
+  svg.setAttribute("viewBox", `0 0 ${CH.w} ${CH.h}`);   // před innerHTML, jinak se první frame kreslí ve starém systému
+  svg.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${o.color}" stop-opacity=".28"/><stop offset="100%" stop-color="${o.color}" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${band}
+    ${segs.filter(sg => sg.length > 1).map(sg => `<path d="${path(sg)} L${X(sg[sg.length - 1].d).toFixed(1)} ${CH.h - CH.pb} L${X(sg[0].d).toFixed(1)} ${CH.h - CH.pb} Z" fill="url(#${gid})"/><path d="${path(sg)}" fill="none" stroke="${o.color}" stroke-width="2" class="spark"/>`).join("")}
+    ${line2}
+    ${pts.map(p => `<circle cx="${X(p.d).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="${r}" fill="${o.flag && o.flag(p) ? "#fb7185" : o.color}"/>`).join("")}
+    ${pts.length === 1 ? `<text x="${(X(pts[0].d) + 8).toFixed(1)}" y="${(Y(pts[0].v) + 3).toFixed(1)}" fill="#94a3b8" font-size="10">${pts[0].v} · přidej druhý záznam a uvidíš trend</text>` : ""}
+    ${xlab}`;
+  if (read) {
+    const onPt = ev => {
+      if (ev.type === "pointermove" && !ev.buttons) return;
+      const rect = svg.getBoundingClientRect(); const vx = (ev.clientX - rect.left) / rect.width * CH.w;
+      let best = pts[0]; for (const p of pts) if (Math.abs(X(p.d) - vx) < Math.abs(X(best.d) - vx)) best = p;
+      read.textContent = `${fmtDateShort(best.d)}: ${o.fmt ? o.fmt(best) : best.v}`;
+    };
+    svg.onpointerdown = onPt; svg.onpointermove = onPt;
   }
-  const W = 300, H = 80, P = 6;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  const step = (W - P*2) / (values.length - 1);
-  const pts = values.map((v, i) => {
-    const x = P + i * step;
-    const y = H - P - ((v - min) / range) * (H - P*2);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  });
-  svg.innerHTML = `
-    <polyline points="${pts.join(" ")}" fill="none" stroke="${color}" stroke-width="2" class="spark"/>
-    ${pts.map(p => { const [x,y] = p.split(","); return `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`; }).join("")}
-    <text x="6" y="14" fill="#94a3b8" font-size="10">${max.toFixed(1)}</text>
-    <text x="6" y="${H-4}" fill="#94a3b8" font-size="10">${min.toFixed(1)}</text>`;
+}
+const ema = (pts, n = 7) => { const k = 2 / (n + 1); let e = null; return pts.map(p => { e = e == null ? p.v : p.v * k + e * (1 - k); return { d: p.d, v: Number(e.toFixed(2)) }; }); };
+const withinDays = (iso, n) => diffDays(iso, todayISO()) <= n;
+// Odhad 1RM (Epley). U shybů s tělesnou váhou z bodyLog, jinak je číslo nesrovnatelné, když se váha mění.
+const e1rm = (w, reps, bw = 0) => Number(((bw + w) * (1 + reps / 30) - bw).toFixed(1));
+function bodyWeightAt(date) {
+  const log = STORE.get("bodyLog", []).filter(e => e.date <= date).sort((a, b) => a.date.localeCompare(b.date));
+  return log.length ? log[log.length - 1].weight : 0;
+}
+function renderConsistency() {
+  const el = $("consistency"); if (!el) return;
+  const idx = buildWeekIndex(); const key = currentWeekKey();
+  const weeks = Array.from({ length: 12 }, (_, i) => addDaysISO(key, -7 * (11 - i)));
+  el.innerHTML = weeks.map(wk => {
+    const w = BLOCK.weeks.find(x => x.start === wk) || null;
+    const inBlock = wk >= BLOCK.start && wk <= BLOCK.end;
+    const cols = activeCats().map(([cat, c]) => {
+      const [, tg] = quotaOf(w, cat); const n = ((idx[wk] || {})[cat] || []).length; const pct = Math.min(1, n / tg);
+      return `<div class="h-2 rounded-sm ${pct >= 1 ? "bg-emerald-500" : pct > 0 ? "bg-sky-500" : "bg-slate-800"}" style="${pct > 0 && pct < 1 ? `opacity:${(0.35 + pct * 0.65).toFixed(2)}` : ""}" title="${c.label} ${n}/${tg}"></div>`;
+    }).join("");
+    return `<div class="flex-1 space-y-[3px] ${inBlock ? "" : "opacity-30"}" title="${w ? w.name : fmtDateShort(wk)}">${cols}<div class="text-[8px] text-center text-slate-600 tabular-nums leading-none pt-0.5">${w ? w.name.split(" ")[0] : ""}</div></div>`;
+  }).join("");
+}
+// Nárt z denního zadání (0-3): pravidla bloku ("jump squat zpět, když nárt tři týdny mlčel") jinak nejde vyhodnotit.
+function footStatus() {
+  const log = STORE.get("hrvLog", []).filter(e => e.foot != null).sort((a, b) => a.date.localeCompare(b.date));
+  if (!log.length) return null;
+  const t = todayISO(); const words = ["nic", "cítím ho", "bolí", "bolelo při běhu"];
+  const lastBad = log.filter(e => e.foot >= 2).slice(-1)[0];
+  if (lastBad && diffDays(lastBad.date, t) <= 21) { const d = diffDays(lastBad.date, t); return { cls: "text-amber-300", text: `Nárt se ozval ${d === 0 ? "dnes" : `před ${d} ${d === 1 ? "dnem" : "dny"}`} (${words[lastBad.foot]}). Bez jump squatu a strides, dokud 21 dní nemlčí.` }; }
+  const since = lastBad ? lastBad.date : log[0].date; const days = diffDays(since, t);
+  return { cls: "text-emerald-400", text: `Nárt v klidu ${days} ${days === 1 ? "den" : "dní"}${days >= 21 ? " · jump squat může zpět" : ""}.` };
 }
 
 // =============================================================================
@@ -1593,6 +1705,7 @@ function exportData() {
   a.click();
   URL.revokeObjectURL(url);
   STORE.set("lastExport", todayISO());
+  renderStorageBadge();
 }
 
 // Normalizace importu: rendery vkládají hodnoty z localStorage do innerHTML,
@@ -1613,8 +1726,8 @@ function sanitizeImport(d) {
   }
   if (Array.isArray(d.hrvLog)) out.hrvLog = d.hrvLog
     .filter(e => e && isDate(e.date))
-    .map(e => ({ date: e.date, hrv: num(e.hrv), rhr: num(e.rhr), sleep: num(e.sleep), rpe: num(e.rpe) }))
-    .filter(e => e.hrv != null || e.rhr != null || e.sleep != null || e.rpe != null);
+    .map(e => ({ date: e.date, hrv: num(e.hrv), rhr: num(e.rhr), sleep: num(e.sleep), rpe: num(e.rpe), foot: [0, 1, 2, 3].includes(num(e.foot)) ? num(e.foot) : null }))
+    .filter(e => e.hrv != null || e.rhr != null || e.sleep != null || e.rpe != null || e.foot != null);
   if (Array.isArray(d.bodyLog)) out.bodyLog = d.bodyLog
     .filter(e => e && isDate(e.date) && num(e.weight) != null)
     .map(e => ({ date: e.date, weight: num(e.weight) }));
@@ -1685,6 +1798,7 @@ function renderAll() {
   renderWeeks();
   renderWorkoutBlocks();
   renderBlockInfo();
+  renderConsistency();
   renderGymLog();
   renderHRV();
   renderBody();
@@ -1703,12 +1817,16 @@ function getStorageMode() {
 }
 
 function renderStorageBadge() {
-  const el = $("storageBadge");
-  if (!el) return;
-  const mode = getStorageMode();
-  const hrvCount = STORE.get("hrvLog", []).length;
-  const bodyCount = STORE.get("bodyLog", []).length;
-  el.textContent = `${mode} storage · ${hrvCount} HRV / ${bodyCount} body`;
+  const el = $("storageBadge"); if (!el) return;
+  el.textContent = `${getStorageMode()} storage · ${STORE.get("hrvLog", []).length} HRV · ${STORE.get("bodyLog", []).length} váha · ${STORE.get("gymLog", []).length} sérií · ${STORE.get("doneLog", []).length} jednotek`;
+  const note = $("exportNote"); if (!note) return;
+  const last = STORE.get("lastExport", null);
+  const days = last ? diffDays(last, todayISO()) : null;
+  const stale = days == null || days > 30;
+  note.className = `text-xs mt-1 ${stale ? "text-amber-300" : "text-slate-500"}`;
+  note.textContent = last
+    ? `Poslední záloha ${fmtDateShort(last)}${stale ? " · starší než 30 dní, udělej export" : ""}`
+    : "Zatím žádná záloha. Data žijí jen v tomhle prohlížeči a Safari mimo PWA je po 7 dnech nepoužívání maže. Udělej export.";
 }
 
 function showToast(msg, ms = 2500, type = "ok") {
@@ -1819,13 +1937,15 @@ function handleURLParams() {
   const rhr = cleanParam("rhr");
   const sleep = cleanParam("sleep");
   const rpe = cleanParam("rpe");
+  const foot = cleanParam("foot");
   const save = params.get("save");
-  if (!hrv && !rhr && !sleep && !rpe) return;
+  if (!hrv && !rhr && !sleep && !rpe && !foot) return;
   switchView("tracker");
   if (hrv) $("in-hrv").value = hrv;
   if (rhr) $("in-rhr").value = rhr;
   if (sleep) $("in-sleep").value = sleep;
   if (rpe) $("in-rpe").value = rpe;
+  if (foot && ["0","1","2","3"].includes(foot)) $("in-foot").value = foot;
   // Vyčistit URL vždy — i při neúspěšném uložení. Stale parametry by při každém dalším
   // otevření PWA znovu přepnuly na tracker a předvyplnily staré hodnoty.
   history.replaceState({}, "", window.location.pathname);
