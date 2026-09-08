@@ -164,26 +164,22 @@
     </details>
 
     <details id="refFootAssessment" class="bg-slate-900 rounded-xl ring-1 ring-white/5 shadow-lg shadow-black/30 p-4 border-l-4 border-l-amber-500">
-      <summary class="font-semibold">⚠️ Ranní foot assessment (před každým během)</summary>
+      <summary class="font-semibold">⚠️ Nárt — kdy běžet a kdy ne</summary>
       <div class="mt-3 space-y-2 text-sm text-slate-300">
-        <p><strong>Před každým během dokud nárt necítíš 0/10.</strong> Ráno hned po probuzení, před warmupem. Extensor tendinopatie reaguje pozitivně na warmup — pokud bolest mizí během rozběhu, je to dobré znamení.</p>
-        <p><strong>4 testy:</strong></p>
-        <ol class="list-decimal pl-5 space-y-1">
-          <li><strong>První kroky z postele</strong> — mild stiffness která za pár minut zmizí = OK. Sharp pain s limpem = FAIL.</li>
-          <li><strong>Palpation</strong> — firm tlak na bolavé místo. Pain &gt;2/10 = FAIL.</li>
-          <li><strong>Resisted toe extension</strong> — sed, palec proti vlastní ruce. Sharp localized pain = FAIL.</li>
-          <li><strong>Single-leg hop</strong> — 10-15× na bolavé noze, midfoot landing. Sharp/bone-deep pain = FAIL.</li>
-        </ol>
+        <p>Ráno hned po probuzení nastav v trackeru <strong>Nárt dnes</strong>. Podle toho se rozhoduje, ne podle kalendáře. Bolest, která mizí během rozběhání, je dobré znamení; ta, která během běhu roste, není.</p>
         <div class="border-l-2 border-emerald-500 pl-3 mt-3">
-          <strong>🟢 GREEN:</strong> Běž podle plánu (intervaly / tempo / long dle dne).
+          <strong>0 · nic a 1 · cítím ho:</strong> běž podle týdne. Při jedničce zůstaň na volném běhu bez strides a po rovině.
         </div>
         <div class="border-l-2 border-amber-500 pl-3 mt-2">
-          <strong>🟡 YELLOW:</strong> Swap za easy Z1 continuous, NE intervals/tempo. Nebo sub: cyklo (tuhá podrážka, NE toe-clips pulling), pool running, plavání.
+          <strong>2 · bolí:</strong> v T1 až T4 běh vůbec nezačínej. Od T5 doběhni volně, bez strides a bez kvality. Náhrada bez dopadu: kolo nebo veslo, stejný čas.
         </div>
         <div class="border-l-2 border-red-600 pl-3 mt-2">
-          <strong>🔴 RED:</strong> Plný rest. Hard bone tenderness / night pain / walking pain &gt;4/10 → doktor 24-48 h.
+          <strong>3 · bolelo při běhu:</strong> dojdi v chůzi. Další běh až po dvou dnech bez bolesti, a o deset minut kratší, než byl ten poslední.
         </div>
-        <p class="text-xs text-slate-400 pt-2">Režim od 7. 9. 2026: preventivní. Nárt se občas ozve, proto návrat v T1 až T3 jen volně, strides až v T3, jump squat až od T4. Bolest při běhu = dojít v chůzi, další běh až po dvou dnech bez bolesti.</p>
+        <p class="pt-2"><strong>Pravidlo 24 hodin je důležitější než číslo během běhu.</strong> Co do druhého rána neodezní na obvyklý stav, byla moc velká dávka — ubrat objem. Když ranní ztuhlost roste týden po týdnu, ubrat hned, i kdyby jednotlivé běhy nebolely.</p>
+        <p><strong>Když nárt během běhu vyleze na 1:</strong> přejdi na střídání 3 min běh a 1 min chůze a zůstaň u toho, dokud nepřijde celý týden s nulou. Teprve pak zpátky na souvislý běh.</p>
+        <p><strong>Dvě věci, které to spouštějí nejčastěji:</strong> utažené tkaničky přes nárt (jedno křížení vynech) a kopce, do kopce i z kopce. Do bloku patří rovina, dokud nesedí strides.</p>
+        <p class="text-xs text-slate-400 pt-2">Režim od 8. 9. 2026: běhá se s hlídanou bolestí, ne až po úplném vymizení — dlouhá pauza šlachu neposílí, jen sníží její kapacitu. Návrat v T1 až T3 jen volně, strides nejdřív v T4, jump squat nejdřív v T7. Podmínky jsou v Blok a pravidla.</p>
       </div>
     </details>
 
@@ -191,8 +187,8 @@
       <summary class="font-semibold">7 principů</summary>
       <ol class="mt-3 space-y-2 text-sm list-decimal pl-5 text-slate-300">
         <li><strong>Pořadí v tréninku</strong>: síla napřed běh. <span class="text-slate-400">Kvalitní běh a Full body A (těžký dřep) nikdy ve stejný den. Když se sejde gym a běh, gym napřed a běh jen volný. Box je na pauze; až se vrátí, jde jako skill napřed před gym.</span></li>
-        <li>80/20 polarizace běhu (80 % easy, 20 % quality)</li>
-        <li>Cluster sady pro explozivitu (jump squat, med ball)</li>
+        <li><strong>Při jednom až dvou bězích drží formu intenzita</strong>, ne objem. <span class="text-slate-400">Poměr 80/20 platí od tří běhů týdně; při jednom běhu je to ten kvalitní.</span></li>
+        <li>Cluster sady pro explozivitu (med ball; jump squat je do T7 mimo)</li>
         <li>Med ball max 3 kg (těžší = tlak, ne úder)</li>
         <li>MTSS prevence povinná</li>
         <li><strong>Power & rychlost &gt; objem ve fitku.</strong> Max 3 working sets, RPE 7-8, ne k selhání. Cílem není svalová hmota.</li>
@@ -430,6 +426,9 @@ const EXERCISES = {
   toeYoga: { name: "Toe yoga", videoUrl: "https://www.youtube.com/watch?v=Vyof9r7DNok", cues: ["1) Palec nahoru, ostatní 4 prsty dole (10×)", "2) Palec dole, ostatní 4 prsty nahoru (10×)", "3) Roztáhni všechny prsty do stran (splay, 10× výdrž 2s)", "4) Short foot / krabičkování — vytáhni klenbu, nehrabej prsty (10× výdrž 3s)", "Sed, chodidlo plně na zemi, izoluj vědomě každý pohyb"] },
   towelCurls: { name: "Towel curls", videoUrl: "https://www.youtube.com/watch?v=dVDMUuWtX00", cues: ["Pata zůstává na zemi po celou dobu", "1) Shrnuj ručník prsty k sobě (15×) — flexory", "2) Pak prsty roztáhni a tlač ručník od sebe (15×) — extenzory", "Obě fáze pracují s opačnými svaly chodidla", "Pro progresi přidej závaží na konec ručníku"] },
   clamshell: { name: "Clamshell s gumou", videoUrl: "https://www.youtube.com/watch?v=6xDr8LvURMc", cues: ["Pánev neutrální, neotáčet záda dozadu", "Otvírej koleno proti gumě, paty u sebe", "Cítit gluteus medius, ne TFL"] },
+  rdlBarbell: { name: "RDL obouruč (Romanian deadlift)", videoUrl: "https://www.youtube.com/watch?v=uhghy9pFIPY", cues: ["Hip hinge: boky vzad, ne dřep — kolena jen měkce pokrčená", "Osa klouže po stehnech, záda rovná, lopatky stažené", "Dolů jen kam dosáhneš bez kulacení beder — cítit hamstringy", "Nahoru přes hýždě, na konci se nezaklánět"], note: "Nahradil rychlý dřep v B. Těžký dřep zůstává jen v A, hinge je tady." },
+  tibRaise: { name: "Tib raise (extenzory nártu)", videoUrl: "https://www.youtube.com/watch?v=mmLnKYwdDMM", cues: ["Zády o zeď, paty 30-45 cm od ní", "Přitáhni špičky k holeni, nahoře 1 s výdrž, dolů pomalu", "Pálení na holeni je cíl; ostrá bolest na nártu ne", "Když se nárt ozývá: místo opakování 5× výdrž 30-45 s"], note: "Extenzory nártu jsou to, co bolí — tenhle cvik jim staví kapacitu. Izometrická výdrž navíc tlumí bolest." },
+  conditioning: { name: "Kondice — kolo nebo veslo", videoUrl: "https://www.youtube.com/watch?v=4zWu1yuJ0_g", cues: ["2 min volně na rozjezd, pak 6× (30 s tvrdě / 50 s lehce)", "Tvrdě = RPE 8-9, na řeč to nezbývá; lehce = skoro nic", "Kolo nebo veslo, ne běh — nárt tohle nesmí odnést", "Když dojde čas, zkrať na 4 intervaly, nevynechávej"], note: "Náhrada kondice, která odešla s boxem. V deloadu (T8) a o svátcích (T16) vynechat." },
   monsterWalk: { name: "Monster walks s gumou", videoUrl: "https://www.youtube.com/watch?v=snbNxUIUQPc", cues: ["Guma kolem holení nebo kotníků", "Lehký polosed, kolena nad špičky, široký postoj", "Kroky DOPŘEDU jako zombík — pomalu, plynule", "Tah do gumy po celou dobu, nohy nikdy moc u sebe", "Trup vzpřímený, kolena netahej dovnitř (valgus = chyba)"] }
 };
 
@@ -439,21 +438,22 @@ const EXERCISES = {
 const WORKOUTS = {
   gymA: {
     title: "Full body A — síla",
-    meta: "~50 min · všechny čtyři hlavní cviky těžce · RPE 7-8, ne k selhání · pořadí = priorita, když dojde čas, vypadává odspodu",
+    meta: "~55 min · všechny čtyři hlavní cviky těžce · RPE 7-8, ne k selhání · pořadí = priorita, když dojde čas, vypadává odspodu. Na 45 min: hlavní cviky na dvě série a kondice na 5 min, single-leg RDL nevypadává nikdy.",
     exercises: [
       { id: "backSquat",      sets: "3 × 4-6",        reps: [4, 6], pause: 180, protocol: "compound" },
       { id: "benchPress",     sets: "3 × 6-8",        reps: [6, 8], pause: 150, protocol: "compound" },
       { id: "weightedPullUp", sets: "3 × 4-6",        reps: [4, 6], pause: 150, protocol: "compound" },
       { id: "singleLegRDL",   sets: "3 × 8 / noha",   reps: [8, 8], pause: 90,  protocol: "accessory" },
-      { id: "pallofPress",    sets: "3 × 8 / strana", reps: [8, 8], pause: 60,  protocol: "isolation" }
+      { id: "conditioning",   sets: "8 min · 6× 30 s tvrdě / 50 s lehce", pause: 30, protocol: "conditioning" },
+      { id: "pallofPress",    sets: "3 × 8 / strana", reps: [8, 8], pause: 60,  protocol: "isolation", optional: true }
     ]
   },
   gymB: {
     title: "Full body B — výbušnost a rotace",
-    meta: "~50-55 min · výbušnost napřed, hlavní cviky lehčeji a rychle, rotace na konec · med ball vypadává první, když dojde čas",
+    meta: "~50-55 min · hinge těžce, hlavní cviky lehčeji, rotace na konec · med ball vypadává první, landmine ne — je to jediná rotační práce, dokud je box na pauze. Jump squat se vrací až v T7.",
     exercises: [
-      { id: "jumpSquat",         sets: "3 × cluster (2+2+2)",           pause: 20,  protocol: "cluster" },
-      { id: "backSquat",         sets: "3 × 6-8, max rychlost nahoru",  reps: [6, 8],  pause: 150, protocol: "compound" },
+      { id: "jumpSquat",         sets: "3 × cluster (2+2+2)",           pause: 20,  protocol: "cluster", from: "2026-10-19" },
+      { id: "rdlBarbell",        sets: "3 × 6-8",                       reps: [6, 8],  pause: 150, protocol: "compound" },
       { id: "weightedPullUp",    sets: "3 × 6-8",                       reps: [6, 8],  pause: 150, protocol: "compound" },
       { id: "benchPress",        sets: "3 × 8-10",                      reps: [8, 10], pause: 120, protocol: "compound" },
       { id: "landmineRotation",  sets: "3 × 6 / strana",                reps: [6, 6],  pause: 90,  protocol: "accessory" },
@@ -465,6 +465,7 @@ const WORKOUTS = {
     meta: "5-10 min denně, hlavně před běhy. Non-negotiable.",
     exercises: [
       { id: "eccentricCalfRaise", sets: "3 × 10 (3s eccentric)", pause: 30, protocol: "prehab" },
+      { id: "tibRaise", sets: "2 × 20 · při bolesti 5 × 30-45 s výdrž", pause: 30, protocol: "prehab" },
       { id: "toeYoga", sets: "1:30 / noha", pause: 90, protocol: "timed" },
       { id: "towelCurls", sets: "15 k sobě + 15 od sebe", pause: 30, protocol: "prehab" },
       { id: "clamshell", sets: "2 × 15 / strana", pause: 30, protocol: "prehab" },
@@ -499,37 +500,80 @@ const UNITS = {
 const BLOCK = {
   name: "Podzim 2026 — síla a udržení běhu",
   goal: "Málo času, box na pauze, půlmaraton 2027 odložený. Cíl: neztratit sílu ani aerobní základ při 2-3 gymech a 1-2 bězích týdně. Plní se týdenní kvóta, ne dny.",
-  gap: "Co odešlo s boxem a náhradu nemá: kondice. 45 min lap týdně nenahradí dvě full body jednotky a čas na kondiční dodatek v gymu není. Kryje to jen kvalitní běh; při jednom běhu týdně je tohle skutečná díra bloku.",
+  gap: "Co odešlo s boxem: 45 min lap týdně, tedy intervalová kondice. Od T1 to z větší části kryje 8 min kolo nebo veslo na konci Full body A, od T5 navíc kvalitní běh. Zbytek díry zůstává: v týdnu s jedním gymem a jedním volným během se kondice drží jen taktak.",
   rules: [
-    "Kvalitní běh a Full body A (těžký dřep) nikdy ve stejný den. Když se sejde gym a běh, gym napřed a běh jen volný.",
+    "Kvalitní běh a Full body A (těžký dřep) nikdy ve stejný den, ani kvalitní běh ráno po A. Když se sejde gym a běh, gym napřed a běh jen volný.",
     "Jednotky se střídají A, B, A, B bez ohledu na týden. Pořadí cviků je priorita; když dojde čas, vypadává odspodu, nikdy hlavní cviky.",
-    "Při snížené frekvenci drží formu intenzita, ne kilometry: při jednom běhu týdně je to ten kvalitní.",
-    "Dva dny po sobě červený HRV signál = tento týden jako deload: série o jednu dolů, běh jen volný.",
-    "Nárt: bolest při doskoku = zbytek bloku bez jump squatu. Bolest při běhu = dojít v chůzi, další běh až po dvou dnech bez bolesti."
+    "Když se v týdnu vejdou jen dvě jednotky, jde Full body A a běh, ne A a B. Síla mizí po měsících, aerobní základ po dvou až čtyřech týdnech — a ten je po sedmi týdnech útlumu v minusu.",
+    "Při snížené frekvenci drží formu intenzita, ne kilometry: při jednom běhu týdně je to ten kvalitní, a v gymu kondice na konci A.",
+    "Na 45 min: hlavní cviky na dvě série a kondice na 5 min. Single-leg RDL nevypadává nikdy — dřep zadní řetězec nekryje a hamstringy nesou strides i intervaly.",
+    "Dva dny po sobě červený HRV signál = tento týden jako deload: série o jednu dolů, běh jen volný. Když se to opakuje druhý týden v řadě, ruší se nejdřív deficit, ne trénink.",
+    "Váhu navrhuje appka z historie: po pauze sama níž, dál podle toho, jak šla poslední série. Ručně do toho sahat jen když je něco zjevně blbě.",
+    "Až se vrátí box, jde do týdne místo Full body B — rotace a výbušnost jsou tam. Kvóta gymu zůstává stejná."
+  ],
+  notes: [
+    { title: "Nárt: kdy běžet a kdy ne",
+      items: [
+        "Rozhoduje bolest, ne kalendář. Škála z ranního zadání: 0 nic · 1 cítím ho · 2 bolí · 3 bolelo při běhu.",
+        "T1 až T4, návrat: běhá se při 0 a 1. Při 2 běh nezačínat, při 3 dva dny volno.",
+        "Od T5: při 1 běž normálně, při 2 doběhni volně a bez strides, při 3 dojdi v chůzi a další běh až po dvou dnech bez bolesti.",
+        "Pravidlo 24 hodin je důležitější než číslo během běhu: co do druhého rána neodezní na obvyklý stav, byla moc velká dávka. Ubrat objem, ne to přeběhnout.",
+        "Když nárt během běhu vyleze na 1, přejdi na střídání 3 min běh a 1 min chůze a zůstaň u toho, dokud nepřijde celý týden s nulou.",
+        "Rovina, žádné kopce, dokud nesedí strides. Do kopce i z kopce jsou extenzory namáhané nejvíc.",
+        "Tkaničky přes bolavé místo nezavazovat, jedno křížení vynechat. Komprese nártu je u tohohle nejčastější spouštěč.",
+        "Tib raise je nově v denní prevenci, protože extenzory jsou to, co bolí. Ve dnech, kdy se nárt ozve, místo opakování izometrické výdrže."
+      ] },
+    { title: "Kdy zpátky rychlost a skoky",
+      items: [
+        "Strides nejdřív v T4, ne v T3: chtějí tři týdny souvislého běhu bez bolesti. Podmínka je aspoň čtyři zapsané běhy v T1 až T3 a nárt v nich samá nula, jinak se posouvají o týden.",
+        "Jump squat nejdřív v T7, ne v T4. Po sedmi týdnech bez zátěže potřebuje šlacha týdny těžkého pomalého posilování, než unese odraz — rehabilitační protokoly mluví o třech měsících, T7 je půlka a bere se jen se splněnými podmínkami.",
+        "Podmínky pro jump squat, všechny zároveň: 21 dní nárt na nule · strides tři týdny bez reakce · single-leg RDL stejná váha na obou nohách ve dvou trénincích po sobě.",
+        "Návrat je postupný: T7 a T8 dva clustery, od T9 tři.",
+        "Bolest při doskoku kdykoli = zbytek bloku bez jump squatu, ne zkusím to příště."
+      ] },
+    { title: "Deficit: strop 3 kg, začíná až v T2",
+      items: [
+        "300 až 400 kcal denně od T2. V T1 ne — kalibrují se váhy a rozbíhá se běh, a tři nové věci naráz nejdou přiřadit k příčině, když se něco pokazí.",
+        "Strop je 3 kg za celý blok, tedy zhruba z 68 na 65. Do 500 kcal denně se síla drží a svalová hmota netrpí; nad tou hranicí se to láme.",
+        "Bílkoviny 1,8 až 2,2 g na kilo, tedy 125 až 150 g denně. Ve dnech se dvěma tréninky jíst na udržení, ne v deficitu.",
+        "Do hodiny po gymu 15 až 30 g bílkovin. V deficitu klesá tvorba svalové bílkoviny zhruba o čtvrtinu a tohle ji vrátí nad běžnou úroveň.",
+        "Hodinu před během nebo gymem 15 g želatiny nebo kolagenu s vitaminem C. Šlacha je špatně prokrvená a v deficitu se hojí ještě pomaleji; tohle je levné a nic to nezkazí.",
+        "Stop pravidlo: úbytek nad 0,7 kg týdně ve dvoutýdenním průměru, nebo bench či shyby o víc než 5 % dolů ve dvou trénincích po sobě = týden na udržení.",
+        "V T8 a T16 se nehubne."
+      ] },
+    { title: "Podle čeho se pozná, že blok vyšel",
+      items: [
+        "Síla: odhad 1RM u dřepu, benche a shybů v T15 aspoň na 95 % nejlepší hodnoty z T3. Shyby appka počítá i s tělesnou váhou, jinak by úbytek váhy vypadal jako nárůst síly.",
+        "Běh: kontrolní běh znovu v T14, T-pace ne pomalejší než v T4.",
+        "Váha: pokles nejvýš o 3 kg a bez propadu síly.",
+        "Nárt: poslední měsíc bloku bez jediného dne s dvojkou nebo trojkou."
+      ] }
   ],
   start: "2026-09-07", end: "2026-12-27",
   weeks: [
     { start: "2026-09-07", name: "T1 — Návrat", quota: { gym: [2,3], run: [1,2] },
-      focus: "Návrat. Váhy podle doporučení appky, po pauze níž. Běh 1-2× 20-25 min {Z1}. Žádná kvalita, žádné strides.",
-      modifiers: { gymB: "Bez jump squatu (nárt, sedm týdnů bez zátěže): místo něj jen back squat s max rychlostí nahoru." } },
+      focus: "Návrat. Váhy podle doporučení appky, po pauze sama níž. Běh 1-2× 20-25 min {Z1}, po rovině. Žádná kvalita, žádné strides. Kondice 8 min na konci A. Deficit tenhle týden ještě ne.",
+      modifiers: { gymB: "Místo rychlého dřepu nový cvik RDL obouruč — první dva tréninky jen 2 série, ať tě svalovka nesloží před běh. Jump squat se vrací až v T7." } },
     { start: "2026-09-14", name: "T2 — Rozjezd", quota: { gym: [2,3], run: [1,2] },
-      focus: "Zpět na poslední váhy, pokud T1 šel bez problémů. Běh 25-30 min {Z1}/{Z2}. Žádný běh delší o víc než 10 min než nejdelší minulý týden.",
-      modifiers: { gymB: "Bez jump squatu (nárt)." } },
+      focus: "Deficit startuje: 300-400 kcal, bílkoviny 125-150 g denně. Váhy pořád podle appky, ne z hlavy. Běh 25-30 min {Z1}/{Z2}. Žádný běh delší o víc než 10 min než nejdelší minulý týden.",
+      modifiers: { gymB: "RDL druhý trénink ještě 2 série, od třetího 3." } },
     { start: "2026-09-21", name: "T3 — Rozjezd", quota: { gym: [2,3], run: [1,2] },
-      focus: "Normální progrese vah. Běh 30-40 min, do jednoho 4×20 s strides. Poslední týden bez jump squatu.",
-      modifiers: { gymB: "Bez jump squatu, poslední týden." } },
+      focus: "Zpátky na staré váhy, když tři série vyjdou na RPE 8 a míň. Běh 30-35 min (víc než o 10 min proti minulému týdnu ne). Strides ještě ne." },
     { start: "2026-09-28", name: "T4 — Kalibrace", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kontrolní běh: 15 min rozklus, pak 3 km v tempu, kde jde říct jen krátkou frázi. Průměr těch 3 km = {T}, zapsat do appky (T_PACE_MEASURED). Při bolesti test přerušit a zkusit za týden. Druhý běh volný. Jump squat zpět, když nárt tři týdny mlčel." },
+      focus: "Kontrolní běh: 15 min rozklus, pak 3 km v tempu, kde jde říct jen krátkou frázi. Průměr těch 3 km = {T}, zapsat do appky (T_PACE_MEASURED). Při bolesti test přerušit a zkusit za týden. Druhý běh volný. Strides 4×20 s do volného běhu, ale jen když T1-T3 daly aspoň čtyři běhy a nárt v nich mlčel." },
     { start: "2026-10-05", name: "T5 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: cruise, 10 min wu + 2×1 km @ {T} ({pace:T}/km) + 90 s klus + 10 min cd. Volný 40 min {Z1}/{Z2}. Při jednom běhu ten kvalitní." },
+      focus: "Kvalita: cruise, 10 min wu + 2×1 km @ {T} ({pace:T}/km) + 90 s klus + 10 min cd. Volný 40 min {Z1}/{Z2}. Při jednom běhu ten kvalitní. Když cruise vyjde na RPE 8 a víc, je {T} moc rychlé: přidej 10 s/km." },
     { start: "2026-10-12", name: "T6 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: intervaly, 10 min wu + 4×3 min @ {I} ({pace:I}/km) + 2 min klus + 10 min cd. Volný 40-45 min." },
+      focus: "Kvalita: intervaly, 10 min wu + 4×3 min @ {I} ({pace:I}/km) + 2 min klus + 10 min cd. Volný 40-45 min. Intervaly jen v týdnu se dvěma běhy; při jednom běhu cruise." },
     { start: "2026-10-19", name: "T7 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: cruise 3×1 km @ {T}, 90 s klus. Volný 45 min." },
+      focus: "Kvalita: cruise 3×1 km @ {T}, 90 s klus. Volný 45 min. Jump squat se může vrátit, když sedí všechny tři podmínky z pravidel bloku.",
+      modifiers: { gymB: "Jump squat zpět jen při splněných podmínkách — a první dva týdny 2 clustery místo 3." } },
     { start: "2026-10-26", name: "T8 — Deload", quota: { gym: [2,2], run: [1,1] }, deload: true,
-      focus: "Deload. Série o jednu dolů, běh jen volný 30-40 min. Žádná kvalita." },
+      focus: "Deload. Série o jednu dolů, běh jen volný 30-40 min. Žádná kvalita, kondice na konci A vynechat, tenhle týden se nehubne. Když T5-T7 daly dohromady míň než šest gymů, deload nemá z čeho ubírat: trénuj normálně.",
+      modifiers: { gymA: "Bez kondičního finisheru." } },
     { start: "2026-11-02", name: "T9 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: intervaly 5×3 min @ {I}, 2 min klus. Volný 45 min." },
+      focus: "Kvalita: intervaly 5×3 min @ {I}, 2 min klus. Volný 45 min.",
+      modifiers: { gymB: "Jump squat na tři clustery, když T7 a T8 nebolely." } },
     { start: "2026-11-09", name: "T10 — Kvalita", quota: { gym: [2,3], run: [1,2] },
       focus: "Kvalita: cruise 3×1 km @ {T}. Volný 45-50 min." },
     { start: "2026-11-16", name: "T11 — Kvalita", quota: { gym: [2,3], run: [1,2] },
@@ -539,13 +583,18 @@ const BLOCK = {
     { start: "2026-11-30", name: "T13 — Kvalita", quota: { gym: [2,3], run: [1,2] },
       focus: "Kvalita: intervaly 6×3 min @ {I}. Volný 50-60 min." },
     { start: "2026-12-07", name: "T14 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: cruise 3×1 km @ {T}. Volný 60 min." },
+      focus: "Kontrolní běh znovu: 15 min rozklus, pak 3 km jako v T4. {T} nemá vyjít pomaleji než tehdy — tohle je test, jestli blok vyšel. Druhý běh volný 60 min." },
     { start: "2026-12-14", name: "T15 — Kvalita", quota: { gym: [2,3], run: [1,2] },
-      focus: "Kvalita: intervaly 6×3 min @ {I}. Volný 45 min." },
+      focus: "Kvalita: intervaly 6×3 min @ {I}. Volný 45 min. Mrkni na odhad 1RM: dřep, bench a shyby mají být aspoň na 95 % nejlepší hodnoty z T3." },
     { start: "2026-12-21", name: "T16 — Svátky", quota: { gym: [1,2], run: [1,1] }, deload: true,
-      focus: "Svátky. Lehce, nic neměřit. Jeden volný běh, jde o návyk. Blok končí 27. 12." }
+      focus: "Svátky. Lehce, nic neměřit. Jeden volný běh, jde o návyk. Kondici vynechat, nehubne se. Blok končí 27. 12." }
   ]
 };
+
+// Cvik smí mít `from` (ISO start týdne) = do té doby se v jednotce necvičí. Jump squat se vrací až v T7 (nárt).
+// Karta Dnes ho vůbec nenabídne; v referenčním přehledu zůstává vidět se štítkem, ať je jasné, že přijde.
+const exercisesOn = (w, dateISO) => w.exercises.filter(e => !e.from || dateISO >= e.from);
+const weekNameFor = (iso) => { const w = BLOCK.weeks.find(x => x.start === iso); return w ? w.name.split(" ")[0] : iso; };
 
 // Hlavní cviky pro tracker síly se odvozují z příznaku mainLift v EXERCISES (číslo = pořadí), ne z ručního seznamu.
 const MAIN_LIFTS = Object.keys(EXERCISES).filter(id => EXERCISES[id].mainLift).sort((a, b) => EXERCISES[a].mainLift - EXERCISES[b].mainLift);
@@ -559,6 +608,7 @@ const LOAD = {
   benchPress:       { inc: 2.5, min: 20 },
   weightedPullUp:   { inc: 2.5, min: 0, bodyweight: true },
   singleLegRDL:     { inc: 2.5, min: 0 },
+  rdlBarbell:       { inc: 5,   min: 20 },
   landmineRotation: { inc: 2.5, min: 0 }
 };
 const roundTo = (w, step) => Number((Math.round(w / step) * step).toFixed(2));
@@ -929,6 +979,24 @@ function renderProtocol(type, exId) {
         ]}
       ]
     },
+    conditioning: {
+      title: "Protokol — Kondice (intervaly bez dopadu)",
+      blocks: [
+        { label: "Provedení", items: [
+          "Kolo nebo veslo. 2 min volně na rozjezd.",
+          { text: "6× tvrdý úsek", pause: 30 },
+          { text: "mezi nimi lehce", pause: 50 },
+          "Tvrdě = RPE 8-9, na řeč to nezbývá. Lehce = skoro nic, jen se hýbat.",
+          "Když dojde čas, zkrať na 4 intervaly. Vynechat až úplně nakonec."
+        ]},
+        { label: "Proč to tu je", items: [
+          "Nahrazuje kondici, která odešla s boxem, dokud nárt nesnese rychlý běh",
+          "Bez dopadu, takže návrat do běhu to nebrzdí",
+          "Při málu tréninků drží formu intenzita, ne objem",
+          "V deloadu (T8) a o svátcích (T16) vynechat"
+        ]}
+      ]
+    },
     timed: {
       title: "Protokol — Časovaný cvik",
       blocks: [
@@ -989,7 +1057,7 @@ function openExercise(id, unitId) {
     $("sgWarmup").innerHTML = warmupSets(sg.weight, LOAD[id]).map(x => `<span class="rounded-lg bg-slate-950/50 px-2 py-1 font-mono text-xs tabular-nums text-slate-300 ring-1 ring-slate-700">${x.weight}×${x.reps}</span>`).join("")
       + (sg.weight != null && !LOAD[id].bodyweight ? `<span class="text-[10px] text-slate-500 self-center">rozehřátí 50 / 70 / 85 %</span>` : "");
   }
-  const m = ex.videoUrl.match(/[?&]v=([^&]+)/);
+  const m = (ex.videoUrl || "").match(/[?&]v=([^&]+)/);
   if (m) {
     $("modalVideo").innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
     $("modalVideoLink").href = ex.videoUrl;
@@ -1144,7 +1212,7 @@ function renderToday() {
       </div>
       <div class="text-xs text-slate-400">${gloss(wk.meta)}</div>
       ${mod ? `<div class="text-xs text-sky-300">Tento týden: ${gloss(mod)}</div>` : ""}
-      ${wk.exercises.map(e => exerciseRow(t, e, "today", cur.id)).join("")}
+      ${exercisesOn(wk, t).map(e => exerciseRow(t, e, "today", cur.id)).join("")}
       ${cur.done ? "" : `<button onclick="swapNextGym()" class="text-xs text-slate-500 underline pt-1">Dnes dělám tu druhou</button>`}
     </div>`;
   }
@@ -1189,7 +1257,7 @@ function exerciseRow(date, e, context, unitId) {
   return `<div class="flex items-center gap-3 py-1.5" id="row-${context}-${unitId || "x"}-${e.id}">
     ${cb}
     <button onclick="openExercise('${e.id}','${unitId || ""}')" class="flex-1 text-left">
-      <div class="text-sm font-medium exname ${context !== "plan" && isChecked(date, e.id) ? "line-through text-slate-500" : ""}">${ex.name}${e.optional ? ' <span class="text-[10px] text-slate-500 font-normal">volitelné</span>' : ""}</div>
+      <div class="text-sm font-medium exname ${context !== "plan" && isChecked(date, e.id) ? "line-through text-slate-500" : ""}">${ex.name}${e.optional ? ' <span class="text-[10px] text-slate-500 font-normal">volitelné</span>' : ""}${e.from && date < e.from ? ` <span class="text-[10px] font-normal text-amber-300">až od ${weekNameFor(e.from)}</span>` : ""}</div>
       <div class="text-xs text-slate-400">${e.sets}</div>
     </button>
     ${pauseBtns}
@@ -1391,6 +1459,10 @@ function renderBlockInfo() {
     <div class="text-slate-400">${gloss(BLOCK.goal)}</div>
     <div class="border-l-2 border-amber-500 pl-3 text-slate-400">${gloss(BLOCK.gap)}</div>
     <ul class="list-disc pl-5 space-y-1">${BLOCK.rules.map(r => `<li>${gloss(r)}</li>`).join("")}</ul>
+    ${(BLOCK.notes || []).map(n => `<div class="pt-2 border-t border-slate-800">
+      <div class="text-xs font-semibold uppercase tracking-[0.14em] text-sky-300 mb-1.5">${n.title}</div>
+      <ul class="list-disc pl-5 space-y-1 text-slate-400">${n.items.map(i => `<li>${gloss(i)}</li>`).join("")}</ul>
+    </div>`).join("")}
     <div class="text-xs text-slate-400 pt-2 border-t border-slate-700">${CATS.box.pausedNote} Půlmaraton 2027 je odložený, ne zrušený. O dalším bloku se rozhodne v lednu 2027 podle času a formy.</div>`;
 }
 
@@ -1657,15 +1729,20 @@ function renderConsistency() {
     return `<div class="flex-1 space-y-[3px] ${inBlock ? "" : "opacity-30"}" title="${w ? w.name : fmtDateShort(wk)}">${cols}<div class="text-[8px] text-center text-slate-600 tabular-nums leading-none pt-0.5">${w ? w.name.split(" ")[0] : ""}</div></div>`;
   }).join("");
 }
-// Nárt z denního zadání (0-3): pravidla bloku ("jump squat zpět, když nárt tři týdny mlčel") jinak nejde vyhodnotit.
+// Nárt z denního zadání (0-3): pravidla bloku (strides, jump squat) jinak nejde vyhodnotit.
+// Datum, odkdy je jump squat vůbec ve hře, se čte z WORKOUTS, ne z druhé kopie tady.
 function footStatus() {
   const log = STORE.get("hrvLog", []).filter(e => e.foot != null).sort((a, b) => a.date.localeCompare(b.date));
   if (!log.length) return null;
   const t = todayISO(); const words = ["nic", "cítím ho", "bolí", "bolelo při běhu"];
   const lastBad = log.filter(e => e.foot >= 2).slice(-1)[0];
-  if (lastBad && diffDays(lastBad.date, t) <= 21) { const d = diffDays(lastBad.date, t); return { cls: "text-amber-300", text: `Nárt se ozval ${d === 0 ? "dnes" : `před ${d} ${d === 1 ? "dnem" : "dny"}`} (${words[lastBad.foot]}). Bez jump squatu a strides, dokud 21 dní nemlčí.` }; }
+  if (lastBad && diffDays(lastBad.date, t) <= 21) { const d = diffDays(lastBad.date, t); return { cls: "text-amber-300", text: `Nárt se ozval ${d === 0 ? "dnes" : `před ${d} ${d === 1 ? "dnem" : "dny"}`} (${words[lastBad.foot]}). Bez strides a bez jump squatu, dokud 21 dní nemlčí.` }; }
   const since = lastBad ? lastBad.date : log[0].date; const days = diffDays(since, t);
-  return { cls: "text-emerald-400", text: `Nárt v klidu ${days} ${days === 1 ? "den" : "dní"}${days >= 21 ? " · jump squat může zpět" : ""}.` };
+  const jumpFrom = (WORKOUTS.gymB.exercises.find(e => e.id === "jumpSquat") || {}).from;
+  const gate = days < 21 ? ""
+    : (jumpFrom && t < jumpFrom) ? ` · strides můžou, jump squat až od ${weekNameFor(jumpFrom)}`
+    : " · jump squat může zpět, když sedí i strides a stejná váha RDL na obou nohách";
+  return { cls: "text-emerald-400", text: `Nárt v klidu ${days} ${days === 1 ? "den" : "dní"}${gate}.` };
 }
 
 // =============================================================================
